@@ -79,6 +79,10 @@
                     <input type="text" name="legal_business_name" value="{{ $business->legal_business_name }}" class="w-full bg-white border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 focus:ring-4 focus:ring-blue-50 transition-all">
                 </div>
                 <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Business Website</label>
+                    <input type="url" name="website" value="{{ $business->website }}" class="w-full bg-white border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 focus:ring-4 focus:ring-blue-50 transition-all">
+                </div>
+                <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Business Name</label>
                     <input type="text" name="business_name" value="{{ $business->business_name }}" class="w-full bg-white border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 focus:ring-4 focus:ring-blue-50 transition-all">
                 </div>
@@ -91,6 +95,17 @@
                     <select name="status" class="w-full bg-white border border-gray-200 rounded-xl p-3.5 text-base font-semibold text-gray-900 focus:ring-4 focus:ring-blue-50 transition-all cursor-pointer">
                         <option value="active" {{ $business->status === 'active' ? 'selected' : '' }}>Active</option>
                         <option value="blocked" {{ $business->status === 'blocked' ? 'selected' : '' }}>Blocked</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Subscription Plan</label>
+                    <select name="plan_id" class="w-full bg-white border border-gray-200 rounded-xl p-3.5 text-base font-semibold text-gray-900 focus:ring-4 focus:ring-blue-50 transition-all cursor-pointer capitalize">
+                        <option value="">-- No Plan --</option>
+                        @foreach ($plans as $plan)
+                            <option value="{{ $plan->id }}" {{ ($business->user->subscription->subscription_plan_id ?? null) == $plan->id ? 'selected' : '' }}>
+                                {{ $plan->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -195,8 +210,13 @@
                             
                             <div class="space-y-2 mb-6">
                                 <div class="flex items-center gap-2 text-xs">
-                                    <span class="text-gray-400 font-medium w-14">Link:</span>
-                                    <a href="{{ url('/r/' . $card->token) }}" target="_blank" class="text-blue-600 font-bold hover:underline truncate">{{ $card->token }}</a>
+                                    <span class="text-gray-400 font-medium w-14 shrink-0">Link:</span>
+                                    <div class="flex items-center gap-2 min-w-0">
+                                        <a href="{{ url('/r/' . $card->token) }}" target="_blank" class="text-blue-600 font-bold hover:underline truncate">{{ $card->token }}</a>
+                                        <button onclick="window.navigator.clipboard.writeText('{{ url('/r/' . $card->token) }}'); window.toast('Link Copied!', 'success')" class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Copy Card Link">
+                                            <i data-lucide="copy" class="w-3.5 h-3.5 pt-0.5"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 

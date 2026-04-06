@@ -1,9 +1,7 @@
-var staticCacheName = "reviewbooster-pwa-v" + new Date().getTime();
+var staticCacheName = "reviewbooster-pwa-v" + new Date().getTime(); // Updated: 2026-04-02 14:02:00
 
 var filesToCache = [
     '/offline',
-    '/css/app.css',
-    '/js/app.js',
     '/images/icons/icon-72x72.png',
     '/images/icons/icon-96x96.png',
     '/images/icons/icon-128x128.png',
@@ -42,8 +40,9 @@ self.addEventListener('activate', event => {
 
 // Serve from Cache, fallback to Network
 self.addEventListener("fetch", event => {
-    // Skip non-GET and cross-origin requests
+    // Skip non-GET, cross-origin, and non-http/https requests
     if (event.request.method !== 'GET') return;
+    if (!event.request.url.startsWith('http')) return;
 
     event.respondWith(
         caches.match(event.request)

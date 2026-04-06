@@ -49,10 +49,21 @@
     <h1 class="text-4xl font-extrabold text-gray-800 mb-3">Thanks for your post!</h1>
     <p class="text-gray-600 mb-6">People like you make us more helpful.</p>
 
-    <a href="{{ url('/') }}"
-       class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition">
-      Continue Browsing
-    </a>
+    @php
+        $website = session('business_website');
+    @endphp
+
+    @if($website)
+        <a href="{{ $website }}"
+           class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition">
+          Visit our Website
+        </a>
+    @else
+        <a href="{{ url('/') }}"
+           class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition">
+          Continue Browsing
+        </a>
+    @endif
   </div>
 
   <script>

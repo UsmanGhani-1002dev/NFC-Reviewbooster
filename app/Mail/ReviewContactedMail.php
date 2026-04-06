@@ -15,22 +15,28 @@ class ReviewContactedMail extends Mailable
     use Queueable, SerializesModels;
     
     public $review;
+    public $customMessage;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Review $review)
+    public function __construct(Review $review, $customMessage = null)
     {
         $this->review = $review;
+        $this->customMessage = $customMessage;
     }
 
     /**
      * Get the message envelope.
      */
-   public function envelope(): Envelope
+    public function envelope(): Envelope
     {
+        $subject = $this->review->rating >= 4 
+            ? 'Thank you for your amazing feedback!' 
+            : 'Thank you for your feedback - We would like to help!';
+
         return new Envelope(
-            subject: 'Thank you for your feedback - We\'d like to help!',
+            subject: $subject,
         );
     }
 
@@ -46,6 +52,7 @@ class ReviewContactedMail extends Mailable
                 'reviewText' => $this->review->review,
                 'rating' => $this->review->rating,
                 'reviewDate' => $this->review->created_at->format('F j, Y'),
+                'customMessage' => $this->customMessage,
             ]
         );
     }

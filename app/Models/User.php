@@ -62,14 +62,9 @@ class User extends Authenticatable
         return $this->hasMany(Card::class);
     }
 
-    public function review()
-    {
-        return $this->hasManyThrough(Review::class, Card::class);
-    }
-
     public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasManyThrough(Review::class, Card::class);
     }
     
     public function businesses()

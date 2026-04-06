@@ -26,7 +26,7 @@ class ContactController extends Controller
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
             'business_name' => 'nullable|string|max:255',
-            'inquiry_type' => 'required|in:general,support,sales,billing,partnership,feedback',
+            'inquiry_type' => 'required|in:general,support,sales,billing,enterprise,partnership,feedback',
             'subject' => 'required|string|max:255',
             'message' => 'required|string|max:2000',
             'privacy_policy' => 'required|accepted',

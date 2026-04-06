@@ -41,6 +41,7 @@
                         @foreach($businesses as $business)
                             <option value="{{ $business->id }}"
                                 data-name="{{ $business->business_name }}"
+                                data-url="{{ $business->google_review_link }}"
                                 {{ (old('business_id') ?? $selectedBusinessId ?? '') == $business->id ? 'selected' : '' }}>
                                 {{ $business->legal_business_name }}
                             </option>
@@ -446,7 +447,20 @@ document.getElementById('business-selector').addEventListener('change', function
         // Listeners for real-time preview
         typeSelect.addEventListener('change', updatePreview);
         cardNameInput.addEventListener('input', updatePreview);
-        businessSelector.addEventListener('change', updatePreview);
+        businessSelector.addEventListener('change', function() {
+            updatePreview();
+            if (typeSelect.value === 'google_review') {
+                const selectedOption = this.options[this.selectedIndex];
+                const savedUrl = selectedOption.getAttribute('data-url');
+                if (savedUrl) {
+                    input.value = savedUrl;
+                    urlInput.value = savedUrl;
+                } else {
+                    input.value = '';
+                    urlInput.value = '';
+                }
+            }
+        });
 
         // Listener for changing type
         typeSelect.addEventListener('change', function () {
@@ -516,6 +530,15 @@ document.getElementById('business-selector').addEventListener('change', function
                 input.placeholder = 'Start typing business name...';
                 input.disabled = false;
                 enableGoogleAutocomplete();
+
+                if (businessSelector.value) {
+                    const selectedOption = businessSelector.options[businessSelector.selectedIndex];
+                    const savedUrl = selectedOption.getAttribute('data-url');
+                    if (savedUrl) {
+                        input.value = savedUrl;
+                        urlInput.value = savedUrl;
+                    }
+                }
             } else {
                 label.innerHTML = 'Direct Link <span class="text-red-500">*</span>';
                 input.placeholder = 'Paste the page link';

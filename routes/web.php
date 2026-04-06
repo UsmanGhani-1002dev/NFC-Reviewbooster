@@ -12,6 +12,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ManageBusinessController;
 use App\Http\Controllers\SubscriptionPlanController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\LandingPageController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +29,62 @@ Route::get('/about', [HomeController::class, 'aboutUs'])->name('about');
 Route::get('/how-its-work', [HomeController::class, 'howitswork'])->name('howitswork');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+Route::get('/shipping-returns', [HomeController::class, 'shippingReturns'])->name('shipping-returns');
+Route::get('/terms-of-service', [HomeController::class, 'termsOfService'])->name('terms-of-service');
+Route::get('/privacy-policy', [HomeController::class, 'privacypolicy'])->name('privacypolicy');
+
+// Dynamic Sitemap
+Route::get('/sitemap.xml', function () {
+    $urls = [
+        ['loc' => route('home'), 'lastmod' => now()->toAtomString(), 'priority' => '1.0'],
+        ['loc' => route('about'), 'lastmod' => now()->toAtomString(), 'priority' => '0.8'],
+        ['loc' => route('howitswork'), 'lastmod' => now()->toAtomString(), 'priority' => '0.8'],
+        ['loc' => route('shop.index'), 'lastmod' => now()->toAtomString(), 'priority' => '0.9'],
+        ['loc' => route('contact'), 'lastmod' => now()->toAtomString(), 'priority' => '0.7'],
+        ['loc' => route('shipping-returns'), 'lastmod' => now()->toAtomString(), 'priority' => '0.5'],
+        ['loc' => route('terms-of-service'), 'lastmod' => now()->toAtomString(), 'priority' => '0.5'],
+        ['loc' => route('privacypolicy'), 'lastmod' => now()->toAtomString(), 'priority' => '0.5'],
+        ['loc' => route('landing.cards'), 'lastmod' => now()->toAtomString(), 'priority' => '0.8'],
+        ['loc' => route('landing.stand'), 'lastmod' => now()->toAtomString(), 'priority' => '0.8'],
+        ['loc' => route('landing.keychain'), 'lastmod' => now()->toAtomString(), 'priority' => '0.8'],
+    ];
+
+    // Add Shop Products to Sitemap
+    $products = \App\Models\Product::all();
+    foreach ($products as $product) {
+        $urls[] = [
+            'loc' => route('shop.show', $product->slug),
+            'lastmod' => $product->updated_at->toAtomString(),
+            'priority' => '0.8'
+        ];
+    }
+
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+    foreach ($urls as $url) {
+        $xml .= '<url>';
+        $xml .= '<loc>' . $url['loc'] . '</loc>';
+        $xml .= '<lastmod>' . $url['lastmod'] . '</lastmod>';
+        $xml .= '<priority>' . $url['priority'] . '</priority>';
+        $xml .= '</url>';
+    }
+    $xml .= '</urlset>';
+
+    return response($xml, 200)->header('Content-Type', 'text/xml');
+});
+
+// Shop Routes
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/shop/checkout', [ShopController::class, 'checkout'])->name('shop.checkout');
+Route::post('/shop/checkout', [ShopController::class, 'processCheckout'])->name('shop.process-checkout');
+Route::post('/shop/payment-intent', [ShopController::class, 'createPaymentIntent'])->name('shop.payment-intent');
+Route::get('/shop/order/success', [ShopController::class, 'success'])->name('shop.success');
+Route::get('/shop/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
+
+// Search Intent Landing Pages
+Route::get('/google-review-cards', [LandingPageController::class, 'cards'])->name('landing.cards');
+Route::get('/google-review-stand', [LandingPageController::class, 'stand'])->name('landing.stand');
+Route::get('/google-review-keychain', [LandingPageController::class, 'keychain'])->name('landing.keychain');
 
 // Public NFC tap route (Logic handled in ReviewController to check subscription)
 Route::get('/r/{token}', [ReviewController::class, 'show'])->name('reviews.gate');
@@ -49,7 +107,8 @@ Route::post('/feedback', [ReviewController::class, 'feedbackstore'])->name('revi
 // Route::get('/reviews', [ReviewController::class, 'showPositiveReviews'])->name('reviews.positive');
 Route::get('/reviews/success', [ReviewController::class, 'success'])->name('reviews.success');
 
-Auth::routes(); 
+// Auth routes are handled in auth.php at the end of this file 
+// Auth::routes(); 
 
 // Protected Routes (Authenticated users only)
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -70,7 +129,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     
     Route::patch('/reviews/{review}/status', [BusinessController::class, 'updateStatus'])->name('reviews.updateStatus');
-    
+    Route::post('/ai/generate-response', [\App\Http\Controllers\AIController::class, 'generateResponse'])->name('ai.generate-response');
 });
 
 Route::middleware(['auth','role:bussiness_owner'])->group(function () {
@@ -140,6 +199,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
         Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
         Route::put('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
+
+        // Product Management
+        Route::get('/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->name('products.index');
+        Route::get('/products/create', [\App\Http\Controllers\Admin\ProductController::class, 'create'])->name('products.create');
+        Route::post('/products', [\App\Http\Controllers\Admin\ProductController::class, 'store'])->name('products.store');
+        Route::get('/products/{product}/edit', [\App\Http\Controllers\Admin\ProductController::class, 'edit'])->name('products.edit');
+        Route::put('/products/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'update'])->name('products.update');
+        Route::delete('/products/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy'])->name('products.destroy');
+
+        // Order Management
+        Route::get('/orders', [\App\Http\Controllers\Admin\ProductController::class, 'orders'])->name('orders.index');
+        Route::get('/orders/{order}/edit', [\App\Http\Controllers\Admin\ProductController::class, 'editOrder'])->name('orders.edit');
+        Route::put('/orders/{order}/status', [\App\Http\Controllers\Admin\ProductController::class, 'updateOrderStatus'])->name('orders.update-status');
+        Route::put('/orders/{order}/location', [\App\Http\Controllers\Admin\ProductController::class, 'updateOrderLocation'])->name('orders.update-location');
+        Route::delete('/orders/{order}', [\App\Http\Controllers\Admin\ProductController::class, 'destroyOrder'])->name('orders.destroy');
 
 });
 

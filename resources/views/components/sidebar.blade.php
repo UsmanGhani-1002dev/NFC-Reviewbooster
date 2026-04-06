@@ -47,7 +47,7 @@
         <div>
             <div class="flex mb-4">
                 <a href="{{ url('/') }}" class="text-gray-700 hover:text-blue-600">
-                    <img src="https://codely.quest/reviewbooster/public/images/logo.png" class="h-16 w-auto" alt="Logo">
+                    <x-application-logo class="block h-auto w-40 fill-current text-blue-500" />
                 </a>
             </div>
         </div>
@@ -93,6 +93,22 @@
                @click="sidebarOpen = false">
                 <i data-lucide="building-2" class="h-5 w-5 flex-shrink-0"></i>
                 <span class="truncate">Manage Businesses</span>
+            </a>
+
+            <!-- Manage Products -->
+            <a href="{{ route('admin.products.index') }}" 
+               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.products.*') ? 'bg-blue-100 text-blue-600' : '' }}"
+               @click="sidebarOpen = false">
+                <i data-lucide="package" class="h-5 w-5 flex-shrink-0"></i>
+                <span class="truncate">Manage Products</span>
+            </a>
+
+            <!-- Manage Orders -->
+            <a href="{{ route('admin.orders.index') }}" 
+               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.orders.*') ? 'bg-blue-100 text-blue-600' : '' }}"
+               @click="sidebarOpen = false">
+                <i data-lucide="shopping-cart" class="h-5 w-5 flex-shrink-0"></i>
+                <span class="truncate">Manage Orders</span>
             </a>
 
             <!-- Manage Subscriptions -->

@@ -42,6 +42,8 @@ return [
 
     'google' => [
         'maps_api_key' => env('GOOGLE_PLACES_API_KEY'),
+        'gemini_api_key' => env('GEMINI_API_KEY'),
+        'gemini_model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
     ],
 
 ];

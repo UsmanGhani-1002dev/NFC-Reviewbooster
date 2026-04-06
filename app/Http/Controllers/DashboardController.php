@@ -202,6 +202,7 @@ class DashboardController extends Controller
                 'totalUsers'         => User::where('role', '!=', 'admin')->count(),
                 'totalBusinessOwners'=> User::where('role', 'bussiness_owner')->count(),
                 'totalReviews'       => Review::count(),
+                'totalOrders'        => \App\Models\Order::count(),
                 'totalCards'         => Card::count(),
                 'newUsersToday'      => User::where('role', '!=', 'admin')->whereDate('created_at', Carbon::today())->count(),
                 'newUsersThisWeek'   => User::where('role', '!=', 'admin')->where('created_at', '>=', Carbon::now()->startOfWeek())->count(),

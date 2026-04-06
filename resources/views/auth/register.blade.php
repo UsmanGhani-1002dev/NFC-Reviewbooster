@@ -18,7 +18,7 @@
 
                 <div class="text-center mb-4">
                     <a href="{{ url('/') }}" class="flex items-center justify-center">
-                        <x-application-logo class="block h-16 w-auto fill-current text-blue-500" />
+                        <x-application-logo class="block h-auto w-40 fill-current text-blue-500" />
                     </a>   
 
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl mt-4">
@@ -118,7 +118,7 @@
                     </div>
 
                     <div class="space-y-4">
-                        @foreach ($plans as $plan)
+                        @foreach ($plans->take(2) as $plan)
                             <label class="block p-5 border border-gray-200 rounded-2xl shadow-sm cursor-pointer hover:border-[#0284C7] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#0284C7] bg-white group hover:shadow-md">
                                 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                                     <div class="flex items-start gap-3 flex-1">
@@ -143,6 +143,34 @@
                                 </div>
                             </label>
                         @endforeach
+                        <div class="block">
+                            <label class="block p-5 border border-gray-200 rounded-2xl shadow-sm cursor-pointer hover:border-[#0284C7] transition-all duration-300 focus-within:ring-2 focus-within:ring-[#0284C7] bg-white group hover:shadow-md">
+                                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                                    <div class="flex items-start gap-3 flex-1">
+                                        <div class="flex items-center h-6 mt-1">
+                                            <input type="radio" name="payment_plan" value="custom" class="mt-0.5 accent-[#0284C7] w-5 h-5 shrink-0 cursor-pointer" required>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-lg font-bold text-gray-900 capitalize group-hover:text-[#0284C7] transition-colors">Enterprise Plan</div>
+                                            <div class="text-sm text-gray-600 leading-relaxed mt-2 [&>ul]:space-y-2 [&>p]:mb-2 [&_li]:flex [&_li]:items-start [&_li]:gap-2">
+                                                <ul>
+                                                    <li class="flex items-center">🔷 Unlimited Cards & Businesses</li>
+                                                    <li class="flex items-center">🔷 Advanced Dashboard with Insights</li>
+                                                    <li class="flex items-center">🔷 Team Leaderboard & Staff Tracking</li>
+                                                    <li class="flex items-center">🔷 Dedicated Account Manager</li>
+                                                    <li class="flex items-center">🔷 AI Response Generator</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="sm:text-right pl-8 sm:pl-0 shrink-0">
+                                        <div class="flex items-baseline sm:justify-end gap-1 text-[#142D63]">
+                                            <span class="text-3xl font-extrabold tracking-tight">Custom</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
                     </div>
 
                     <div class="flex justify-between mt-8 pt-6 border-t border-gray-100">
@@ -326,6 +354,18 @@
                     return;
                 }
                 
+                // If Custom Plan is selected, redirect to contact page
+                if (selectedPlan.value === 'custom') {
+                    const name = document.getElementById('name').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const company = document.getElementById('company_name').value.trim();
+                    
+                    // Redirect to contact page in a new tab with pre-filled details
+                    const contactUrl = `{{ route('contact') }}?inquiry=enterprise&first_name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&business_name=${encodeURIComponent(company)}`;
+                    window.open(contactUrl, '_blank');
+                    return;
+                }
+
                 // Show summary text
                 const planName = selectedPlan.closest('label').querySelector('.capitalize').textContent;
                 document.getElementById('summary-plan-name').textContent = planName;
@@ -345,6 +385,16 @@
             paymentPlanRadios.forEach(radio => {
                 radio.addEventListener('change', async () => {
                     const plan = radio.value;
+
+                    // Toggle button text for custom plan
+                    if (plan === 'custom') {
+                        toStep3Btn.textContent = 'Contact Us for Enterprise Plan';
+                    } else {
+                        toStep3Btn.textContent = 'Continue to Payment';
+                    }
+
+                    if (plan === 'custom') return; // Don't create Stripe intent for custom plan
+
                     const name = document.getElementById('name').value.trim();
                     const email = document.getElementById('email').value.trim();
     

@@ -52,12 +52,12 @@
         .review-block {
             margin: 20px 0;
             border-left: 4px solid #ef4444;
-            padding: 16px;
+            padding: 8px;
             border-radius: 6px;
         }
 
         .review-block p {
-            font-size:18px;
+            font-size:16px;
             margin: 0;
             color: #555;
         }
@@ -114,8 +114,8 @@
 <body>
     <div class="email-wrapper">
         <!-- Header -->
-        <div class="header">
-            <h1>Thank You for Your Feedback</h1>
+        <div class="header" style="{{ $rating >= 4 ? 'background: linear-gradient(135deg, #059669, #10b981);' : '' }}">
+            <h1>{{ $rating >= 4 ? 'We Appreciate Your Business!' : 'Thank You for Your Feedback' }}</h1>
         </div>
 
         <!-- Content -->
@@ -136,33 +136,42 @@
                 <p>"{{ $reviewText }}"</p>
             </div>
 
-            <!-- Apology Message -->
+            <!-- Apology Message or AI Custom Message -->
             <div class="apology">
-                <p>We’re truly sorry that your experience didn’t meet your expectations. Please know your concerns are
-                    being taken seriously, and we’re committed to improving.</p>
+                @if(isset($customMessage) && !empty($customMessage))
+                    <p style="white-space: pre-line; font-size:14px;">{{ $customMessage }}</p>
+                @else
+                    <p>We’re truly sorry that your experience didn’t meet your expectations. Please know your concerns are
+                        being taken seriously, and we’re committed to improving.</p>
+                @endif
             </div>
 
-            <!-- Contact and Resolution -->
+            <!-- Contact and Resolution - Only show for negative/neutral reviews (< 4 stars) -->
+            @if($rating < 4)
             <div class="contact-box">
                 <h3>Here’s what happens next:</h3>
                 <ul>
                     <li>Our support team has received your feedback and is reviewing your case.</li>
                     <li>We’re here to listen and resolve the issue promptly.</li>
                 </ul>
-               <div style="text-align: center;">
-    <a href="mailto:support@yourdomain.com" class="cta-button"
-      style="color: white; background-color: #2563eb; padding: 12px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; box-shadow: 0 3px 6px rgba(0,0,0,0.1); display: inline-block; margin-top: 20px;">
-      Reply to This Email
-    </a>
-  </div>
-
+                <div style="text-align: center;">
+                    <a href="mailto:info@tapreviewcards.co.uk" class="cta-button"
+                    style="color: white; background-color: #2563eb; padding: 12px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; box-shadow: 0 3px 6px rgba(0,0,0,0.1); display: inline-block; margin-top: 20px;">
+                    Reply to This Email
+                    </a>
+                </div>
             </div>
+            @else
+            <div style="text-align: center; padding: 20px 0;">
+                <p style="color: #666; font-style: italic;">We look forward to serving you again soon!</p>
+            </div>
+            @endif
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            © {{ date('Y') }} ReviewBooster. All rights reserved.<br>
-            <a href="https://codely.quest/reviewbooster/" style="color: #3b82f6; text-decoration: none;">www.codely.quest/reviewbooster</a>
+            <p>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
+            <a href="https://tapreviewcards.co.uk/" style="color: #3b82f6; text-decoration: none;">www.tapreviewcards.co.uk</a>
         </div>
     </div>
 </body>

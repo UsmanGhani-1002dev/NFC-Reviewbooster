@@ -7,15 +7,21 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <link rel="icon" href="{{ asset('images/pwa-icon-192.png') }}" type="image/x-icon">
+    <!-- SEO: Robots (Dashboard) -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="icon" href="{{ asset('images/tap fevicon.png') }}" type="image/x-icon">
     
     @laravelPWA
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script> -->
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
@@ -114,7 +120,8 @@
 
 </head>
 
-<body class="font-sans antialiased bg-gray-50">
+<body class="font-sans antialiased bg-gray-50" x-data="{ }">
+    <x-cart-drawer />
     <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <div class="flex min-h-screen">
@@ -138,9 +145,18 @@
                         <div class="flex items-center space-x-4">
                             <!-- Notification Bell -->
                             @auth
-                                <div class="relative">
-                                    <!-- Bell Icon -->
-                                    <button onclick="toggleNotificationDropdown()" class="relative p-2 text-gray-400 hover:text-blue-600 transition-colors focus:outline-none rounded-full hover:bg-gray-100">
+                                <div class="flex items-center space-x-2">
+                                    <!-- Cart Icon (Triggers Drawer) -->
+                                    <button @click="$dispatch('open-cart')" class="p-2 text-gray-400 hover:text-blue-600 transition-colors rounded-full hover:bg-gray-100 relative" title="Open Cart">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        </svg>
+                                        <span class="cart-count-badge absolute top-1 right-1 bg-[#007cb5] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm" style="display: none;">0</span>
+                                    </button>
+
+                                    <div class="relative">
+                                        <!-- Bell Icon -->
+                                        <button onclick="toggleNotificationDropdown()" class="relative p-2 text-gray-400 hover:text-blue-600 transition-colors focus:outline-none rounded-full hover:bg-gray-100">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -829,7 +845,7 @@
         window.deferredPrompt = null;
     
         window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
+            // e.preventDefault(); // Removed to allow automatic browser popup
             window.deferredPrompt = e;
     
             // Notify all Alpine components that install is available

@@ -89,3 +89,8 @@
 ::-webkit-scrollbar-thumb {
     @apply bg-gray-300 rounded-full hover:bg-gray-400 transition-colors;
 }
+
+/* Alpine Layout Cloaking */
+[x-cloak] {
+    display: none !important;
+}

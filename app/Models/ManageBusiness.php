@@ -10,6 +10,8 @@ class ManageBusiness extends Model
         'user_id',
         'business_name',
         'legal_business_name',
+        'google_review_link',
+        'website',
     ];
     
     public function user()

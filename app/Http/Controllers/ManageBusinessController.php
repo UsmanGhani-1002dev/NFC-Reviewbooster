@@ -27,12 +27,16 @@ class ManageBusinessController extends Controller
         $request->validate([
             'business_name' => 'required|string|max:255',
             'legal_business_name' => 'required|string|max:255',
+            'google_review_link' => 'nullable|string|url',
+            'website' => 'nullable|string|url',
         ]);
     
         ManageBusiness::create([
             'user_id' => auth()->id(), // 👈 Assign logged-in user ID
             'business_name' => $request->business_name,
             'legal_business_name' => $request->legal_business_name,
+            'google_review_link' => $request->google_review_link,
+            'website' => $request->website,
         ]);
     
         return redirect()->route('businesses.index')->with('success', 'Business created successfully.');
@@ -49,12 +53,14 @@ class ManageBusinessController extends Controller
         $request->validate([
             'business_name' => 'required|string|max:255',
             'legal_business_name' => 'required|string|max:255',
+            'website' => 'nullable|string|url',
         ]);
 
         $business = ManageBusiness::findOrFail($id);
         $business->update([
             'business_name' => $request->business_name,
             'legal_business_name' => $request->legal_business_name,
+            'website' => $request->website,
         ]);
 
         return redirect()->route('businesses.index')->with('success', 'Business updated successfully.');
@@ -98,7 +104,8 @@ class ManageBusinessController extends Controller
     public function admin_view_business($id)
     {
          $business = ManageBusiness::with(['cards', 'user.subscription.plan'])->withCount('cards')->findOrFail($id);
-        return view('admin.manage_business.view', compact('business'));
+         $plans = \App\Models\SubscriptionPlan::all();
+        return view('admin.manage_business.view', compact('business', 'plans'));
     }
 
     public function admin_update_status(Request $request, $id)
@@ -107,17 +114,51 @@ class ManageBusinessController extends Controller
             'business_name' => 'required|string|max:255',
             'legal_business_name' => 'required|string|max:255',
             'status' => 'required|in:active,blocked',
+            'plan_id' => 'nullable|exists:subscription_plans,id',
+            'website' => 'nullable|string|url',
         ]);
 
         $business = ManageBusiness::findOrFail($id);
         $business->business_name = $request->input('business_name');
         $business->legal_business_name = $request->input('legal_business_name');
+        $business->website = $request->input('website');
         $business->status = $request->input('status');
         $business->save();
 
+        if ($request->filled('plan_id')) {
+            $user = $business->user;
+            $plan = \App\Models\SubscriptionPlan::find($request->plan_id);
+            
+            if ($user->subscription) {
+                if ($user->subscription->subscription_plan_id != $plan->id) {
+                    $user->subscription->update([
+                        'subscription_plan_id' => $plan->id,
+                        'ends_at' => now()->copy()->addDays((int) $plan->duration_days),
+                        'status' => 'active',
+                        'stripe_status' => 'succeeded',
+                    ]);
+                } else {
+                    // Even if plan is same, ensure it's fully active if updated by admin
+                    $user->subscription->update([
+                        'status' => 'active',
+                        'stripe_status' => 'succeeded',
+                    ]);
+                }
+            } else {
+                \App\Models\Subscription::create([
+                    'user_id' => $user->id,
+                    'subscription_plan_id' => $plan->id,
+                    'started_at' => now(),
+                    'ends_at' => now()->copy()->addDays((int) $plan->duration_days),
+                    'status' => 'active',
+                    'stripe_status' => 'succeeded',
+                ]);
+            }
+        }
+
         return redirect()
             ->route('admin.manage_business.view', $id)
-            ->with('success', 'Business details updated successfully.');
+            ->with('success', 'Business details and User Subscription Plan updated successfully.');
     }
 
 
@@ -142,12 +183,16 @@ class ManageBusinessController extends Controller
             'user_id' => 'required|exists:users,id',
             'business_name' => 'required|string|max:255',
             'legal_business_name' => 'required|string|max:255',
+            'google_review_link' => 'nullable|string|url',
+            'website' => 'nullable|string|url',
         ]);
     
         ManageBusiness::create([
             'user_id' => $request->user_id,
             'business_name' => $request->business_name,
             'legal_business_name' => $request->legal_business_name,
+            'google_review_link' => $request->google_review_link,
+            'website' => $request->website,
         ]);
     
         return redirect()->route('admin.manage_business.index')->with('success', 'Business created successfully by Admin.');

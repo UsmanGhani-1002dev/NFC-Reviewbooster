@@ -243,7 +243,7 @@
 
         <div class="footer">
             <p>This report is confidential and intended for intended for {{ auth()->user()->name }}.</p>
-            <p>&copy; {{ date('Y') }} ReviewBooster Platform. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
         </div>
     </div>
 </body>

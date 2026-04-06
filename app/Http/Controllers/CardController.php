@@ -53,8 +53,13 @@ class CardController extends Controller
             $isSubscriptionExpired = false;
         }
 
-        if ($isSubscriptionExpired) {
-            return redirect()->route('cards.index')->with('error', 'Your subscription has expired. Please renew to create new cards.');
+        // Check Card Limit
+        $plan = $latestSubscription ? $latestSubscription->plan : null;
+        $cardLimit = $plan ? $plan->card_limit : 1;
+        $currentCardsCount = $user->cards->count();
+
+        if ($currentCardsCount >= $cardLimit) {
+            return redirect()->route('cards.index')->with('error', "You have reached the card limit for your current plan ($cardLimit cards). Please upgrade to create more.");
         }
 
         $businesses = $user->businesses;

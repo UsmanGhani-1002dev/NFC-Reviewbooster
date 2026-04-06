@@ -1,17 +1,54 @@
 @extends('layouts.guest')
 
-@section('title', 'Contact Us - ReviewBoost')
+@section('title', 'How Tap Review Cards Work | Simple 3-Step Google Review Process')
+@section('meta_description', 'See how easy it is to collect Google reviews with our NFC cards. 1. Customer taps card. 2. Leaves review. 3. Your business grows. No apps, no friction, just results for UK businesses.')
+@section('meta_keywords', 'how NFC review cards work, Google review process, tap to review UK, NFC review setup, collect reviews fast')
+
+@section('schema')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Collect Google Reviews with NFC Tap Cards",
+    "description": "Get more Google reviews for your business in 3 simple steps using Tap Review Cards NFC technology.",
+    "totalTime": "PT5M",
+    "step": [
+        {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Create Your Card",
+            "text": "Log in to your dashboard and create a new review card. Select your business and review platform (Google, Facebook, or Instagram).",
+            "image": "https://tapreviewcards.co.uk/images/step1.png"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Share Your Card",
+            "text": "Your card gets a unique token instantly. Share it via QR code, link, or digital display with your customers.",
+            "image": "https://tapreviewcards.co.uk/images/step2.png"
+        },
+        {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Collect Reviews",
+            "text": "Customers scan your card and leave reviews. Track all feedback directly in your dashboard!",
+            "image": "https://tapreviewcards.co.uk/images/step3.png"
+        }
+    ]
+}
+</script>
+@endsection
 
 @section('content')
     <div class="min-h-screen bg-gray-50">
         <!-- CTA Section -->
-        <section class="relative -mt-[100px] pt-[100px] bg-cover bg-center bg-no-repeat text-[#142D63] font-mulish"
+        <section class="relative -mt-[100px] pt-[100px] bg-cover bg-center bg-no-repeat text-[#1800ad] font-mulish"
             style="background-image: url('https://d1yei2z3i6k35z.cloudfront.net/161/609bb9ff8ffc9_Groupedemasques1.jpg');">
             <div class="relative max-w-3xl mx-auto text-center py-20 px-6 md:px-10">
                 <h1 class="text-4xl sm:text-5xl font-bold mb-4 leading-tight font-ubuntu ">
                     How Its Work
                 </h1>
-                <p class="text-lg sm:text-md leading-relaxed">
+                <p class="text-lg sm:text-md leading-relaxed text-[#142D63]">
                     Getting more <b>Google reviews</b> is the fastest way to rank <b>#1</b> on Google.<br>
                     You're already in touch with your customers — don’t miss out!
                 </p>
@@ -21,7 +58,7 @@
         <section class="py-20 bg-gray-50 px-4 sm:px-6 lg:px-8">
             <div class="max-w-6xl mx-auto text-center">
                 <div class="mb-16">
-                    <h2 class="text-3xl sm:text-3xl font-bold text-[#142D63] font-ubuntu mb-4 relative inline-block">
+                    <h2 class="text-3xl sm:text-3xl font-bold text-[#1800ad] font-ubuntu mb-4 relative inline-block">
                         ⏱️ Activate Your Card in 3 Simple Steps
                     </h2>
                     <p class="text-lg text-gray-600 max-w-3xl mx-auto font-mulish">
@@ -35,8 +72,8 @@
                     <div
                         class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 p-8 flex flex-col items-center text-center">
                         <img src="images/step1.png" alt="Create Your Card"
-                            class="w-[180px] h-[180px] mb-6 transition-transform duration-300 hover:scale-105">
-                        <h3 class="text-[21px] font-bold text-[#142D63] font-ubuntu mb-3">Step 1: Create Your Card</h3>
+                            class="w-[180px] h-[180px] mb-6 transition-transform duration-300 hover:scale-105" loading="lazy">
+                        <h3 class="text-[21px] font-bold text-[#1800ad] font-ubuntu mb-3">Step 1: Create Your Card</h3>
                         <p class="text-gray-600 font-mulish leading-relaxed">
                             Log in to your dashboard and create a new review card. Select your business and review platform
                             (Google, Facebook, or Instagram).
@@ -47,8 +84,8 @@
                     <div
                         class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 p-8 flex flex-col items-center text-center">
                         <img src="images/step2.png" alt="Share Your Card"
-                            class="w-[180px] h-[180px] mb-6 transition-transform duration-300 hover:scale-105">
-                        <h3 class="text-[21px] font-bold text-[#142D63] font-ubuntu mb-3">Step 2: Share Your Card</h3>
+                            class="w-[180px] h-[180px] mb-6 transition-transform duration-300 hover:scale-105" loading="lazy">
+                        <h3 class="text-[21px] font-bold text-[#1800ad] font-ubuntu mb-3">Step 2: Share Your Card</h3>
                         <p class="text-gray-600 font-mulish leading-relaxed">
                             Your card gets a unique token instantly. Share it via QR code, link, or digital display with
                             your customers.
@@ -59,8 +96,8 @@
                     <div
                         class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 p-8 flex flex-col items-center text-center">
                         <img src="images/step3.png" alt="Start Collecting Reviews"
-                            class="w-[180px] h-[180px] mb-6 transition-transform duration-300 hover:scale-105">
-                        <h3 class="text-[21px] font-bold text-[#142D63] font-ubuntu mb-3">Step 3: Collect Reviews</h3>
+                            class="w-[180px] h-[180px] mb-6 transition-transform duration-300 hover:scale-105" loading="lazy">
+                        <h3 class="text-[21px] font-bold text-[#1800ad] font-ubuntu mb-3">Step 3: Collect Reviews</h3>
                         <p class="text-gray-600 font-mulish leading-relaxed">
                             Customers scan your card and leave reviews. Track all feedback directly in your dashboard!
                         </p>
@@ -69,11 +106,11 @@
             </div>
         </section>
 
-        <section class="relative bg-cover bg-center bg-no-repeat text-[#142D63] py-24 px-4 sm:px-6 lg:px-8 font-mulish"
+        <section class="relative bg-cover bg-center bg-no-repeat text-[#1800ad] py-24 px-4 sm:px-6 lg:px-8 font-mulish"
             style="background-image: url('https://d1yei2z3i6k35z.cloudfront.net/161/609bb9ff8ffc9_Groupedemasques1.jpg');">
 
             <div class="relative z-10 max-w-6xl mx-auto px-4 text-black">
-                <h2 class="text-4xl font-extrabold text-center mb-4 font-ubuntu text-[#142D63]">Supported Platforms</h2>
+                <h2 class="text-4xl font-extrabold text-center mb-4 font-ubuntu text-[#1800ad]">Supported Platforms</h2>
                 <p class="text-center text-gray-800 mb-16 text-lg font-mulish">Grow your presence across the platforms that
                     matter most.</p>
 
@@ -85,7 +122,7 @@
                             class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-red-500 text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-md">
                             <i class="fab fa-google"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-2 text-[#142D63]">Google Reviews</h3>
+                        <h3 class="text-2xl font-bold mb-2 text-[#1800ad]">Google Reviews</h3>
                         <p class="text-gray-800">Improve search visibility and build trust through real customer feedback.
                         </p>
                     </div>
@@ -96,7 +133,7 @@
                             class="w-16 h-16 bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-md">
                             <i class="fab fa-instagram"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-2 text-[#142D63]">Instagram</h3>
+                        <h3 class="text-2xl font-bold mb-2 text-[#1800ad]">Instagram</h3>
                         <p class="text-gray-800">Showcase your brand, connect with followers, and grow engagement
                             organically.</p>
                     </div>
@@ -107,7 +144,7 @@
                             class="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-400 text-white rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-md">
                             <i class="fab fa-facebook-f"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-2 text-[#142D63]">Facebook</h3>
+                        <h3 class="text-2xl font-bold mb-2 text-[#1800ad]">Facebook</h3>
                         <p class="text-gray-800">Engage your audience and grow brand awareness with targeted content.</p>
                     </div>
                 </div>
@@ -135,14 +172,14 @@
         <div class="max-w-6xl mx-auto px-4 pt-20">
             <!-- Header Section -->
             <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-[#142D63] mb-4 font-ubuntu">What Our Customers Say</h2>
+                <h2 class="text-4xl font-bold text-[#1800ad] mb-4 font-ubuntu">What Our Customers Say</h2>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto font-mulish">
                     Discover how businesses across the UK are transforming their online reputation with Review Boost
                 </p>
             </div>
 
             <!-- Featured Success Story -->
-            <div class="bg-gradient-to-r from-[#142D63] to-[#00A0FF] rounded-2xl p-8 mb-16 text-white">
+            <div class="bg-gradient-to-r from-[#1800ad] to-[#0cc0df] rounded-2xl p-8 mb-16 text-white">
                 <div class="max-w-4xl mx-auto text-center">
                     <div class="quote-icon w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                         <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -219,7 +256,7 @@
                             SM
                         </div>
                         <div>
-                            <cite class="text-[#142D63] font-semibold">Sarah Mitchell</cite>
+                            <cite class="text-[#1800ad] font-semibold">Sarah Mitchell</cite>
                         </div>
                     </div>
                 </div>
@@ -249,8 +286,7 @@
                         </svg>
                     </div>
                     <blockquote class="text-gray-700 mb-4 italic">
-                        "The Review Gate feature is brilliant! It's helped us avoid several negative reviews by letting us
-                        address issues privately first. Our average rating has stayed consistently high at 4.8 stars."
+                        "The Smart Feedback Loop is brilliant! It’s helped us resolve customer issues privately and improve our service before they even left our store. Our average rating has stayed consistently high."
                     </blockquote>
                     <div class="flex items-center">
                         <div
@@ -258,7 +294,7 @@
                             MT
                         </div>
                         <div>
-                            <cite class="text-[#142D63] font-semibold">Mike Thompson</cite>
+                            <cite class="text-[#1800ad] font-semibold">Mike Thompson</cite>
                         </div>
                     </div>
                 </div>
@@ -297,7 +333,7 @@
                             EH
                         </div>
                         <div>
-                            <cite class="text-[#142D63] font-semibold">Dr. Emma Harrison</cite>
+                            <cite class="text-[#1800ad] font-semibold">Dr. Emma Harrison</cite>
                         </div>
                     </div>
                 </div>
@@ -337,7 +373,7 @@
                             JE
                         </div>
                         <div>
-                            <cite class="text-[#142D63] font-semibold">Julie E</cite>
+                            <cite class="text-[#1800ad] font-semibold">Julie E</cite>
                         </div>
                     </div>
                 </div>
@@ -376,7 +412,7 @@
                             KS
                         </div>
                         <div>
-                            <cite class="text-[#142D63] font-semibold">Kalesh Brown</cite>
+                            <cite class="text-[#1800ad] font-semibold">Kalesh Brown</cite>
                         </div>
                     </div>
                 </div>
@@ -415,7 +451,7 @@
                             LD
                         </div>
                         <div>
-                            <cite class="text-[#142D63] font-semibold">Linzi D.</cite>
+                            <cite class="text-[#1800ad] font-semibold">Linzi D.</cite>
                         </div>
                     </div>
                 </div>
@@ -424,14 +460,14 @@
 
         <!-- Call to Action Section -->
         <section class="py-8 sm:px-6 lg:px-8 font-mulish">
-            <div class="max-w-6xl mx-auto rounded-2xl bg-cover bg-center bg-no-repeat text-[#142D63] text-center px-8 md:px-20 py-20"
+            <div class="max-w-6xl mx-auto rounded-2xl bg-cover bg-center bg-no-repeat text-[#1800ad] text-center px-8 md:px-20 py-20"
                 style="background-image: url('https://d1yei2z3i6k35z.cloudfront.net/161/609bb9ff8ffc9_Groupedemasques1.jpg');">
 
                 <h2 class="text-3xl sm:text-4xl font-bold mb-4 leading-tight font-ubuntu">
                     Ready to boost your customer reviews?
                 </h2>
                 <p class="text-lg sm:text-md mb-8 leading-relaxed font-mulish text-[#142D63]">
-                    Start collecting real, verified reviews and grow your business reputation. Try ReviewBooster today —
+                    Start collecting real, verified reviews and grow your business reputation. Try Tap Review Cards today —
                     it’s
                     fast, simple, and effective.
                 </p>

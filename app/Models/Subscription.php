@@ -17,6 +17,11 @@ class Subscription extends Model
         'status',
     ];
 
+    protected $casts = [
+        'started_at' => 'datetime',
+        'ends_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

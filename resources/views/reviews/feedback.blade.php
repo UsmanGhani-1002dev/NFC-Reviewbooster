@@ -37,7 +37,7 @@
                 <div class="w-14 h-14 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-white mb-1">Private Feedback</h1>
+                <h1 class="text-2xl sm:text-3xl font-bold text-white mb-1">Feedback</h1>
                 <p class="text-indigo-200 text-sm">We'd love to hear how we can improve</p>
             </div>
         </div>
@@ -72,6 +72,22 @@
                 @csrf
                 <input type="hidden" name="card_id" value="{{ $card->id }}">
                 <input type="hidden" name="rating" id="rating-input" value="1">
+
+                {{-- Star Rating --}}
+                <div class="space-y-3 pb-2">
+                    <label class="block text-sm font-semibold text-gray-700">
+                        How would you rate your experience? <span class="text-red-400">*</span>
+                    </label>
+                    <div class="flex items-center gap-2" id="star-rating-container">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <button type="button" data-value="{{ $i }}" class="star-btn p-1 transition-all duration-200 hover:scale-125 focus:outline-none focus:ring-2 focus:ring-indigo-200 rounded-lg">
+                                <svg class="w-8 h-8 star-icon {{ $i === 1 ? 'text-amber-400' : 'text-gray-200' }}" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                            </button>
+                        @endfor
+                    </div>
+                </div>
 
                 {{-- Name & Email --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -126,9 +142,9 @@
 
         {{-- Footer --}}
         <div class="px-6 pb-5 sm:px-8">
-            <div class="flex items-center justify-center gap-2 text-gray-300 text-xs">
+            <div class="flex items-center justify-center gap-2 text-gray-300 text-xs text-nowrap">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                <span>Powered by Review Boost</span>
+                <span>Powered by Tap Review Cards</span>
             </div>
         </div>
     </div>
@@ -149,6 +165,41 @@
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('review-form');
         const submitBtn = document.getElementById('submit-btn');
+        const starBtns = document.querySelectorAll('.star-btn');
+        const ratingInput = document.getElementById('rating-input');
+        
+        // Initialize stars if needed (already defaulted to 1 in HTML)
+        updateStars(1);
+
+        starBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const value = parseInt(btn.getAttribute('data-value'));
+                ratingInput.value = value;
+                updateStars(value);
+            });
+
+            btn.addEventListener('mouseenter', () => {
+                const value = parseInt(btn.getAttribute('data-value'));
+                updateStars(value, true);
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                updateStars(parseInt(ratingInput.value));
+            });
+        });
+
+        function updateStars(value, isHover = false) {
+            starBtns.forEach((btn, index) => {
+                const icon = btn.querySelector('.star-icon');
+                if (index < value) {
+                    icon.classList.remove('text-gray-200');
+                    icon.classList.add(isHover ? 'text-amber-300' : 'text-amber-400');
+                } else {
+                    icon.classList.remove('text-amber-400', 'text-amber-300');
+                    icon.classList.add('text-gray-200');
+                }
+            });
+        }
 
         form.addEventListener('submit', function (event) {
             event.preventDefault();

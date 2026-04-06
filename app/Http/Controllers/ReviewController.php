@@ -6,6 +6,7 @@ use App\Models\Card;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 
 class ReviewController extends Controller
@@ -29,6 +30,16 @@ class ReviewController extends Controller
         if (!$user || !$user->hasActiveSubscription()) {
             return redirect()->away($card->google_review_link);
         }
+
+        // Check if review limit is reached for the current plan
+        $plan = $user->subscription->plan ?? null;
+        if ($plan && $plan->review_limit != -1) {
+            $currentReviewsCount = $user->reviews()->count();
+            if ($currentReviewsCount >= $plan->review_limit) {
+                // Limit reached, bypass the gate and go directly to Google
+                return redirect()->away($card->google_review_link);
+            }
+        }
     
         $rating = null;
         $reviewCount = null;
@@ -45,7 +56,7 @@ class ReviewController extends Controller
                     'key' => env('GOOGLE_PLACES_API_KEY'),
                 ]);
     
-                \Log::info('Google Places API response:', $response->json());
+                Log::info('Google Places API response:', $response->json());
     
                 if ($response->successful()) {
                     $data = $response->json();
@@ -61,13 +72,13 @@ class ReviewController extends Controller
                             $businessPhoto = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photo_reference=' . $photoRef . '&key=' . env('GOOGLE_PLACES_API_KEY');
                         }
                     } else {
-                        \Log::warning('Google Places API returned error', ['response' => $data]);
+                        Log::warning('Google Places API returned error', ['response' => $data]);
                     }
                 } else {
-                    \Log::error('Google Places API HTTP error', ['status' => $response->status()]);
+                    Log::error('Google Places API HTTP error', ['status' => $response->status()]);
                 }
             } else {
-                \Log::warning('Failed to extract Place ID from google_review_link', ['link' => $card->google_review_link]);
+                Log::warning('Failed to extract Place ID from google_review_link', ['link' => $card->google_review_link]);
             }
         }
     
@@ -121,6 +132,7 @@ class ReviewController extends Controller
             'name' => 'required|string',
             'email' => 'required|email',
             'review' => 'required|string',
+            'rating' => 'required|integer|min:1|max:5',
         ]);
     
         $review = new Review([
@@ -129,12 +141,20 @@ class ReviewController extends Controller
             'email' => $request->email,
             'review' => $request->review,
             'status' => 'active',
-            'rating' => 1, 
+            'rating' => $request->rating, 
         ]);
     
         $review->save();
+
+        $website = null;
+        if ($request->card_id) {
+            $card = \App\Models\Card::with('business')->find($request->card_id);
+            if ($card && $card->business) {
+                $website = $card->business->website;
+            }
+        }
     
-        return redirect()->route('reviews.success')->with('success', 'Review submitted successfully!');
+        return redirect()->route('reviews.success')->with('success', 'Review submitted successfully!')->with('business_website', $website);
     }
 
     public function success() 

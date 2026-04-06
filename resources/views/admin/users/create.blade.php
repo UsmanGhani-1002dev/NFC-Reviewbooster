@@ -89,6 +89,24 @@
         </select>
     </div>
 
+    {{-- Subscription Plan --}}
+    <div>
+        <label for="plan_id" class="block text-sm font-medium text-gray-700 mb-1">Initial Subscription Plan</label>
+        <select 
+            name="plan_id" 
+            id="plan_id" 
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition"
+        >
+            <option value="">-- No Plan (Trial/In-active) --</option>
+            @foreach ($plans as $plan)
+                <option value="{{ $plan->id }}" {{ old('plan_id') == $plan->id ? 'selected' : '' }}>
+                    {{ $plan->name }} (${{ $plan->price }}) - {{ $plan->duration_days }} Days
+                </option>
+            @endforeach
+        </select>
+        <p class="mt-1 text-xs text-gray-500 italic">Assigning a plan will immediately create an active subscription for this user.</p>
+    </div>
+
     {{-- Submit / Cancel --}}
     <div class="flex items-center justify-between pt-6">
         <a href="{{ route('admin.users.index') }}"

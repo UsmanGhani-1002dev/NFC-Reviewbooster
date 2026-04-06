@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use App\Mail\UserRegisteredAndSubscribed;
+use App\Mail\UserWelcomeMail;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Illuminate\View\View;
@@ -112,7 +113,7 @@ class RegisteredUserController extends Controller
     
                 // Determine subscription period
                 $startedAt = now();
-                $endsAt = $startedAt->copy()->addDays($plan->duration_days);
+                $endsAt = $startedAt->copy()->addDays((int) $plan->duration_days);
     
                 // Create the subscription with Stripe info
                 Subscription::create([
@@ -147,6 +148,11 @@ class RegisteredUserController extends Controller
             $admins = User::where('role', 'admin')->get();
             foreach ($admins as $admin) {
                 Mail::to($admin->email)->send(new UserRegisteredAndSubscribed($user, $plan));
+            }
+            
+            // To User
+            if ($user) {
+                Mail::to($user->email)->send(new UserWelcomeMail($user, $plan));
             }
     
             session()->flash('new_registration_notification', [
@@ -241,10 +247,11 @@ class RegisteredUserController extends Controller
 
   public function adminCreate()
 {
-    $roles = \App\Models\User::select('role')->distinct()->pluck('role');
+    // Hardcode roles to ensure all options are always available, even if no users of that type exist yet.
+    $roles = ['admin', 'bussiness_owner'];
+    $plans = SubscriptionPlan::all();
 
-
-    return view('admin.users.create', compact('roles'));
+    return view('admin.users.create', compact('roles', 'plans'));
 }
 
 
@@ -256,20 +263,39 @@ public function storeAdminUser(Request $request)
         'email' => 'required|email|unique:users,email',
         'password' => 'required|string|min:6',
         'role' => 'required|string',
+        'plan_id' => 'nullable|exists:subscription_plans,id',
     ]);
 
 
-    User::create([
+    $user = User::create([
         'company_name' => $request->company_name,
         'name' => $request->name,
         'email' => $request->email,
-        'password' => bcrypt($request->password),
+        'password' => Hash::make($request->password),
         'role' => $request->role,
-        'is_active' => true, // or use (bool) $request->is_active if adding status
+        'is_active' => true,
     ]);
 
+    // Handle initial subscription plan
+    if ($request->filled('plan_id')) {
+        $plan = SubscriptionPlan::find($request->plan_id);
+        $startsAt = now();
+        $endsAt = $startsAt->copy()->addDays((int) $plan->duration_days);
 
-    return redirect()->route('admin.users.index')->with('success', 'User added successfully.');
+        Subscription::create([
+            'user_id' => $user->id,
+            'subscription_plan_id' => $plan->id,
+            'started_at' => $startsAt,
+            'ends_at' => $endsAt,
+            'status' => 'active',
+            'stripe_status' => 'succeeded',
+        ]);
+
+        Log::info('Initial subscription created for user ID: ' . $user->id);
+    }
+
+
+    return redirect()->route('admin.users.index')->with('success', 'User added successfully with subscription.');
 }
 
 

@@ -120,6 +120,7 @@
                         </label>
                         <div class="relative group">
                             <input type="text" id="business-input"
+                               value="{{ old('url', $business->google_review_link ?? '') }}"
                                placeholder="Search or paste link..."
                                class="w-full px-12 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none text-gray-700 font-medium placeholder:text-gray-400" />
                             <div class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
@@ -128,7 +129,7 @@
                                  </svg>
                             </div>
                         </div>
-                        <input type="hidden" name="url" id="url-input" />
+                        <input type="hidden" name="url" id="url-input" value="{{ old('url', $business->google_review_link ?? '') }}"/>
                     </div>
                 </div>
 
@@ -527,6 +528,14 @@ document.getElementById('business-selector').addEventListener('change', function
                 input.placeholder = 'Start typing business name...';
                 input.disabled = false;
                 enableGoogleAutocomplete();
+                
+                if (businessSelector.value) {
+                    const savedUrl = "{{ $business->google_review_link ?? '' }}";
+                    if (savedUrl) {
+                        input.value = savedUrl;
+                        urlInput.value = savedUrl;
+                    }
+                }
             } else {
                 label.innerHTML = 'Direct Link <span class="text-red-500">*</span>';
                 input.placeholder = 'Paste the page link';

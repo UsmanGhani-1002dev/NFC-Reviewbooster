@@ -38,6 +38,20 @@
                     required>
             </div>
 
+            <div>
+                <label for="website" class="block text-sm font-medium text-gray-700 mb-1">
+                    Business Website
+                </label>
+                <input 
+                    id="website" 
+                    name="website" 
+                    type="url" 
+                    value="{{ old('website', $business->website) }}"
+                    class="block w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition" 
+                    placeholder="https://example.com">
+                <p class="text-xs text-gray-500 mt-1">Customers will be redirected here after leaving a review.</p>
+            </div>
+
             <div class="pt-4 flex justify-between gap-4">
                 <a href="{{ route('businesses.index') }}"
                    class="w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md transition">
@@ -251,6 +265,11 @@
     // Confirm button
     document.getElementById('confirm-business').addEventListener('click', () => {
         document.getElementById('legal_business_name').value = selectedPlace.name || '';
+        
+        // Auto-fill website if available from Google
+        if (selectedPlace.website) {
+            document.getElementById('website').value = selectedPlace.website;
+        }
         closeModal();
     });
 
@@ -258,11 +277,14 @@
     document.getElementById('cancel-selection').addEventListener('click', () => {
         document.getElementById('business_name').value = '';
         document.getElementById('legal_business_name').value = '';
+        document.getElementById('website').value = '';
+        document.getElementById('google_review_link').value = '';
         closeModal();
     });
 
     function autocompleteBusinessName() {
         document.getElementById('legal_business_name').value = '';
+        document.getElementById('website').value = '';
     }
 </script>
 

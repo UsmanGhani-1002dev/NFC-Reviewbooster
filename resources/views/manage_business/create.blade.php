@@ -69,6 +69,25 @@
                     <p class="text-sm text-gray-500">This will be automatically filled when you select a business</p>
                 </div>
 
+                <!-- Website Field -->
+                <div class="space-y-2">
+                    <label for="website" class="flex items-center text-sm font-semibold text-gray-700">
+                        <svg class="w-4 h-4 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                        </svg>
+                        Business Website
+                    </label>
+                    <input 
+                        id="website" 
+                        name="website" 
+                        type="url" 
+                        class="block w-full border-2 border-gray-200 rounded-xl px-6 py-4 text-lg focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 focus:outline-none transition-all duration-200 bg-gray-50 hover:bg-white" 
+                        placeholder="https://example.com">
+                    <p class="text-sm text-gray-500">Auto-filled if available on Google, or enter manually. Used for redirect after review.</p>
+                </div>
+
+                <input type="hidden" name="google_review_link" id="google_review_link" value="{{ old('google_review_link') }}">
+
                 <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 pt-6">
                     <a href="{{ route('businesses.index') }}"
@@ -276,6 +295,13 @@
     // Confirm button
     document.getElementById('confirm-business').addEventListener('click', () => {
         document.getElementById('legal_business_name').value = selectedPlace.name || '';
+        document.getElementById('google_review_link').value = `https://search.google.com/local/writereview?placeid=${selectedPlace.place_id}`;
+        
+        // Auto-fill website if available from Google
+        if (selectedPlace.website) {
+            document.getElementById('website').value = selectedPlace.website;
+        }
+        
         hideModal();
     });
 
@@ -283,6 +309,8 @@
     document.getElementById('cancel-selection').addEventListener('click', () => {
         document.getElementById('business_name').value = '';
         document.getElementById('legal_business_name').value = '';
+        document.getElementById('google_review_link').value = '';
+        document.getElementById('website').value = '';
         hideModal();
     });
 
@@ -310,6 +338,7 @@
 
     function autocompleteBusinessName() {
         document.getElementById('legal_business_name').value = '';
+        document.getElementById('website').value = '';
     }
 
     // Add loading animation to form

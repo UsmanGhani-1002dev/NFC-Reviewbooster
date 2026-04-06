@@ -29,7 +29,7 @@
 
     {{-- Price --}}
     <div class="mb-6">
-        <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Price (USD)</label>
+        <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Price (GBP)</label>
         <input 
             type="number" 
             id="price" 

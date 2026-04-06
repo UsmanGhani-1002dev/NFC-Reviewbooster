@@ -149,6 +149,17 @@
                                 </td>
                             </tr>
                             @empty
+                                <tr>
+                                    <td colspan="7" class="px-6 py-20 text-center">
+                                        <div class="flex flex-col items-center justify-center">
+                                            <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-300 mb-4">
+                                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                            </div>
+                                            <h3 class="text-lg font-bold text-gray-900">No reviews found</h3>
+                                            <p class="text-gray-500 text-sm">You haven't received any reviews yet.</p>
+                                        </div>
+                                    </td>
+                                </tr>
                             @endforelse
                             <tr id="noResultsRow" class="hidden">
                                 <td colspan="7" class="px-6 py-20 text-center">
@@ -256,6 +267,13 @@
                             </div>
                         </div>
                         @empty
+                            <div class="flex flex-col items-center justify-center py-20 text-center bg-white rounded-2xl border border-gray-100 shadow-sm">
+                                <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-300 mb-4 mx-auto">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                </div>
+                                <h3 class="text-lg font-bold text-gray-900">No reviews found</h3>
+                                <p class="text-gray-500 text-sm">You haven't received any reviews yet.</p>
+                            </div>
                         @endforelse
 
                         <div id="noResultsCard" class="hidden flex flex-col items-center justify-center py-20 text-center">
@@ -292,6 +310,40 @@
                 <div class="flex text-yellow-400 gap-1 mb-4" id="modal-rating"></div>
                 <p id="modal-review-text" class="text-gray-700 text-sm font-medium leading-relaxed italic"></p>
             </div>
+
+            {{-- AI RESPONDER SECTION (PREMIUM ONLY) --}}
+            @if(auth()->user()->subscription && auth()->user()->subscription->plan && stripos(auth()->user()->subscription->plan->name, 'premium') !== false)
+            <div id="ai-responder-section" class="mt-4 border-t border-gray-100 pt-4">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="p-1.5 bg-indigo-100 rounded-lg text-indigo-600">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        </div>
+                        <span class="text-xs font-bold text-gray-700 uppercase tracking-wider">AI Review Assistant</span>
+                    </div>
+                    <button type="button" id="generate-ai-reply" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-1.5">
+                        <i data-lucide="zap" class="w-3.5 h-3.5 bg-indigo-100 rounded-full p-0.5"></i>
+                        Generate Smart Reply
+                    </button>
+                </div>
+                
+                <div id="ai-loading" class="hidden py-4 text-center">
+                    <div class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-indigo-600 border-t-transparent mb-2"></div>
+                    <p class="text-[10px] text-gray-400 font-medium">Crafting perfect response...</p>
+                </div>
+
+                <div id="ai-response-container" class="hidden">
+                    <textarea id="ai-response-text" class="w-full bg-indigo-50/50 border border-indigo-100 rounded-xl p-3 text-xs text-gray-700 focus:ring-1 focus:ring-indigo-300 transition-all font-medium leading-relaxed" rows="3"></textarea>
+                    <div class="flex justify-end mt-2">
+                        <button type="button" id="copy-ai-response" class="flex items-center gap-1.5 text-[10px] font-bold text-indigo-600 bg-white border border-indigo-100 px-2.5 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors">
+                            <i data-lucide="copy" class="w-3 h-3"></i>
+                            Copy Response
+                        </button>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <div class="mt-6 pt-4 border-t border-gray-200 flex justify-between items-center">
             <!-- Status Dropdown Section -->
             <div class="flex items-center space-x-3">
@@ -459,16 +511,24 @@
             if (!currentReviewId || !statusDropdown.value) return;
 
             const statusUrl = "{{ url('reviews') }}/" + currentReviewId + "/status";
+            const aiTextarea = document.getElementById('ai-response-text');
+            const aiMessage = aiTextarea ? aiTextarea.value : '';
             
             const form = document.createElement('form');
             form.action = statusUrl;
             form.method = 'POST';
-            form.innerHTML = `
+            let formHtml = `
                 @csrf
                 @method('PATCH')
                 <input type="hidden" name="status" value="${statusDropdown.value}">
             `;
+
+            // If status is contacted, include the AI message
+            if (statusDropdown.value === 'contacted' && aiMessage) {
+                formHtml += `<textarea name="ai_message" style="display:none;">${aiMessage}</textarea>`;
+            }
             
+            form.innerHTML = formHtml;
             document.body.appendChild(form);
             form.submit();
         });
@@ -513,6 +573,72 @@
             });
         });
 
+        const generateAiBtn = document.getElementById('generate-ai-reply');
+        const aiLoading = document.getElementById('ai-loading');
+        const aiContainer = document.getElementById('ai-response-container');
+        const aiTextarea = document.getElementById('ai-response-text');
+        const copyAiBtn = document.getElementById('copy-ai-response');
+
+        if (generateAiBtn) {
+            generateAiBtn.addEventListener('click', function() {
+                const reviewText = document.getElementById('modal-review-text').textContent;
+                const ratingStars = document.getElementById('modal-rating').querySelectorAll('.text-yellow-400');
+                const ratingCount = ratingStars.length;
+
+                // Show loading
+                generateAiBtn.disabled = true;
+                aiLoading.classList.remove('hidden');
+                aiContainer.classList.add('hidden');
+
+                fetch("{{ route('ai.generate-response') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        review_content: reviewText,
+                        rating: ratingCount
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    aiLoading.classList.add('hidden');
+                    generateAiBtn.disabled = false;
+
+                    if (data.success) {
+                        aiTextarea.value = data.generated_text;
+                        aiContainer.classList.remove('hidden');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    } else {
+                        alert(data.message || 'Failed to generate AI response.');
+                    }
+                })
+                .catch(error => {
+                    aiLoading.classList.add('hidden');
+                    generateAiBtn.disabled = false;
+                    console.error('Error:', error);
+                    alert('An error occurred. Please check your API key.');
+                });
+            });
+        }
+
+        if (copyAiBtn) {
+            copyAiBtn.addEventListener('click', function() {
+                aiTextarea.select();
+                document.execCommand('copy');
+                
+                const originalText = copyAiBtn.innerHTML;
+                copyAiBtn.innerHTML = '<i data-lucide="check" class="w-3 h-3"></i> Copied!';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                
+                setTimeout(() => {
+                    copyAiBtn.innerHTML = originalText;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }, 2000);
+            });
+        }
+
         // Close modal function
         const closeModal = () => {
             modal.classList.add('hidden');
@@ -521,6 +647,11 @@
             currentReviewId = null;
             statusDropdown.value = '';
             updateStatusBtn.disabled = true;
+
+            // Clear AI response when closing
+            if (aiContainer) aiContainer.classList.add('hidden');
+            if (aiTextarea) aiTextarea.value = '';
+            if (aiLoading) aiLoading.classList.add('hidden');
         };
 
         // Close modal listeners

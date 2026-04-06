@@ -1,134 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>New User Registered</title>
-  <style>
-    /* Basic resets */
-    body, table, td, a {
-      -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #eef2f7;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #344054;
-    }
-    table {
-      border-collapse: collapse !important;
-    }
-    a {
-      color: #4f46e5;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    /* Responsive */
-    @media only screen and (max-width: 600px) {
-      .container {
-        width: 95% !important;
-      }
-      .title {
-        font-size: 22px !important;
-      }
-      .section {
-        padding: 15px !important;
-        margin: 15px !important;
-      }
-      .info-label {
-        width: 100px !important;
-        display: block !important;
-        margin-bottom: 5px !important;
-      }
-      .info-value {
-        display: block !important;
-      }
-    }
-  </style>
+    <meta charset="utf-8">
+    <title>New Registration - Review Booster</title>
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f1f5f9; color: #0f172a; margin: 0; padding: 0; }
+        .wrapper { background: #f1f5f9; padding: 40px 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
+        .header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 60px 40px; text-align: center; }
+        .content { padding: 40px; }
+        .footer { background: #f8fafc; padding: 24px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #f1f5f9; }
+        .chip { display: inline-flex; align-items: center; padding: 6px 16px; border-radius: 99px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; background: #e0f2fe; color: #0369a1; }
+        h1 { font-size: 32px; font-weight: 900; color: #ffffff; margin: 0; line-height: 1.1; }
+        .lead { color: #94a3b8; font-size: 14px; margin-top: 12px; font-weight: 500; }
+        .section-title { font-size: 14px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 24px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table td { padding: 12px 0; border-bottom: 1px solid #f8fafc; }
+        .label { font-size: 14px; font-weight: 600; color: #64748b; width: 140px; }
+        .value { font-size: 15px; font-weight: 700; color: #0f172a; text-align: right; }
+        .plan-card { background: #f8fafc; border-radius: 20px; padding: 24px; margin-top: 30px; border: 1px solid #f1f5f9; }
+        .price-tag { font-size: 24px; font-weight: 900; color: #2563eb; margin-top: 8px; }
+        .btn { display: inline-block; background: #2563eb; color: #ffffff !important; padding: 18px 36px; border-radius: 18px; text-decoration: none; font-weight: 800; font-size: 15px; margin-top: 30px; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2); }
+    </style>
 </head>
 <body>
-  <table width="100%" bgcolor="#eef2f7" cellpadding="0" cellspacing="0" role="presentation">
-    <tr>
-      <td align="center" style="padding: 30px 10px;">
-        <table width="600" class="container" cellpadding="0" cellspacing="0" bgcolor="#ffffff" role="presentation" style="border-radius:8px; border:5px solid gainsboro;box-shadow: 0px 0px 9px 0 #b7b7b7;">
-          <tr>
-            <td align="center" style="padding: 30px 0;">
-              <img src="https://codely.quest/reviewbooster/public/images/logo.png" alt="ReviewBooster Logo" width="200" style="display: block; padding: 8px;" />
-            </td>
-          </tr>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>🎉 New Business Joined!</h1>
+            </div>
+            <div class="content">
+                    <h2>Hi Admin,</h2>
+                    <p style="border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">A new user has just registered and purchased a subscription. Here are the details:</p>
+                <table class="data-table">
+                    <tr>
+                        <td class="label">Full Name</td>
+                        <td class="value">{{ $user->name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Organization</td>
+                        <td class="value">{{ $user->company_name ?? 'Not Specified' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Direct Email</td>
+                        <td class="value"><a href="mailto:{{ $user->email }}" style="color: #2563eb; text-decoration: none;">{{ $user->email }}</a></td>
+                    </tr>
+                </table>
+                <div class="section-title" style="margin-top: 40px;">Subscription Package</div>
+                <table class="data-table">
+                    <tr>
+                        <td class="label">Plan Name</td>
+                        <td class="value">{{ $plan->name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Amount Paid</td>
+                        <td class="value" style="color: #2563eb;">${{ number_format($plan->price, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Duration</td>
+                        <td class="value">{{ $plan->duration_days }} Days</td>
+                    </tr>
+                </table>
 
-          <tr>
-            <td align="center" style="padding: 0px 20px 20px 0px; font-size: 26px; font-weight: 700; color: #1e293b; letter-spacing: 0.02em;">
-              🎉 New User Registered
-            </td>
-          </tr>
-
-         <tr>
-          <td style="padding: 25px 30px; background-color: #f9fafb; border-bottom: 1px solid #ddd; font-family: Arial, sans-serif;">
-            <table width="100%" role="presentation" style="border-collapse: collapse;">
-              <tr>
-                <td colspan="2" style="font-size: 22px; font-weight: 700; color: #2563eb; padding-bottom: 18px; line-height: 1.2;">
-                  👤 User Info
-                </td>
-              </tr>
-              <tr>
-                <td style="font-weight: 700; width: 140px; vertical-align: top; padding-bottom: 12px; color: #334155;">Name:</td>
-                <td style="color: #475569; padding-bottom: 12px; font-size: 15px;">{{ $user->name }}</td>
-              </tr>
-              <tr>
-                <td style="font-weight: 700; width: 140px; vertical-align: top; padding-bottom: 12px; color: #334155;">Email:</td>
-                <td style="color: #475569; padding-bottom: 12px; font-size: 15px;">
-                  <a href="mailto:{{ $user->email }}" style="color: #2563eb; text-decoration: none; word-break: break-word;">{{ $user->email }}</a>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-        
-        <tr>
-          <td style="padding: 25px 30px; background-color: #e0e7ff; border-bottom: 1px solid #ddd; font-family: Arial, sans-serif;">
-            <table width="100%" role="presentation" style="border-collapse: collapse;">
-              <tr>
-                <td colspan="2" style="font-size: 22px; font-weight: 700; color: #2563eb; padding-bottom: 18px; line-height: 1.2;">
-                  💼 Plan Details
-                </td>
-              </tr>
-              <tr>
-                <td style="font-weight: 700; width: 140px; vertical-align: top; padding-bottom: 12px; color: #334155;">Plan Name:</td>
-                <td style="color: #475569; padding-bottom: 12px; font-size: 15px;">{{ $plan->name }}</td>
-              </tr>
-              <tr>
-                <td style="font-weight: 700; width: 140px; vertical-align: top; padding-bottom: 12px; color: #334155;">Price:</td>
-                <td style="color: #475569; padding-bottom: 12px; font-size: 15px;">${{ $plan->price }}</td>
-              </tr>
-              <tr>
-                <td style="font-weight: 700; width: 140px; vertical-align: top; color: #334155;">Duration:</td>
-                <td style="color: #475569; font-size: 15px;">{{ $plan->duration_days }} days</td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-
-          <tr>
-            <td align="center" style="padding: 30px 20px 20px; font-size: 14px; color: #64748b; line-height: 1.5;">
-              If you have any questions, feel free to contact our support team.
-            </td>
-          </tr>
-
-          <tr>
-            <td align="center" style="padding-bottom: 30px;">
-              <a href="{{ config('app.url') }}/contact" style="color: #4f46e5; font-weight: 600; font-size: 14px; margin: 0 10px; text-decoration: none;">Contact Us</a> |
-              <a href="{{ config('app.url') }}/privacy-policy" style="color: #4f46e5; font-weight: 600; font-size: 14px; margin: 0 10px; text-decoration: none;">Privacy Policy</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+                <div style="text-align: center;">
+                    <a href="{{ url('/admin/users') }}" class="btn">Manage User In Dashboard</a>
+                </div>
+            </div>
+            <div class="footer">
+                This is an automated notification from the Review Booster Admin System.
+                <br>&copy; {{ date('Y') }} Enovtec Technologies.
+            </div>
+        </div>
+    </div>
 </body>
 </html>

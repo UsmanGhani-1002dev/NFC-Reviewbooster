@@ -1,14 +1,38 @@
 @extends('layouts.guest')
+
+@section('title', 'About Tap Review Cards | NFC Review Solutions UK')
+@section('meta_description', 'Tap Review Cards is a UK-based company helping local businesses collect more Google reviews using NFC technology. Learn about our mission to make reputation management simple, honest, and effective.')
+@section('meta_keywords', 'about tap review cards, NFC review card company UK, review management solutions, Google review tools UK')
+
+@section('schema')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About Tap Review Cards",
+    "description": "Learn about Tap Review Cards — the UK company helping businesses collect more Google reviews with smart NFC tap cards.",
+    "url": "https://tapreviewcards.co.uk/about",
+    "mainEntity": {
+        "@type": "Organization",
+        "name": "Tap Review Cards",
+        "url": "https://tapreviewcards.co.uk",
+        "foundingLocation": "United Kingdom",
+        "description": "Tap Review Cards helps businesses grow by boosting their online reputation through NFC-enabled review collection tools."
+    }
+}
+</script>
+@endsection
+
 @section('content')
 
 
     <!-- SECTION 1: WHO WE ARE -->
-    <section class="relative -mt-[100px] pt-[100px] text-[#142D63] overflow-hidden" style="background-image: url('https://d1yei2z3i6k35z.cloudfront.net/161/609e5084b32cc_Groupe2589.jpg'); background-size: cover; background-repeat: no-repeat; background-position: top center;">
+    <section class="relative -mt-[100px] pt-[100px] text-[#1800ad] overflow-hidden" style="background-image: url('https://d1yei2z3i6k35z.cloudfront.net/161/609e5084b32cc_Groupe2589.jpg'); background-size: cover; background-repeat: no-repeat; background-position: top center;">
         <!-- Overlay content -->
         <div class="text-center py-20 px-6 md:px-10">
-            <h2 class="text-4xl sm:text-5xl font-bold mb-4 leading-tight font-ubuntu ">About Us</h2>
-            <p class="text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-mulish">
-                At ReviewBooster, we help businesses grow by boosting their online reputation. Our tools are designed to make it easy to collect, manage, and display reviews — building trust with your customers and turning feedback into opportunity.
+            <h1 class="text-4xl sm:text-5xl font-bold mb-4 leading-tight font-ubuntu ">About Us</h1>
+            <p class="text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-mulish text-[#142D63]">
+                At Tap Review Cards, we help businesses grow by boosting their online reputation. Our tools are designed to make it easy to collect, manage, and display reviews — building trust with your customers and turning feedback into opportunity.
             </p>
         </div>
     </section>
@@ -20,9 +44,9 @@
 
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div>
-                    <h3 class="text-4xl font-semibold text-[#142D63] mb-6 font-ubuntu">Smart Review Flow</h3>
+                    <h3 class="text-4xl font-semibold text-[#1800ad] mb-6 font-ubuntu">Smart Feedback Loop</h3>
                     <p class="text-gray-700 text-base leading-relaxed mb-4 font-mulish">
-                        ReviewBooster combines smart NFC technology with a powerful backend to streamline the review
+                        Tap Review Cards combines smart NFC technology with a powerful backend to streamline the review
                         collection process. Each team member or department gets a unique NFC-enabled review card. When a
                         customer taps the card with their phone, they're taken to a review page tailored to your brand.
                     </p>
@@ -35,19 +59,19 @@
                         </li>
                         <li class="flex items-start text-gray-700">
                             <span class="text-green-600 mt-1 mr-2">✔️</span>
-                            <span>They're asked whether their experience was positive or negative</span>
+                            <span>They are offered the opportunity to share their internal feedback</span>
                         </li>
                         <li class="flex items-start text-gray-700">
                             <span class="text-green-600 mt-1 mr-2">✔️</span>
-                            <span>Positive responses redirect to platforms like Google or Facebook for public reviews</span>
+                            <span>Happy customers are encouraged to share their feedback publicly on Google</span>
                         </li>
                         <li class="flex items-start text-gray-700">
                             <span class="text-green-600 mt-1 mr-2">✔️</span>
-                            <span>Negative responses lead to a private form you can monitor internally</span>
+                            <span>Private concerns lead to an internal resolution form</span>
                         </li>
                         <li class="flex items-start text-gray-700">
                             <span class="text-green-600 mt-1 mr-2">✔️</span>
-                            <span>All interactions are tracked and visualized in your admin dashboard</span>
+                            <span>All interactions are tracked and visualized in your management dashboard</span>
                         </li>
                     </ul>
 
@@ -58,7 +82,7 @@
                 </div>
 
                 <div class="flex justify-center">
-                    <img src="images/review_image.gif" alt="How ReviewBooster Works"
+                    <img src="images/review_image.gif" alt="How Tap Review Cards Works"
                         class="rounded-xl w-full h-auto object-cover">
                 </div>
             </div>
@@ -70,11 +94,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-[38px] font-bold text-[#142D63] mb-6 font-ubuntu">
+                <h2 class="text-4xl md:text-[38px] font-bold text-[#1800ad] mb-6 font-ubuntu">
                     How It Works.
                 </h2>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto font-mulish">
-                    ReviewBoost helps you collect, manage, and showcase real reviews to grow your reputation and win more
+                    Tap Review Cards helps you collect, manage, and showcase real reviews to grow your reputation and win more
                     customers.
                 </p>
             </div>
@@ -84,14 +108,14 @@
                     class="relative text-center p-6 transition-transform transform hover:scale-105 shadow-lg hover:border hover:border-[#e2e8f0] rounded-xl bg-white">
                     <div class="absolute -top-5 left-1/2 transform -translate-x-1/2">
                         <div
-                            class="w-10 h-10 rounded-full bg-[#E0F4FF] text-[#00A0FF] font-bold flex items-center justify-center shadow-md">
+                            class="w-10 h-10 rounded-full bg-[#e0ebff] text-[#1800ad] font-bold flex items-center justify-center shadow-md">
                             1
                         </div>
                     </div>
                     <div class="w-16 h-16 flex items-center justify-center mx-auto mb-6 mt-5">
                         <img src="images/customer.png" class="w-16 h-16 text-blue-600" alt="Tap Card Icon" />
                     </div>
-                    <h3 class="text-lg font-semibold text-[#142D63] mb-3 font-ubuntu">Setup Your Tap Cards</h3>
+                    <h3 class="text-lg font-semibold text-[#1800ad] mb-3 font-ubuntu">Setup Your Tap Cards</h3>
                     <p class="text-gray-600 font-mulish">Order your NFC tap cards. Cards are pre-configured with your business details
                         and shipped worldwide within 48 hours.</p>
                 </div>
@@ -101,14 +125,14 @@
                     class="relative text-center p-6 transition-transform transform hover:scale-105 shadow-lg hover:border hover:border-[#e2e8f0] rounded-xl bg-white">
                     <div class="absolute -top-5 left-1/2 transform -translate-x-1/2">
                         <div
-                            class="w-10 h-10 rounded-full bg-[#E0F4FF] text-[#00A0FF] font-bold flex items-center justify-center shadow-md">
+                            class="w-10 h-10 rounded-full bg-[#e0ebff] text-[#1800ad] font-bold flex items-center justify-center shadow-md">
                             2
                         </div>
                     </div>
                     <div class="w-20 h-20 flex items-center justify-center mx-auto mb-2 mt-5">
                         <img src="images/cardss.png" class="w-16 h-14 text-yellow-600" alt="Card Icon"/>
                     </div>
-                    <h3 class="text-lg font-semibold text-[#142D63] mb-3 font-ubuntu">Card Creation & Distribution</h3>
+                    <h3 class="text-lg font-semibold text-[#1800ad] mb-3 font-ubuntu">Card Creation & Distribution</h3>
                     <p class="text-gray-600 font-mulish">Receive your personalized plastic cards and distribute them to your staff.
                         Each employee gets their own trackable card with unique ID.</p>
                 </div>
@@ -118,16 +142,15 @@
                     class="relative text-center p-6 transition-transform transform hover:scale-105 shadow-lg hover:border hover:border-[#e2e8f0] rounded-xl bg-white">
                     <div class="absolute -top-5 left-1/2 transform -translate-x-1/2">
                         <div
-                            class="w-10 h-10 rounded-full bg-[#E0F4FF] text-[#00A0FF] font-bold font-ubuntu flex items-center justify-center shadow-md">
+                            class="w-10 h-10 rounded-full bg-[#e0ebff] text-[#1800ad] font-bold flex items-center justify-center shadow-md">
                             3
                         </div>
                     </div>
                     <div class="w-16 h-16 flex items-center justify-center mx-auto mb-6 mt-5">
                         <img src="images/app.png" class="w-16 h-16 text-green-600" alt="Review Icon" />
                     </div>
-                    <h3 class="text-lg font-semibold text-[#142D63] mb-3 font-ubuntu">Customer Review Process</h3>
-                    <p class="text-gray-600 font-mulish">Customers tap the NFC card on their phone and are instantly taken to your
-                        Google review page. Optional Review Gate filters negative feedback privately.</p>
+                    <h3 class="text-lg font-semibold text-[#1800ad] mb-3 font-ubuntu">Smart Feedback Loop</h3>
+                    <p class="text-gray-600 font-mulish">Customers tap the NFC card on their phone and are instantly taken to your review page. The Smart Feedback Loop helps you resolve issues before they escalate.</p>
                 </div>
 
                 <!-- Step 4 -->
@@ -135,14 +158,14 @@
                     class="relative text-center p-6 transition-transform transform hover:scale-105 shadow-lg hover:border hover:border-[#e2e8f0] rounded-xl bg-white">
                     <div class="absolute -top-5 left-1/2 transform -translate-x-1/2">
                         <div
-                            class="w-10 h-10 rounded-full bg-[#E0F4FF] text-[#00A0FF] font-bold flex items-center justify-center shadow-md">
+                            class="w-10 h-10 rounded-full bg-[#e0ebff] text-[#1800ad] font-bold flex items-center justify-center shadow-md">
                             4
                         </div>
                     </div>
                     <div class="w-16 h-16 flex items-center justify-center mx-auto mb-6 mt-5">
                         <img src="images/analytics.png" class="w-16 h-16 text-purple-600" alt="Analytics Icon" />
                     </div>
-                    <h3 class="text-lg font-semibold text-[#142D63] mb-3 font-ubuntu">Monitor, Track & Optimize</h3>
+                    <h3 class="text-lg font-semibold text-[#1800ad] mb-3 font-ubuntu">Monitor, Track & Optimize</h3>
                     <p class="text-gray-600 font-mulish">Track all reviews in your dashboard, monitor staff performance with
                         leaderboards, and use AI to automatically respond to every review.</p>
                 </div>
@@ -195,8 +218,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Section Header -->
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-[38px] text-[#142D63] font-bold mb-6">
-                    <span class="text-[#142D63] font-ubuntu">Mission & Values</span>
+                <h2 class="text-3xl md:text-[38px] text-[#1800ad] font-bold mb-6">
+                    <span class="text-[#1800ad] font-ubuntu">Mission & Values</span>
                 </h2>
                 
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-mulish">
@@ -217,7 +240,7 @@
                         </div>
 
                         <!-- Text Content -->
-                        <h3 class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#142D63] font-ubuntu">
+                        <h3 class="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1800ad] font-ubuntu">
                             Our Mission
                         </h3>
                     </div>
@@ -230,7 +253,7 @@
                         </p>
                         
                         <p class="text-gray-700 text-lg leading-relaxed">
-                            ReviewBooster transforms ordinary customer experiences into powerful marketing assets, helping businesses of all sizes build trust, credibility, and sustainable growth in the digital marketplace.
+                            Tap Review Cards transforms ordinary customer experiences into powerful marketing assets, helping businesses of all sizes build trust, credibility, and sustainable growth in the digital marketplace.
                         </p>
                         
                         <p class="text-gray-700 text-lg leading-relaxed">
@@ -261,7 +284,7 @@
                                     </svg>
                                 </div>
                                 <div class="flex-1">
-                                    <h4 class="text-2xl font-bold text-[#142D63] font-ubuntu mb-3">Innovation</h4>
+                                    <h4 class="text-2xl font-bold text-[#1800ad] font-ubuntu mb-3">Innovation</h4>
                                     <p class="text-gray-600 text-lg leading-relaxed">
                                         We continuously push boundaries with cutting-edge technology, creating intuitive solutions that make review collection seamless and automated for modern businesses.
                                     </p>
@@ -278,7 +301,7 @@
                                     </svg>
                                 </div>
                                 <div class="flex-1">
-                                    <h4 class="text-2xl font-bold text-[#142D63] font-ubuntu mb-3">Authenticity</h4>
+                                    <h4 class="text-2xl font-bold text-[#1800ad] font-ubuntu mb-3">Authenticity</h4>
                                     <p class="text-gray-600 text-lg leading-relaxed">
                                         We champion genuine customer feedback and transparent business practices, building trust through authentic relationships and real experiences.
                                     </p>
@@ -295,7 +318,7 @@
                                     </svg>
                                 </div>
                                 <div class="flex-1">
-                                    <h4 class="text-2xl font-bold text-[#142D63] font-ubuntu mb-3">Results-Driven</h4>
+                                    <h4 class="text-2xl font-bold text-[#1800ad] font-ubuntu mb-3">Results-Driven</h4>
                                     <p class="text-gray-600 text-lg leading-relaxed">
                                         We're obsessed with delivering measurable outcomes - more reviews, higher ratings, increased trust, and tangible business growth for every client we serve.
                                     </p>
@@ -309,10 +332,10 @@
     </section>
 
 
-    <!-- Why Choose ReviewBooster Section -->
+    <!-- Why Choose Tap Review Cards Section -->
     <div class="py-16 mx-4 lg:mx-8 rounded-xl mb-8">
         <div class="max-w-6xl mx-auto px-4 text-center">
-            <h3 class="text-3xl md:text-4xl font-bold text-[#142D63] mb-6 font-ubuntu">Why ReviewBooster?</h3>
+            <h3 class="text-3xl md:text-4xl font-bold text-[#1800ad] mb-6 font-ubuntu">Why Tap Review Cards?</h3>
             <p class="text-lg text-gray-600 mb-12 max-w-3xl mx-auto font-mulish">
                 Transform your business reputation with our innovative NFC review system that makes collecting positive
                 reviews effortless.
@@ -324,7 +347,7 @@
                     <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
                         <span class="text-3xl">🚀</span>
                     </div>
-                    <h4 class="text-xl font-bold text-[#142D63] mb-4 font-ubuntu">Easy Setup</h4>
+                    <h4 class="text-xl font-bold text-[#1800ad] mb-4 font-ubuntu">Easy Setup</h4>
                     <p class="text-gray-600 leading-relaxed font-mulish">
                         Get started in minutes. Order your NFC cards, distribute to staff, and start collecting reviews
                         immediately. No technical expertise required.
@@ -336,10 +359,9 @@
                     <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                         <span class="text-3xl">⭐</span>
                     </div>
-                    <h4 class="text-xl font-bold text-[#142D63] mb-4 font-ubuntu">Smart Review Filtering</h4>
+                    <h4 class="text-xl font-bold text-[#1800ad] mb-4 font-ubuntu">Collect Private Insights</h4>
                     <p class="text-gray-600 leading-relaxed font-mulish">
-                        Positive reviews go public on Google & Facebook. Negative feedback comes to you privately for
-                        resolution. Protect your online reputation.
+                        Collect private customer feedback to resolve issues before they escalate. Improve your service and understand your customers better with private insights.
                     </p>
                 </div>
 
@@ -348,7 +370,7 @@
                     <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                         <span class="text-3xl">📊</span>
                     </div>
-                    <h4 class="text-xl font-bold text-[#142D63] mb-4 font-ubuntu">Powerful Analytics</h4>
+                    <h4 class="text-xl font-bold text-[#1800ad] mb-4 font-ubuntu">Powerful Analytics</h4>
                     <p class="text-gray-600 leading-relaxed font-mulish">
                         Track team performance with leaderboards, monitor review trends, and use AI to respond
                         automatically. Data-driven reputation management.
@@ -357,17 +379,140 @@
             </div>
         </div>
     </div>
+
+     <!-- Testimonial Section -->
+    <style>
+        .testimonial-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+        }
+        .star-rating {
+            color: #fbbf24;
+        }
+    </style>
+
+    <div class="max-w-6xl mx-auto px-4 pt-8">
+        <!-- Header Section -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-[#1800ad] mb-4 font-ubuntu">What Our Customers Say</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto font-mulish">
+                Discover how businesses across the UK are transforming their online reputation with Review Boost
+            </p>
+        </div>
+
+        <!-- Testimonials Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <!-- Testimonial 1 -->
+            <div class="testimonial-card rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <div class="flex star-rating mb-4">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                </div>
+                <blockquote class="text-gray-700 mb-4 italic">
+                    "The staff leaderboard has been a game-changer! My team is now competing to get the most reviews. We've gone from 2-3 reviews per month to 25+ reviews. Our Google ranking has improved dramatically."
+                </blockquote>
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                        SM
+                    </div>
+                    <div>
+                        <cite class="text-[#1800ad] font-semibold">Sarah Mitchell</cite>
+                        <p class="text-gray-500 text-sm">Salon Owner, Manchester</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 2 -->
+            <div class="testimonial-card rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <div class="flex star-rating mb-4">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                </div>
+                <blockquote class="text-gray-700 mb-4 italic">
+                    "The Review Gate feature is brilliant! It's helped us avoid several negative reviews by letting us address issues privately first. Our average rating has stayed consistently high at 4.8 stars."
+                </blockquote>
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                        MT
+                    </div>
+                    <div>
+                        <cite class="text-[#1800ad] font-semibold">Mike Thompson</cite>
+                        <p class="text-gray-500 text-sm">Plumbing Services, Birmingham</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 3 -->
+            <div class="testimonial-card rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <div class="flex star-rating mb-4">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                </div>
+                <blockquote class="text-gray-700 mb-4 italic">
+                    "Best investment I've made for my business! The AI Review Responder saves me hours every week. I now have over 200 Google reviews and we're the top-rated dental practice in our area."
+                </blockquote>
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                        EH
+                    </div>
+                    <div>
+                        <cite class="text-[#1800ad] font-semibold">Dr. Emma Harrison</cite>
+                        <p class="text-gray-500 text-sm">Dental Practice, Leeds</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
   
-      <!-- Call to Action Section -->
+    <!-- Call to Action Section -->
    <section class="py-8 sm:px-6 lg:px-8 font-mulish">
-    <div class="max-w-6xl mx-auto rounded-2xl bg-cover bg-center bg-no-repeat text-[#142D63] text-center px-8 md:px-20 py-20"
+    <div class="max-w-6xl mx-auto rounded-2xl bg-cover bg-center bg-no-repeat text-[#1800ad] text-center px-8 md:px-20 py-20"
          style="background-image: url('https://d1yei2z3i6k35z.cloudfront.net/161/609bb9ff8ffc9_Groupedemasques1.jpg');">
         
         <h2 class="text-3xl sm:text-4xl font-bold mb-4 leading-tight font-ubuntu">
             Ready to boost your customer reviews?
         </h2>
         <p class="text-lg sm:text-md mb-8 leading-relaxed font-mulish text-[#142D63]">
-            Start collecting real, verified reviews and grow your business reputation. Try ReviewBooster today — it’s
+            Start collecting real, verified reviews and grow your business reputation. Try Tap Review Cards today — it’s
             fast, simple, and effective.
         </p>
         <div class="flex justify-center gap-4 flex-wrap font-mulish">
@@ -381,7 +526,7 @@
             </a>
         </div>
     </div>
-</section>
+    </section>
 
 
     

@@ -507,6 +507,8 @@ document.getElementById('close-popup').addEventListener('click', function () {
         const input = businessInput;
         const urlInput = document.getElementById('url-input');
         const label = document.getElementById('url-label');
+        const cardNameInput = document.getElementById('card-name-input');
+        
         // Initial setup
         handleTypeChange(typeSelect.value, true);
         updatePreview();

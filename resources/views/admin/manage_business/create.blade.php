@@ -1,6 +1,21 @@
 @extends('layouts.app')
 
 @section('full_content')
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <style>
+        .ts-control {
+            padding: 0.90rem 1rem !important;
+            border-radius: 0.5rem !important;
+            background-color: #f9fafb !important; /* bg-gray-50 */
+            font-size: 16px !important;
+            border:0px !important;
+        }
+        .ts-wrapper.focus .ts-control {
+            border-color: #6366f1 !important; /* border-indigo-500 */
+            box-shadow: 0 0 0 2px rgba(199, 210, 254, 0.5) !important; /* ring-indigo-200 */
+        }
+    </style>
     <div class="mx-auto p-6">
         <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 max-w-3xl mx-auto">
             <div class="flex items-center justify-between mb-6">
@@ -27,7 +42,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Assign to User</label>
-                    <select name="user_id" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition bg-gray-50">
+                    <select id="user_id_select" name="user_id" required class="w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition bg-gray-50">
                         <option value="">Select a Business Owner...</option>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
@@ -61,6 +76,19 @@
                         class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition bg-gray-50"
                         placeholder="Auto-filled from Google search">
                 </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Business Website</label>
+                    <input
+                        type="url"
+                        name="website"
+                        id="website"
+                        value="{{ old('website') }}"
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition bg-gray-50"
+                        placeholder="https://example.com">
+                </div>
+
+                <input type="hidden" name="google_review_link" id="google_review_link" value="{{ old('google_review_link') }}">
 
                 <div class="pt-4 flex justify-end">
                     <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-md transition transform hover:-translate-y-0.5">
@@ -255,6 +283,12 @@
     // Confirm button
     document.getElementById('confirm-business').addEventListener('click', () => {
         document.getElementById('legal_business_name').value = selectedPlace.name || '';
+        document.getElementById('google_review_link').value = `https://search.google.com/local/writereview?placeid=${selectedPlace.place_id}`;
+        
+        if (selectedPlace.website) {
+            document.getElementById('website').value = selectedPlace.website;
+        }
+        
         hideModal();
     });
 
@@ -262,6 +296,8 @@
     document.getElementById('cancel-selection').addEventListener('click', () => {
         document.getElementById('business_name').value = '';
         document.getElementById('legal_business_name').value = '';
+        document.getElementById('google_review_link').value = '';
+        document.getElementById('website').value = '';
         hideModal();
     });
 
@@ -289,10 +325,17 @@
 
     function autocompleteBusinessName() {
         document.getElementById('legal_business_name').value = '';
+        document.getElementById('website').value = '';
     }
 
     // Add loading animation to form
     document.addEventListener('DOMContentLoaded', function() {
+        const userSelect = new TomSelect("#user_id_select",{
+            create: false,
+            placeholder: "Select or search for a Business Owner...",
+            maxOptions: 100
+        });
+
         const form = document.querySelector('form');
         form.addEventListener('submit', function() {
             const submitBtn = form.querySelector('button[type="submit"]');

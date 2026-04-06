@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <title>{{ config('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="{{ asset('images/pwa-icon-192.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('images/tap fevicon.png') }}" type="image/x-icon">
+    <meta name="robots" content="noindex, follow">
 
     @laravelPWA
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/bg.jpeg') }}');">
@@ -29,7 +29,7 @@
         window.deferredPrompt = null;
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
+            // e.preventDefault(); // Removed to allow automatic browser popup
             window.deferredPrompt = e;
             window.dispatchEvent(new CustomEvent('pwa-installable'));
         });

@@ -42,7 +42,7 @@
         <div>
             <div class="flex mb-4">
                 <a href="{{ url('/') }}" class="text-gray-700 hover:text-blue-600">
-                    <img src="https://codely.quest/reviewbooster/public/images/logo.png" class="h-16 w-auto" alt="Logo">
+                    <x-application-logo class="block h-auto w-40 fill-current text-blue-500" />
                 </a>
             </div>
         </div>

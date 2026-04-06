@@ -91,7 +91,7 @@
             {{-- ── KPI Stat Cards ── --}}
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
                 {{-- Total Users --}}
-                <div class="admin-stat-card group relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <a href="{{ route('admin.users.index') }}" class="admin-stat-card group relative block overflow-hidden bg-gradient-to-br from-blue-500 to-blue-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                     <div x-show="loading" class="absolute inset-0 bg-white/10 backdrop-blur-sm skeleton z-10"></div>
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-md group-hover:scale-150 transition-transform duration-500"></div>
                     <div class="flex items-center gap-3 mb-3">
@@ -102,10 +102,10 @@
                     </div>
                     <div class="text-3xl md:text-4xl font-extrabold counter" data-target="{{ $adminStats['totalUsers'] ?? 0 }}">0</div>
                     <p class="text-xs text-blue-200 mt-1">+{{ $adminStats['newUsersThisWeek'] ?? 0 }} this week</p>
-                </div>
+                </a>
 
                 {{-- Business Owners --}}
-                <div class="admin-stat-card group relative overflow-hidden bg-gradient-to-br from-violet-500 to-purple-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <a href="{{ route('admin.manage_business.index') }}" class="admin-stat-card group relative block overflow-hidden bg-gradient-to-br from-violet-500 to-purple-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                     <div x-show="loading" class="absolute inset-0 bg-white/10 backdrop-blur-sm skeleton z-10"></div>
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-md group-hover:scale-150 transition-transform duration-500"></div>
                     <div class="flex items-center gap-3 mb-3">
@@ -116,10 +116,10 @@
                     </div>
                     <div class="text-3xl md:text-4xl font-extrabold counter" data-target="{{ $adminStats['totalBusinessOwners'] ?? 0 }}">0</div>
                     <p class="text-xs text-purple-200 mt-1">Registered owners</p>
-                </div>
+                </a>
 
                 {{-- Total Reviews --}}
-                <div class="admin-stat-card group relative overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <a href="{{ route('admin.reviews') }}" class="admin-stat-card group relative block overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                     <div x-show="loading" class="absolute inset-0 bg-white/10 backdrop-blur-sm skeleton z-10"></div>
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-md group-hover:scale-150 transition-transform duration-500"></div>
                     <div class="flex items-center gap-3 mb-3">
@@ -130,52 +130,52 @@
                     </div>
                     <div class="text-3xl md:text-4xl font-extrabold counter" data-target="{{ $adminStats['totalReviews'] ?? 0 }}">0</div>
                     <p class="text-xs text-emerald-200 mt-1">Platform-wide feedback</p>
-                </div>
+                </a>
 
-                {{-- Review Cards --}}
-                <div class="admin-stat-card group relative overflow-hidden bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                {{-- Review Cards (Now Total Orders) --}}
+                <a href="{{ route('admin.orders.index') }}" class="admin-stat-card group relative block overflow-hidden bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                     <div x-show="loading" class="absolute inset-0 bg-white/10 backdrop-blur-sm skeleton z-10"></div>
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-md group-hover:scale-150 transition-transform duration-500"></div>
                     <div class="flex items-center gap-3 mb-3">
                         <div class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm">
-                            <i data-lucide="credit-card" class="w-6 h-6"></i>
+                            <i data-lucide="shopping-bag" class="w-6 h-6"></i>
                         </div>
-                        <span class="text-sm font-medium text-amber-100 opacity-90">Review Cards</span>
+                        <span class="text-sm font-medium text-amber-100 opacity-90">Total Orders</span>
                     </div>
-                    <div class="text-3xl md:text-4xl font-extrabold counter" data-target="{{ $adminStats['totalCards'] ?? 0 }}">0</div>
-                    <p class="text-xs text-amber-200 mt-1">NFC & QR cards created</p>
-                </div>
+                    <div class="text-3xl md:text-4xl font-extrabold counter" data-target="{{ $adminStats['totalOrders'] ?? 0 }}">0</div>
+                    <p class="text-xs text-amber-200 mt-1">Platform-wide orders</p>
+                </a>
             </div>
 
             {{-- ── Secondary Stats Row ── --}}
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-10">
-                <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4">
-                    <div class="bg-blue-50 p-3 rounded-xl">
+                <a href="{{ route('admin.users.index') }}" class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4 group">
+                    <div class="bg-blue-50 p-3 rounded-xl group-hover:scale-110 transition-transform">
                         <i data-lucide="clock" class="w-6 h-6 text-blue-600"></i>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">New Today</p>
                         <p class="text-2xl font-bold text-gray-900">{{ $adminStats['newUsersToday'] ?? 0 }}</p>
                     </div>
-                </div>
-                <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4">
-                    <div class="bg-emerald-50 p-3 rounded-xl">
+                </a>
+                <a href="{{ route('admin.manage-subscription.index') }}" class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4 group">
+                    <div class="bg-emerald-50 p-3 rounded-xl group-hover:scale-110 transition-transform">
                         <i data-lucide="check-circle" class="w-6 h-6 text-emerald-600"></i>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Active Subscription</p>
                         <p class="text-2xl font-bold text-gray-900">{{ $adminStats['activeSubscriptions'] ?? 0 }}</p>
                     </div>
-                </div>
-                <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4">
-                    <div class="bg-amber-50 p-3 rounded-xl">
+                </a>
+                <a href="{{ route('admin.contact-submissions.index') }}" class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4 group">
+                    <div class="bg-amber-50 p-3 rounded-xl group-hover:scale-110 transition-transform">
                         <i data-lucide="mail" class="w-6 h-6 text-amber-600"></i>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Contact</p>
                         <p class="text-2xl font-bold text-gray-900">{{ $adminStats['totalContacts'] ?? 0 }}</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             {{-- ── Quick Actions ── --}}
@@ -240,7 +240,7 @@
                     </div>
                     <div class="p-4 space-y-2">
                         @forelse ($latestUsers as $user)
-                            <div class="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50/80 hover:bg-blue-50/50 transition-colors duration-200 group">
+                            <a href="{{ route('admin.users.index', ['search' => $user->email]) }}" class="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50/80 hover:bg-blue-50/50 transition-colors duration-200 group block">
                                 <div class="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}
                                 </div>
@@ -258,7 +258,7 @@
                                     </span>
                                     <div class="text-[10px] text-gray-400 mt-0.5">{{ $user->created_at->format('M d') }}</div>
                                 </div>
-                            </div>
+                            </a>
                         @empty
                             <div class="text-center py-10 text-gray-400">
                                 <svg class="w-10 h-10 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
@@ -281,7 +281,7 @@
                     </div>
                     <div class="p-4 space-y-2">
                         @forelse ($usersWithCardStats->sortByDesc(fn($u) => $u->cards->count())->take(5) as $bizUser)
-                            <div class="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50/80 hover:bg-purple-50/50 transition-colors duration-200">
+                            <a href="{{ route('admin.users.index', ['search' => $bizUser->email]) }}" class="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50/80 hover:bg-purple-50/50 transition-colors duration-200 group block">
                                 <div class="w-9 h-9 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0">
                                     {{ strtoupper(substr($bizUser->name, 0, 1)) }}
                                 </div>
@@ -289,11 +289,11 @@
                                     <div class="font-semibold text-gray-800 text-sm truncate">{{ $bizUser->name }}</div>
                                     <div class="text-xs text-gray-400 truncate">{{ $bizUser->email }}</div>
                                 </div>
-                                <div class="shrink-0 flex items-center gap-1.5 bg-purple-50 px-2.5 py-1 rounded-full">
+                                <div class="shrink-0 flex items-center gap-1.5 bg-purple-50 px-2.5 py-1 rounded-full group-hover:bg-purple-100 transition-colors">
                                     <svg class="w-3.5 h-3.5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
                                     <span class="text-xs font-bold text-purple-700">{{ $bizUser->cards->count() }}</span>
                                 </div>
-                            </div>
+                            </a>
                         @empty
                             <div class="text-center py-10 text-gray-400">
                                 <svg class="w-10 h-10 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75"/></svg>
@@ -346,7 +346,7 @@
             {{-- ── KPI Stat Cards ── --}}
             <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
                 {{-- Total Reviews --}}
-                <div class="admin-stat-card group relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <a href="{{ route('business.reviews') }}" class="admin-stat-card group relative block overflow-hidden bg-gradient-to-br from-blue-500 to-blue-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                     <div x-show="loading" class="absolute inset-0 bg-white/10 backdrop-blur-sm skeleton z-10"></div>
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-md group-hover:scale-150 transition-transform duration-500"></div>
                     <div class="flex items-center gap-3 mb-3">
@@ -357,10 +357,10 @@
                     </div>
                     <div class="text-3xl md:text-4xl font-extrabold counter" data-target="{{ $totalReviewsAllTime }}">0</div>
                     <p class="text-xs text-blue-200 mt-1">All time feedback</p>
-                </div>
+                </a>
 
                 {{-- Positive Reviews --}}
-                <div class="admin-stat-card group relative overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <a href="{{ route('business.reviews') }}" class="admin-stat-card group relative block overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                     <div x-show="loading" class="absolute inset-0 bg-white/10 backdrop-blur-sm skeleton z-10"></div>
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-md group-hover:scale-150 transition-transform duration-500"></div>
                     <div class="flex items-center gap-3 mb-3">
@@ -370,11 +370,11 @@
                         <span class="text-sm font-medium text-emerald-100 opacity-90">Positive</span>
                     </div>
                     <div class="text-3xl md:text-4xl font-extrabold counter" data-target="{{ $positiveReviews }}">0</div>
-                    <p class="text-xs text-emerald-200 mt-1">This month</p>
-                </div>
+                    <p class="text-xs text-emerald-100 mt-1">This month</p>
+                </a>
 
                 {{-- Negative Reviews --}}
-                <div class="admin-stat-card group relative overflow-hidden bg-gradient-to-br from-rose-500 to-red-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <a href="{{ route('business.reviews.feedback') }}" class="admin-stat-card group relative block overflow-hidden bg-gradient-to-br from-rose-500 to-red-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                     <div x-show="loading" class="absolute inset-0 bg-white/10 backdrop-blur-sm skeleton z-10"></div>
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-md group-hover:scale-150 transition-transform duration-500"></div>
                     <div class="flex items-center gap-3 mb-3">
@@ -384,11 +384,11 @@
                         <span class="text-sm font-medium text-rose-100 opacity-90">Negative</span>
                     </div>
                     <div class="text-3xl md:text-4xl font-extrabold counter" data-target="{{ $negativeReviews }}">0</div>
-                    <p class="text-xs text-rose-200 mt-1">This month</p>
-                </div>
+                    <p class="text-xs text-rose-100 mt-1">This month</p>
+                </a>
 
                 {{-- Total Cards --}}
-                <div class="admin-stat-card group relative overflow-hidden bg-gradient-to-br from-violet-500 to-purple-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <a href="{{ route('cards.index') }}" class="admin-stat-card group relative block overflow-hidden bg-gradient-to-br from-violet-500 to-purple-700 text-white rounded-2xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
                     <div x-show="loading" class="absolute inset-0 bg-white/10 backdrop-blur-sm skeleton z-10"></div>
                     <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full blur-md group-hover:scale-150 transition-transform duration-500"></div>
                     <div class="flex items-center gap-3 mb-3">
@@ -398,8 +398,8 @@
                         <span class="text-sm font-medium text-violet-100 opacity-90">Review Cards</span>
                     </div>
                     <div class="text-3xl md:text-4xl font-extrabold counter" data-target="{{ $totalCards }}">0</div>
-                    <p class="text-xs text-violet-200 mt-1">NFC & QR cards</p>
-                </div>
+                    <p class="text-xs text-violet-100 mt-1">NFC & QR cards</p>
+                </a>
             </div>
 
             {{-- ── Quick Actions ── --}}
@@ -568,7 +568,7 @@
                         @forelse($reviews->take(5) as $review)
                             <div class="p-2.5 rounded-xl bg-gray-50/80 hover:bg-indigo-50/50 transition-colors duration-200">
                                 <div class="flex items-center justify-between mb-1">
-                                    <span class="font-semibold text-sm text-gray-800 truncate">{{ $review->customer_name ?? 'Anonymous' }}</span>
+                                    <span class="font-semibold text-sm text-gray-800 truncate">{{ $review->name ?? 'Anonymous' }}</span>
                                     <div class="flex text-yellow-400 text-xs shrink-0 ml-2">
                                         {!! str_repeat('★', $review->rating) !!}{!! str_repeat('☆', 5 - $review->rating) !!}
                                     </div>

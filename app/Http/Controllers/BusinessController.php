@@ -225,18 +225,22 @@ class BusinessController extends Controller
         $review = Review::findOrFail($id);
         $request->validate([
             'status' => 'required|in:contacted,resolved,active',
+            'ai_message' => 'nullable|string',
         ]);
 
         $oldStatus = $review->status;
         $review->status = $request->status;
+        if ($request->filled('ai_message')) {
+            $review->ai_response = $request->ai_message; // Save it to the record too
+        }
         $review->save();
 
         // Send email if status changed to 'contacted'
         if ($request->status === 'contacted' && $oldStatus !== 'contacted') {
             try {
-                Mail::to($review->email)->send(new ReviewContactedMail($review));
+                Mail::to($review->email)->send(new ReviewContactedMail($review, $request->ai_message));
 
-                return back()->with('success', 'Review status updated and email sent to customer!');
+                return back()->with('success', 'Review status updated!' . ($request->filled('ai_message') ? ' Custom AI response' : ' Generic email') . ' sent to customer!');
             } catch (\Exception $e) {
                 // Log the error but don't fail the status update
                 \Log::error('Failed to send review contacted email: ' . $e->getMessage());

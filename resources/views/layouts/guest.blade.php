@@ -4,17 +4,80 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" href="{{ asset('images/tap fevicon.png') }}" type="image/x-icon">
+    @laravelPWA
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    {{-- SEO: Dynamic Page Title --}}
+    <title>@yield('title', 'Tap Review Cards — #1 NFC Google Review Cards UK | Collect Reviews Instantly')</title>
+
+    {{-- SEO: Meta Description --}}
+    <meta name="description" content="@yield('meta_description', 'Tap Review Cards helps UK businesses collect more Google reviews instantly with NFC tap cards. No app needed. Works on iPhone & Android. Smart dashboard with review gate, staff tracking & AI responses. Order yours today.')">
+
+    {{-- SEO: Meta Keywords --}}
+    <meta name="keywords" content="@yield('meta_keywords', 'NFC review cards, Google review cards UK, tap review cards, NFC tap cards, collect Google reviews, review management, Google review tap card, NFC Google reviews, online reputation management UK')">
+
+    {{-- SEO: Canonical URL --}}
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    {{-- SEO: Robots --}}
+    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
+
+    {{-- SEO: Open Graph Tags --}}
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:site_name" content="Tap Review Cards">
+    <meta property="og:title" content="@yield('og_title', 'Tap Review Cards — #1 NFC Google Review Cards UK')">
+    <meta property="og:description" content="@yield('og_description', 'Collect more Google reviews instantly with NFC tap cards. No app needed. Smart dashboard, review gate & AI responses. From £16.99.')">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="@yield('og_image', asset('images/logo.png'))">
+    <meta property="og:locale" content="en_GB">
+
+    {{-- SEO: Twitter Card Tags --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('twitter_title', 'Tap Review Cards — #1 NFC Google Review Cards UK')">
+    <meta name="twitter:description" content="@yield('twitter_description', 'Collect more Google reviews instantly with NFC tap cards. No app needed. Smart dashboard, review gate & AI responses.')">
+    <meta name="twitter:image" content="@yield('twitter_image', asset('images/logo.png'))">
+
+    {{-- SEO: Additional Meta --}}
+    <meta name="author" content="Tap Review Cards">
+    <meta name="geo.region" content="GB">
+    <meta name="geo.placename" content="United Kingdom">
+
+    {{-- SEO: Organization Schema (Global) --}}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Tap Review Cards",
+        "url": "https://tapreviewcards.co.uk",
+        "logo": "{{ asset('images/logo.png') }}",
+        "description": "Tap Review Cards helps UK businesses collect more Google reviews instantly with NFC tap cards and smart review management tools.",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+44-1283-515606",
+            "contactType": "customer service",
+            "email": "info@tapreviewcards.co.uk",
+            "availableLanguage": "English",
+            "areaServed": "GB"
+        },
+        "sameAs": []
+    }
+    </script>
+
+    {{-- Page-specific Schema --}}
+    @yield('schema')
 
     <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Scripts -->
+    
+    <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="font-sans antialiased bg-gray-50 flex flex-col min-h-screen">
     <!-- Main Content -->
@@ -67,9 +130,9 @@
                 <div class="block md:hidden">
                     <!-- Logo - Centered on mobile -->
                     <div class="text-center mb-8">
-                        <img src="images/logo.png" alt="ReviewBooster Logo" class="w-32 h-16 mx-auto mb-4">
+                        <img src="images/logo.png" alt="Tap Review Cards" class="w-48 h-auto mx-auto mb-4">
                         <p class="text-[#142D63] font-mulish leading-[25px] text-sm px-4">
-                            <span class="font-bold">Disclaimer:</span> Review Boost is not affiliated with Google or Google Inc. This website is not endorsed by Google in any way.
+                            <span class="font-bold">Disclaimer:</span> Tap Review Cards is not affiliated with Google or Google Inc. This website is not endorsed by Google in any way.
                         </p>
                     </div>
 
@@ -77,7 +140,7 @@
                     <div class="grid grid-cols-2 gap-8 mb-8">
                         <!-- Quick Links -->
                         <div>
-                            <h4 class="text-lg font-semibold mb-3 font-mulish text-center">Quick Links</h4>
+                            <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad]">Quick Links</h4>
                             <ul class="space-y-3">
                                 <li class="text-center"><a href="{{ route('home') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">Home</a></li>
                                 <li class="text-center"><a href="{{ route('about') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">About</a></li>
@@ -88,18 +151,24 @@
 
                         <!-- Support -->
                         <div>
-                            <h4 class="text-lg font-semibold mb-3 font-mulish text-center">Support</h4>
+                            <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad]">Support</h4>
                             <ul class="space-y-3">
-                                <li class="text-center"><a href="#" class="text-[#142D63] hover:text-[#244a9d] text-sm">Help Center</a></li>
-                                <li class="text-center"><a href="#" class="text-[#142D63] hover:text-[#244a9d] text-sm">Terms of Service</a></li>
-                                <li class="text-center"><a href="#" class="text-[#142D63] hover:text-[#244a9d] text-sm">Privacy Policy</a></li>
+                                <li class="text-center"><a href="{{ route('shipping-returns') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">Shipping & Returns</a></li>
+                                <li class="text-center"><a href="{{ route('terms-of-service') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">Terms of Service</a></li>
+                                <li class="text-center"><a href="{{ route('privacypolicy') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">Privacy Policy</a></li>
+                                <li class="text-center text-[#142D63] text-sm font-semibold mt-4">
+                                    info@tapreviewcards.co.uk
+                                </li>
+                                <li class="text-center text-[#142D63] text-sm font-semibold">
+                                    +44 1283 515606
+                                </li>
                             </ul>
                         </div>
                     </div>
 
                     <!-- Follow Us on second row -->
                     <div class="text-center">
-                        <h4 class="text-lg font-semibold mb-4 font-mulish">Follow Us</h4>
+                        <h4 class="text-lg font-semibold mb-4 font-mulish text-[#1800ad]">Follow Us</h4>
                         <div class="flex justify-center space-x-6">
                             <!-- Twitter -->
                             <a href="https://twitter.com/yourhandle" class="text-[#142D63] hover:text-[#244a9d]" aria-label="Twitter">
@@ -136,15 +205,15 @@
                 <div class="hidden md:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
                     <!-- Brand -->
                     <div class="space-y-4">
-                        <img src="images/logo.png" alt="ReviewBooster Logo" class="w-32 h-16">
+                        <img src="images/logo.png" alt="Tap Review Cards" class="w-48 h-auto">
                         <p class="text-[#142D63] font-mulish leading-[25px]">
-                            <span class="font-bold">Disclaimer:</span> Review Boost is not affiliated with Google or Google Inc. This website is not endorsed by Google in any way.
+                            <span class="font-bold">Disclaimer:</span> Tap Review Cards is not affiliated with Google or Google Inc. This website is not endorsed by Google in any way.
                         </p>
                     </div>
 
                     <!-- Quick Links -->
                     <div class="pl-12">
-                        <h4 class="text-lg font-semibold mb-3 font-mulish">Quick Links</h4>
+                        <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad]">Quick Links</h4>
                         <ul class="space-y-4">
                             <li><a href="{{ route('home') }}" class="text-[#142D63] hover:text-[#244a9d]">Home</a></li>
                             <li><a href="{{ route('about') }}" class="text-[#142D63] hover:text-[#244a9d]">About</a></li>
@@ -155,17 +224,23 @@
 
                     <!-- Support -->
                     <div class="pl-8">
-                        <h4 class="text-lg font-semibold mb-3 font-mulish">Support</h4>
+                        <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad]">Support</h4>
                         <ul class="space-y-4">
-                            <li><a href="#" class="text-[#142D63] hover:text-[#244a9d]">Help Center</a></li>
-                            <li><a href="#" class="text-[#142D63] hover:text-[#244a9d]">Terms of Service</a></li>
-                            <li><a href="#" class="text-[#142D63] hover:text-[#244a9d]">Privacy Policy</a></li>
+                            <li><a href="{{ route('shipping-returns') }}" class="text-[#142D63] hover:text-[#244a9d]">Shipping & Returns</a></li>
+                            <li><a href="{{ route('terms-of-service') }}" class="text-[#142D63] hover:text-[#244a9d]">Terms of Service</a></li>
+                            <li><a href="{{ route('privacypolicy') }}" class="text-[#142D63] hover:text-[#244a9d]">Privacy Policy</a></li>
+                            <li>
+                                <a href="mailto:info@tapreviewcards.co.uk" class="text-[#142D63] hover:text-[#244a9d] text-sm font-semibold">info@tapreviewcards.co.uk</a>
+                            </li>
+                            <li>
+                                <a href="tel:+441283515606" class="text-[#142D63] hover:text-[#244a9d] text-sm font-semibold">+44 1283 515606</a>
+                            </li>
                         </ul>
                     </div>
 
                     <!-- Social -->
                     <div>
-                        <h4 class="text-lg font-semibold mb-3 font-mulish">Follow Us</h4>
+                        <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad]">Follow Us</h4>
                         <div class="flex space-x-4">
                             <!-- Twitter -->
                             <a href="https://twitter.com/yourhandle" class="text-gray-300 hover:text-[#244a9d]" aria-label="Twitter">
@@ -200,10 +275,35 @@
             </div>
             
             <!-- Copyright -->
-            <div class="bg-[#0D1A3C] text-center text-gray-400 py-4 text-sm">
-                &copy; 2025 ReviewBooster. All rights reserved.
+            <div class="bg-[#0cc0df] text-center text-white py-4 text-sm">
+                <p>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
             </div>
         </footer>
 
+    <script>
+        window.deferredPrompt = null;
+    
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Uncomment the next line if you want to prevent the automatic browser popup and show your own button instead
+            // e.preventDefault(); 
+            window.deferredPrompt = e;
+    
+            window.dispatchEvent(new CustomEvent('pwa-installable'));
+        });
+    
+        window.addEventListener('appinstalled', () => {
+            window.deferredPrompt = null;
+            window.dispatchEvent(new CustomEvent('pwa-installed'));
+        });
+    
+        window.installPWA = function() {
+            if (!window.deferredPrompt) return;
+            window.deferredPrompt.prompt();
+            window.deferredPrompt.userChoice.then(() => {
+                window.deferredPrompt = null;
+                window.dispatchEvent(new CustomEvent('pwa-installed'));
+            });
+        };
+    </script>
 </body>
 </html>

@@ -8,8 +8,8 @@
         {{-- Centered Logo --}}
         <div class="flex justify-center mb-4">
             <a href="{{ url('/') }}" class="flex items-center">
-                <div class="block h-16 w-32 flex items-center justify-center text-white font-bold">
-                    <x-application-logo class="block h-16 w-auto fill-current text-blue-500" />
+                <div class="block h-auto w-40 flex items-center justify-center text-white font-bold">
+                    <x-application-logo class="block h-auto w-40 fill-current text-blue-500" />
                 </div>
             </a>
         </div>
