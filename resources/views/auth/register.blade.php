@@ -32,7 +32,32 @@
 
                 <!-- Step 1 -->
                 <div id="step-1" class="step space-y-6 bg-white">
-                <!-- Company Name -->
+                    <!-- Account Purpose / Type -->
+                    <div>
+                        <label for="partner_type" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ __('Account Type') }} <span class="text-red-600">*</span>
+                        </label>
+                        <select id="partner_type" name="partner_type" onchange="togglePartnerRegistration(this.value)"
+                            class="w-full border border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black px-4 py-2.5 text-sm font-semibold bg-gray-50/50">
+                            <option value="standard">Standard Customer / Business Owner</option>
+                            <option value="wholesaler">Apply as Wholesaler</option>
+                            <option value="retailer">Apply as Retailer</option>
+                            <option value="corporate">Apply as Corporate Account </option>
+                        </select>
+                    </div>
+
+                    <!-- B2B Partner Information Box -->
+                    <div id="partner-notice-box" class="hidden p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-3">
+                        <p class="text-xs text-blue-900 leading-relaxed font-medium">
+                            ℹ️ <strong>B2B Partner Registration:</strong> As a Wholesaler/Retailer, software subscription plan payment is <strong>skipped</strong>. Your account will be created and submitted to Admin for approval.
+                        </p>
+                        <div>
+                            <label for="vat_number" class="block text-xs font-bold text-blue-900 mb-1">VAT / Tax Identification Number (Optional)</label>
+                            <input type="text" id="vat_number" name="vat_number" placeholder="GB123456789" class="w-full border border-purple-200 rounded-md px-3 py-2 text-xs">
+                        </div>
+                    </div>
+
+                    <!-- Company Name -->
                     <div>
                         <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">
                             {{ __('Company Name') }} <span class="text-red-600">*</span>
@@ -300,6 +325,25 @@
                 });
             }
     
+            window.togglePartnerRegistration = function(val) {
+                const noticeBox = document.getElementById('partner-notice-box');
+                const btn = document.getElementById('toStep2');
+                if (btn) {
+                    if (val && val !== 'standard') {
+                        if (noticeBox) noticeBox.classList.remove('hidden');
+                        btn.textContent = 'Submit Partner Application';
+                    } else {
+                        if (noticeBox) noticeBox.classList.add('hidden');
+                        btn.textContent = 'Next Step';
+                    }
+                }
+            };
+
+            const partnerTypeInput = document.getElementById('partner_type');
+            if (partnerTypeInput) {
+                togglePartnerRegistration(partnerTypeInput.value);
+            }
+
             // Validate Step 1 with backend before proceeding to Step 2
             toStep2Btn.addEventListener('click', async () => {
                 clearErrors();
@@ -310,6 +354,7 @@
                 formData.append('password', document.getElementById('password').value);
                 formData.append('password_confirmation', document.getElementById('password_confirmation').value);
                 formData.append('company_name', document.getElementById('company_name').value.trim());
+                formData.append('partner_type', document.getElementById('partner_type').value);
                 formData.append('_token', '{{ csrf_token() }}');
     
                 try {
@@ -330,7 +375,15 @@
                         return;
                     }
     
-                    // If validation passes, move to step 2
+                    const partnerType = document.getElementById('partner_type').value;
+                    if (partnerType && partnerType !== 'standard') {
+                        toStep2Btn.disabled = true;
+                        toStep2Btn.textContent = 'Submitting...';
+                        form.submit();
+                        return;
+                    }
+
+                    // If standard customer validation passes, move to step 2
                     step1.classList.add('hidden');
                     step2.classList.remove('hidden');
                     

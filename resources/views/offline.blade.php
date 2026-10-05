@@ -42,7 +42,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="images/logo.png" alt="ReviewBooster">
+        <img src="images/logo.png" alt="Tap Review Cards">
         <div class="icon">📶</div>
         <h1>You're Offline</h1>
         <p>No internet connection. Please check your network and try again.</p>

@@ -143,6 +143,10 @@
                 <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-end">
                     @auth
                         <div class="flex items-center space-x-4">
+                                <!-- Command Palette (Ctrl/⌘ + K) — admin only -->
+                                @if (Auth::user()->role === 'admin')
+                                    <x-command-palette />
+                                @endif
                             <!-- Notification Bell -->
                             @auth
                                 <div class="flex items-center space-x-2">
@@ -332,8 +336,8 @@
                 <div class="max-w-7xl mx-auto px-4 text-center">
                     <p>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
                     <p>
-                        <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a> |
-                        <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
+                        <a href="{{ route('privacypolicy') }}" class="text-gray-400 hover:text-white">Privacy Policy</a> |
+                        <a href="{{ route('terms-of-service') }}" class="text-gray-400 hover:text-white">Terms of Service</a>
                     </p>
                 </div>
             </footer>
@@ -845,29 +849,35 @@
         window.deferredPrompt = null;
     
         window.addEventListener('beforeinstallprompt', (e) => {
-            // e.preventDefault(); // Removed to allow automatic browser popup
             window.deferredPrompt = e;
-    
-            // Notify all Alpine components that install is available
             window.dispatchEvent(new CustomEvent('pwa-installable'));
         });
     
         window.addEventListener('appinstalled', () => {
             window.deferredPrompt = null;
-            // Notify Alpine components app is installed
             window.dispatchEvent(new CustomEvent('pwa-installed'));
         });
     
         window.installPWA = function() {
-            if (!window.deferredPrompt) return;
-            window.deferredPrompt.prompt();
-            window.deferredPrompt.userChoice.then(() => {
-                window.deferredPrompt = null;
-                window.dispatchEvent(new CustomEvent('pwa-installed'));
-            });
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                window.deferredPrompt.userChoice.then(() => {
+                    window.deferredPrompt = null;
+                    window.dispatchEvent(new CustomEvent('pwa-installed'));
+                });
+            } else {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (isIOS) {
+                    window.dispatchEvent(new CustomEvent('open-ios-install-modal'));
+                } else {
+                    alert('To install this app, tap your browser menu and select "Install App" or "Add to Home screen".');
+                }
+            }
         };
     </script>
 
+    <!-- iOS PWA Install Modal -->
+    <x-ios-pwa-modal />
 
 </body>
 

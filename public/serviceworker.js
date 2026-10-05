@@ -38,25 +38,44 @@ self.addEventListener('activate', event => {
     self.clients.claim();
 });
 
-// Serve from Cache, fallback to Network
+// Serve from Network first for pages, Cache first for static assets
 self.addEventListener("fetch", event => {
     // Skip non-GET, cross-origin, and non-http/https requests
     if (event.request.method !== 'GET') return;
     if (!event.request.url.startsWith('http')) return;
 
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                return response || fetch(event.request).then(fetchResponse => {
-                    // Cache new requests dynamically
-                    return caches.open(staticCacheName).then(cache => {
-                        cache.put(event.request, fetchResponse.clone());
-                        return fetchResponse;
-                    });
+    const url = new URL(event.request.url);
+    const isPage = event.request.mode === 'navigate' || 
+                   (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'));
+    const isStaticAsset = /\.(js|css|png|jpg|jpeg|gif|svg|ico|woff2?|ttf|eot)$/i.test(url.pathname);
+
+    if (isStaticAsset) {
+        // Static assets: Cache First (fast, rarely changes)
+        event.respondWith(
+            caches.match(event.request).then(cached => {
+                return cached || fetch(event.request).then(response => {
+                    if (response && response.status === 200 && response.type === 'basic') {
+                        let clone = response.clone();
+                        caches.open(staticCacheName).then(cache => cache.put(event.request, clone));
+                    }
+                    return response;
+                });
+            }).catch(() => caches.match('/offline'))
+        );
+    } else {
+        // HTML pages & API calls: Network First (always fresh content)
+        event.respondWith(
+            fetch(event.request).then(response => {
+                if (response && response.status === 200 && response.type === 'basic') {
+                    let clone = response.clone();
+                    caches.open(staticCacheName).then(cache => cache.put(event.request, clone));
+                }
+                return response;
+            }).catch(() => {
+                return caches.match(event.request).then(cached => {
+                    return cached || caches.match('/offline');
                 });
             })
-            .catch(() => {
-                return caches.match('/offline');
-            })
-    );
+        );
+    }
 });

@@ -96,12 +96,17 @@
             </div>
 
             @if ($subscriptions->count())
+                @php
+                    $hasActiveSub = $subscriptions->contains(function ($sub) {
+                        return $sub->status === 'active' && (!$sub->ends_at || !\Carbon\Carbon::parse($sub->ends_at)->isPast());
+                    });
+                @endphp
                 <button @click="showModal = true"
                     class="inline-flex items-center justify-center px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-100 transition-all duration-300 transform hover:-translate-y-1">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
-                    Change Plan
+                    {{ $hasActiveSub ? __('Change Plan') : __('Renew Subscription') }}
                 </button>
             @endif
         </header>

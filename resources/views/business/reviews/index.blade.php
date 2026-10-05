@@ -525,7 +525,7 @@
         </div>
 
         {{-- AI RESPONDER SECTION (PREMIUM ONLY) --}}
-        @if(auth()->user()->subscription && auth()->user()->subscription->plan && stripos(auth()->user()->subscription->plan->name, 'premium') !== false)
+        @if(auth()->user()->subscription && auth()->user()->subscription->plan && auth()->user()->subscription->plan->has_ai_replies)
         <div id="ai-responder-section" class="mt-4 border-t border-gray-100 pt-4">
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-2">
@@ -588,6 +588,15 @@
   <!-- JavaScript for Modal -->
   <script>
   document.addEventListener('DOMContentLoaded', function () {
+          // Keep the modal pinned to the viewport. If it stays inside a parent
+          // that has a CSS transform/filter, position:fixed anchors to that
+          // parent instead of the screen, so it opens mid-page and needs
+          // scrolling. Moving it to <body> guarantees true viewport centering.
+          const _reviewModal = document.getElementById('reviewModal');
+          if (_reviewModal && _reviewModal.parentElement !== document.body) {
+              document.body.appendChild(_reviewModal);
+          }
+
           const statusFilter = document.getElementById('statusFilter');
           const ratingFilter = document.getElementById('ratingFilter');
           const dateFrom = document.getElementById('dateFrom');

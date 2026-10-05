@@ -13,7 +13,19 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(\App\Http\Middleware\RedirectMiddleware::class);
-        
+
+        // Record public page views (skips admin/api/assets internally).
+        $middleware->web(append: [
+            \App\Http\Middleware\TrackPageView::class,
+        ]);
+
+        // Analytics beacons are fire-and-forget; exclude from CSRF.
+        // The public chatbot endpoint is throttled and holds no secret client-side.
+        $middleware->validateCsrfTokens(except: [
+            'track/*',
+            'chat',
+        ]);
+
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,

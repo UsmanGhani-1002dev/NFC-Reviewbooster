@@ -54,6 +54,7 @@ class ManageBusinessController extends Controller
             'business_name' => 'required|string|max:255',
             'legal_business_name' => 'required|string|max:255',
             'website' => 'nullable|string|url',
+            'google_review_link' => 'nullable|string|url',
         ]);
 
         $business = ManageBusiness::findOrFail($id);
@@ -61,6 +62,7 @@ class ManageBusinessController extends Controller
             'business_name' => $request->business_name,
             'legal_business_name' => $request->legal_business_name,
             'website' => $request->website,
+            'google_review_link' => $request->google_review_link,
         ]);
 
         return redirect()->route('businesses.index')->with('success', 'Business updated successfully.');
@@ -116,6 +118,9 @@ class ManageBusinessController extends Controller
             'status' => 'required|in:active,blocked',
             'plan_id' => 'nullable|exists:subscription_plans,id',
             'website' => 'nullable|string|url',
+            'google_review_link' => 'nullable|string|url',
+            'card_links' => 'nullable|array',
+            'card_links.*' => 'nullable|string|url',
         ]);
 
         $business = ManageBusiness::findOrFail($id);
@@ -123,7 +128,16 @@ class ManageBusinessController extends Controller
         $business->legal_business_name = $request->input('legal_business_name');
         $business->website = $request->input('website');
         $business->status = $request->input('status');
+        $business->google_review_link = $request->input('google_review_link');
         $business->save();
+
+        if ($request->has('card_links') && is_array($request->input('card_links'))) {
+            foreach ($request->input('card_links') as $cardId => $link) {
+                $business->cards()->where('id', $cardId)->update([
+                    'google_review_link' => $link,
+                ]);
+            }
+        }
 
         if ($request->filled('plan_id')) {
             $user = $business->user;

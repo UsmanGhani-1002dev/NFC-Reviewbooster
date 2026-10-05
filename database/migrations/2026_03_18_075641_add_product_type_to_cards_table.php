@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('cards', function (Blueprint $table) {
-            $table->enum('product_type', ['card', 'sticker', 'stand'])->default('card')->after('type');
+            if (!Schema::hasColumn('cards', 'product_type')) {
+                $table->enum('product_type', ['card', 'sticker', 'stand'])->default('card')->after('type');
+            }
         });
     }
 

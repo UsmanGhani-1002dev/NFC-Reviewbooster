@@ -68,6 +68,53 @@
             </select>
         </div>
 
+        <div class="p-4 bg-purple-50 rounded-xl border border-purple-100 space-y-4">
+            <h4 class="font-bold text-purple-900 text-sm">B2B Partner Configuration</h4>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-purple-800 uppercase tracking-wider mb-1">Partner Tier</label>
+                    <select name="partner_type" class="w-full border border-purple-200 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-purple-500">
+                        <option value="standard" {{ $user->partner_type === 'standard' || !$user->partner_type ? 'selected' : '' }}>Standard Customer</option>
+                        <option value="wholesaler" {{ $user->partner_type === 'wholesaler' ? 'selected' : '' }}>Wholesaler</option>
+                        <option value="retailer" {{ $user->partner_type === 'retailer' ? 'selected' : '' }}>Retailer</option>
+                        <option value="corporate" {{ $user->partner_type === 'corporate' ? 'selected' : '' }}>Corporate Account</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-purple-800 uppercase tracking-wider mb-1">Partner Approval Status</label>
+                    <select name="partner_status" class="w-full border border-purple-200 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-purple-500">
+                        <option value="approved" {{ $user->partner_status === 'approved' ? 'selected' : '' }}>Approved</option>
+                        <option value="pending" {{ $user->partner_status === 'pending' ? 'selected' : '' }}>Pending Approval</option>
+                        <option value="rejected" {{ $user->partner_status === 'rejected' ? 'selected' : '' }}>Rejected</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-purple-800 uppercase tracking-wider mb-1">Custom Discount % (Override)</label>
+                    <input type="number" step="0.1" min="0" max="100" name="partner_discount_override"
+                        value="{{ old('partner_discount_override', $user->partner_discount_override) }}"
+                        placeholder="Leave blank to use tier default"
+                        class="w-full border border-purple-200 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-purple-500" />
+                    <p class="mt-1 text-[11px] text-purple-700/80">Overrides the global tier discount for this specific customer only. Blank = use the tier's default %.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-purple-800 uppercase tracking-wider mb-1">VAT Number</label>
+                    <input type="text" name="vat_number"
+                        value="{{ old('vat_number', $user->vat_number) }}"
+                        placeholder="Optional"
+                        class="w-full border border-purple-200 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-purple-500" />
+                    <p class="mt-1 text-[11px] text-purple-700/80">Effective rate now:
+                        <strong>{{ $user->isApprovedPartner() ? $user->getPartnerDiscountPercent() . '%' : 'None (not an approved partner)' }}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <div>
             <label class="block text-sm font-medium text-gray-700">Plan</label>
             <select name="plan_id"

@@ -234,16 +234,16 @@
 
     <!-- Subscription Expired Modal -->
     <div x-show="showExpiredModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/40 backdrop-blur-sm p-4" style="display: none;">
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/40 p-4" style="display: none;">
         <div @click.away="showExpiredModal = false" class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center">
-            <div class="w-20 h-20 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-500 mx-auto mb-6">
-                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5c-3.866 0-7 3.134-7 7s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7z" /></svg>
+            <div class="w-20 h-20 bg-amber-100 rounded-2xl flex items-center justify-center text-amber-500 mx-auto mb-6">
+                <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 5c-3.866 0-7 3.134-7 7s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7z" /></svg>
             </div>
             <h3 class="text-2xl font-extrabold text-gray-900 mb-3">Subscription Expired</h3>
             <p class="text-gray-500 mb-8 font-medium">Your subscription has expired. Please renew to continue creating and managing review cards.</p>
             <div class="space-y-4">
                 <a href="{{ route('user.subscription.index') }}" class="block w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-100 transition-all">Renew Now</a>
-                <button @click="showExpiredModal = false" class="w-full px-6 py-3.5 text-gray-400 font-bold hover:text-gray-600 transition-colors">Close</button>
+                <button @click="showExpiredModal = false" class="w-full px-6 py-3.5 text-gray-700 font-bold hover:text-gray-600 transition-colors border border-gray-200 rounded-2xl bg-gray-200">Close</button>
             </div>
         </div>
     </div>

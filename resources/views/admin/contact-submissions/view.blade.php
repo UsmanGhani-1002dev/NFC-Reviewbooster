@@ -9,13 +9,12 @@
             {{ session('success') }}
         </div>
     @endif
-    <div class="mb-6 flex items-center justify-between flex-wrap gap-4">
-        <h2 class="text-2xl font-bold text-gray-800">
+    <div class="mb-6 flex items-start justify-between gap-4">
+        <h2 class="text-2xl font-bold text-gray-800 min-w-0">
             {{ $contacts->first_name }} {{ $contacts->last_name }} ({{ $contacts->subject }})
         </h2>
 
-        {{-- Subscription Status Badge --}}
-        <div class="bg-gray-200 p-2 rounded-lg">
+        <div class="bg-gray-200 p-2 rounded-lg shrink-0 whitespace-nowrap">
             Submission ID: <span class="text-blue-600">{{ $contacts->id }}</span>
         </div>
     </div>
@@ -107,15 +106,71 @@
         </div>
     </form>
 
+    {{-- Conversation / Replies --}}
+    <div class="mt-10 pt-6 border-t border-gray-200">
+        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4-.83L3 20l1.17-3.5A7.9 7.9 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            Replies
+            @if($contacts->replies->count())
+                <span class="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{{ $contacts->replies->count() }}</span>
+            @endif
+        </h3>
+
+        @forelse($contacts->replies as $reply)
+            <div class="mb-3 bg-blue-50 border border-blue-100 rounded-xl p-4">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-bold text-blue-800">{{ $reply->subject }}</span>
+                    <span class="text-[11px] text-gray-400">{{ $reply->created_at->format('d M Y, h:i A') }}</span>
+                </div>
+                <p class="text-sm text-gray-700 whitespace-pre-line">{{ $reply->message }}</p>
+                <div class="text-[11px] text-gray-400 mt-2">
+                    Sent to {{ $contacts->email }}
+                    @if($reply->admin) · by {{ $reply->admin->name }} @endif
+                </div>
+            </div>
+        @empty
+            <p class="text-sm text-gray-400 italic mb-4">No replies yet. Write your first reply below.</p>
+        @endforelse
+
+        {{-- Reply form --}}
+        <form method="POST" action="{{ route('admin.contact-submissions.reply', $contacts->id) }}" class="mt-5 space-y-3">
+            @csrf
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Your reply</label>
+                <div class="text-xs text-gray-400 mb-2">
+                    Email subject will be: <span class="font-mono font-semibold text-gray-600">RE: {{ $contacts->subject }}</span>
+                    &nbsp;·&nbsp; will be emailed to <span class="font-semibold text-gray-600">{{ $contacts->email }}</span>
+                </div>
+                @php
+                    $greetingName = trim(($contacts->first_name ?? '') . ' ' . ($contacts->last_name ?? '')) ?: 'there';
+                    $defaultReply = 'Hi ' . $greetingName . ",\n\n";
+                @endphp
+                <textarea name="message" rows="6" required
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none"
+                    placeholder="Type your reply to {{ $contacts->first_name }}…">{{ old('message', $defaultReply) }}</textarea>
+                @error('message')
+                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+            <div class="flex justify-end">
+                <button type="submit"
+                    class="px-6 py-2.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition inline-flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    Send Reply
+                </button>
+            </div>
+        </form>
+    </div>
+
     {{-- Delete Button (Separate Form) --}}
-    <div class="md:-mt-[40px] mt-5">
+    <div class="mt-8 pt-6 border-t border-gray-200">
         <form method="POST" action="{{ route('admin.contact-submissions.destroy', $contacts->id) }}">
             @csrf
             @method('DELETE')
             <button type="submit"
                 onclick="return confirm('Are you sure you want to delete this business?')"
                 class="px-5 w-full md:w-auto py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition">
-                Delete Business
+                Delete Contact
             </button>
         </form>
     </div>

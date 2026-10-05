@@ -57,7 +57,7 @@
         <div class="flex justify-center gap-6 mt-8 flex-wrap">
             <div class="flex items-center gap-2 text-[#142D63]">
                 <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                <span class="font-mulish">Free Shipping</span>
+                <span class="font-mulish">Quick & Secure Delivery</span>
             </div>
             <div class="flex items-center gap-2 text-[#142D63]">
                 <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -111,9 +111,9 @@
                         <!-- Product Image (variant image first, fallback to product image) -->
                         <div class="bg-[#d8e4ef] p-8 flex items-center justify-center md:h-[380px] h-[280px]  transition-all duration-500 overflow-hidden rounded-t-2xl">
                             @if($variant->image)
-                                <img src="{{ asset('storage/' . $variant->image) }}" alt="{{ $variant->name }}" class="max-h-48 w-auto object-contain group-hover:scale-110 transition-transform duration-500" loading="lazy">
+                                <img src="{{ asset('storage/' . $variant->image) }}" alt="{{ $variant->name }}" class="max-h-72 w-auto object-contain group-hover:scale-110 transition-transform duration-500" loading="lazy">
                             @elseif($product->image)
-                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $variant->name }}" class="max-h-48 w-auto object-contain group-hover:scale-110 transition-transform duration-500" loading="lazy">
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $variant->name }}" class="max-h-72 w-auto object-contain group-hover:scale-110 transition-transform duration-500" loading="lazy">
                             @else
                                 <div class="w-40 h-40 bg-white rounded-2xl shadow-inner flex items-center justify-center">
                                     <svg class="w-20 h-20 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,11 +139,27 @@
                             <h3 class="text-lg font-semibold text-[#1800ad] mb-2 font-ubuntu">{{ $variant->name }}</h3>
 
                             <!-- Pricing -->
-                            <div class="flex items-center justify-center gap-3">
-                                <span class="text-2xl font-bold text-[#1800ad]">£{{ number_format($variant->price, 2) }}</span>
-                                @if($variant->original_price > $variant->price)
-                                <span class="text-lg text-gray-400 line-through">£{{ number_format($variant->original_price, 2) }}</span>
+                            @php
+                                $userPartnerDiscount = (auth()->check() && auth()->user()->isApprovedPartner()) ? auth()->user()->getPartnerDiscountPercent() : 0;
+                                $displayPrice = $variant->price;
+                                if ($userPartnerDiscount > 0) {
+                                    $displayPrice = round($variant->price * (1 - ($userPartnerDiscount / 100)), 2);
+                                }
+                            @endphp
+                            <div class="flex flex-col items-center gap-1">
+                                @if($userPartnerDiscount > 0)
+                                    <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-purple-100 text-purple-800 border border-purple-200">
+                                        {{ auth()->user()->partner_type_label }} ({{ $userPartnerDiscount }}% OFF)
+                                    </span>
                                 @endif
+                                <div class="flex items-center justify-center gap-3">
+                                    <span class="text-2xl font-bold text-[#1800ad]">£{{ number_format($displayPrice, 2) }}</span>
+                                    @if($userPartnerDiscount > 0)
+                                        <span class="text-lg text-gray-400 line-through">£{{ number_format($variant->price, 2) }}</span>
+                                    @elseif($variant->original_price > $variant->price)
+                                        <span class="text-lg text-gray-400 line-through">£{{ number_format($variant->original_price, 2) }}</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -168,7 +184,7 @@
 <!-- Trust Badges Section -->
 <div class="bg-gray-50 pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center">
             <div class="space-y-3 bg-white rounded-3xl p-6 md:p-8 flex flex-col items-center text-center">
                 <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto">
                     <svg class="w-8 h-8 text-[#00A0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

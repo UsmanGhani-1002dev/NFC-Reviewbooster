@@ -81,6 +81,103 @@
         @endif
     @endif
 
+    {{-- ═══════════════════ B2B PARTNER STATUS BANNER ═══════════════════ --}}
+    @if(Auth::check() && Auth::user()->role !== 'admin')
+        @php $u = Auth::user(); @endphp
+        @if($u->isApprovedPartner())
+            <div class="mb-6 rounded-2xl overflow-hidden shadow-lg border border-purple-200 bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-800 text-white p-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 backdrop-blur-md border border-purple-400/30 flex items-center justify-center text-purple-200 shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-extrabold text-xl text-white">{{ $u->partner_type_label }} Partner Portal</h3>
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Active Approved</span>
+                            </div>
+                            <p class="text-purple-200 text-sm mt-1">Your <strong>{{ $u->getPartnerDiscountPercent() }}% Storewide Discount</strong> is active! All shop items will automatically reflect your partner pricing.</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('shop.index') }}" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold px-6 py-3 rounded-xl text-sm shadow-lg hover:shadow-purple-500/25 transition-all transform hover:-translate-y-0.5 shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                        Browse Wholesale Shop
+                    </a>
+                </div>
+            </div>
+        @elseif($u->isPendingPartner())
+            <div class="mb-6 rounded-2xl overflow-hidden shadow-md border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-lg text-amber-900">{{ $u->partner_type_label }} Application Under Review</h3>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-200 text-amber-800">Pending Approval</span>
+                        </div>
+                        <p class="text-amber-700 text-sm mt-0.5">Your partner application has been submitted to Admin. Your role pricing will automatically activate as soon as your account is approved!</p>
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="mb-6 rounded-2xl overflow-hidden shadow-md border border-indigo-100 bg-gradient-to-r from-indigo-50 via-white to-purple-50 p-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-lg shadow-indigo-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-900">Become a B2B Partner (Wholesaler, Retailer, or Corporate)</h3>
+                            <p class="text-gray-600 text-sm mt-0.5">Apply for a partner account to get store-wide tier discounts and unbranded dropshipping features.</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('partnerModal').classList.remove('hidden')" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md hover:shadow-lg transition-all shrink-0">
+                        Apply for B2B Account
+                    </button>
+                </div>
+            </div>
+
+            {{-- Partner Application Modal (teleported to body so it escapes any transformed ancestor and centers on the viewport) --}}
+            <template x-teleport="body">
+            <div id="partnerModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl border border-gray-100 animate-fadeIn">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-extrabold text-gray-900">B2B Partner Application</h3>
+                        <button onclick="document.getElementById('partnerModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
+                    </div>
+                    
+                    <form method="POST" action="{{ route('dashboard.apply-partner') }}" class="space-y-5">
+                        @csrf
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Select Partner Role</label>
+                            <select name="partner_type" required class="w-full border border-gray-300 rounded-xl p-3.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-bold">
+                                <option value="wholesaler">Wholesaler (Highest Tier Volume Discount)</option>
+                                <option value="retailer">Retailer (Standard Reseller Discount)</option>
+                                <option value="corporate">Corporate Account (Bulk Corporate Rates)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">VAT / Tax Identification Number (Optional)</label>
+                            <input type="text" name="vat_number" placeholder="GB123456789" class="w-full border border-gray-300 rounded-xl p-3.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                        </div>
+
+                        <div class="bg-indigo-50 p-4 rounded-xl text-xs text-indigo-800 leading-relaxed">
+                            ℹ️ <strong>Note:</strong> Your application will be sent to Admin for review. Once approved, wholesale prices and dropshipping address fields will automatically enable on your account.
+                        </div>
+
+                        <div class="flex justify-end gap-3 pt-4">
+                            <button type="button" onclick="document.getElementById('partnerModal').classList.add('hidden')" class="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50">Cancel</button>
+                            <button type="submit" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-lg shadow-indigo-100">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </template>
+        @endif
+    @endif
+
     <div x-data="{ loading: true }" x-init="setTimeout(() => loading = false, 800)" class="bg-white shadow-2xl rounded-3xl md:p-10 p-6 border border-gray-100">
         <h1 class="text-2xl md:text-5xl font-extrabold text-gray-900 mb-4">Welcome to Your Dashboard 🎉</h1>
         <p class="text-lg text-gray-500 mb-10">Manage everything from one place with ease and style.</p>
@@ -251,9 +348,18 @@
                                 <div class="text-right shrink-0">
                                     @php
                                         $planName = $user->subscription && $user->subscription->plan ? $user->subscription->plan->name : 'No Plan';
+                                        $planKey = strtolower(trim($planName));
+                                        $planBadge = match (true) {
+                                            str_contains($planKey, 'enterprise') => 'bg-amber-500',
+                                            str_contains($planKey, 'premium')    => 'bg-amber-500',
+                                            str_contains($planKey, 'pro')         => 'bg-indigo-500',
+                                            str_contains($planKey, 'standard')    => 'bg-blue-500',
+                                            str_contains($planKey, 'basic')       => 'bg-green-500',
+                                            $planKey === 'no plan'                => 'bg-gray-400',
+                                            default                               => 'bg-blue-500',
+                                        };
                                     @endphp
-                                    <span class="inline-block px-2 py-0.5 rounded-full text-white text-[10px] font-bold capitalize
-                                        {{ strtolower($planName) == 'premium' ? 'bg-yellow-500' : (strtolower($planName) == 'standard' ? 'bg-blue-500' : (strtolower($planName) == 'basic' ? 'bg-green-500' : 'bg-gray-400')) }}">
+                                    <span class="inline-block px-2 py-0.5 rounded-full text-white text-[10px] font-bold capitalize {{ $planBadge }}">
                                         {{ $planName }}
                                     </span>
                                     <div class="text-[10px] text-gray-400 mt-0.5">{{ $user->created_at->format('M d') }}</div>
@@ -511,7 +617,7 @@
             </div>
 
             {{-- ── Bottom Panels: Active Cards, Latest Feedback, Top Cards ── --}}
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6">
 
                 {{-- Panel 1: Active Cards --}}
                 <div class="lg:col-span-1 bg-white shadow-lg rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
@@ -532,7 +638,13 @@
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <div class="font-semibold text-gray-800 text-sm truncate">{{ $card->name }}</div>
-                                    <div class="text-xs text-gray-400 capitalize">{{ str_replace('_', ' ', $card->type) }}</div>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <div class="flex items-center text-amber-400">
+                                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                                            <span class="text-[10px] font-bold text-gray-700 ml-1">{{ number_format($card->reviews_avg_rating ?? 0, 1) }}</span>
+                                        </div>
+                                        <span class="text-[10px] text-gray-400">• {{ $card->reviews_count ?? 0 }} Reviews</span>
+                                    </div>
                                 </div>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-100">Active</span>
@@ -553,41 +665,7 @@
                     </div>
                 </div>
 
-                {{-- Panel 2: Latest Feedback --}}
-                <div class="lg:col-span-1 bg-white shadow-lg rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                    <div class="px-5 py-4 border-b border-gray-50 bg-gray-50/50 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <div class="bg-indigo-100 p-1.5 rounded-lg">
-                                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
-                            </div>
-                            <h3 class="font-bold text-gray-800 text-sm">Latest Feedback</h3>
-                        </div>
-                        <a href="{{ route('business.reviews') }}" class="text-xs text-indigo-600 font-semibold hover:text-indigo-700">Explore →</a>
-                    </div>
-                    <div class="p-4 space-y-2">
-                        @forelse($reviews->take(5) as $review)
-                            <div class="p-2.5 rounded-xl bg-gray-50/80 hover:bg-indigo-50/50 transition-colors duration-200">
-                                <div class="flex items-center justify-between mb-1">
-                                    <span class="font-semibold text-sm text-gray-800 truncate">{{ $review->name ?? 'Anonymous' }}</span>
-                                    <div class="flex text-yellow-400 text-xs shrink-0 ml-2">
-                                        {!! str_repeat('★', $review->rating) !!}{!! str_repeat('☆', 5 - $review->rating) !!}
-                                    </div>
-                                </div>
-                                <p class="text-xs text-gray-500 line-clamp-2">{{ $review->review_content }}</p>
-                                <p class="text-[10px] text-gray-400 mt-1">{{ $review->created_at->diffForHumans() }}</p>
-                            </div>
-                        @empty
-                            <div class="text-center py-10 text-gray-400">
-                                <div class="w-14 h-14 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                                    <svg class="w-7 h-7 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
-                                </div>
-                                <p class="text-sm font-medium">No reviews yet</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-
-                {{-- Panel 3: Staff Performance Leaderboard --}}
+                {{-- Panel 2: Staff Performance Leaderboard --}}
                 <div class="lg:col-span-1 bg-white shadow-lg rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300">
                     <div class="px-5 py-4 border-b border-gray-50 bg-gray-50/50 flex items-center justify-between">
                         <div class="flex items-center gap-2">
@@ -598,14 +676,14 @@
                         </div>
                     </div>
                     <div class="p-4 space-y-3">
-                        @forelse($reviewsGroupedByCard->sortByDesc('avg_rating') as $index => $cardGroup)
-                            <div class="relative flex items-center gap-4 p-3 rounded-2xl bg-gradient-to-r {{ $index === 0 ? 'from-amber-50 to-orange-50 border border-amber-100' : 'from-gray-50 to-white border border-gray-100' }} transition-all duration-300 ">
+                        @forelse($reviewsGroupedByCard as $cardGroup)
+                            <div class="relative flex items-center gap-4 p-3 rounded-2xl bg-gradient-to-r {{ $loop->index === 0 ? 'from-amber-50 to-orange-50 border border-amber-100' : 'from-gray-50 to-white border border-gray-100' }} transition-all duration-300 ">
                                 {{-- Medal/Rank --}}
-                                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl {{ $index === 0 ? 'bg-amber-400' : ($index === 1 ? 'bg-gray-300' : ($index === 2 ? 'bg-orange-300' : 'bg-blue-100')) }} text-white font-black shadow-sm">
-                                    @if($index < 3)
-                                        <i data-lucide="{{ $index === 0 ? 'crown' : 'medal' }}" class="w-6 h-6"></i>
+                                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl {{ $loop->index === 0 ? 'bg-amber-400' : ($loop->index === 1 ? 'bg-gray-300' : ($loop->index === 2 ? 'bg-orange-300' : 'bg-blue-100')) }} text-white font-black shadow-sm">
+                                    @if($loop->index < 3)
+                                        <i data-lucide="{{ $loop->index === 0 ? 'crown' : 'medal' }}" class="w-6 h-6"></i>
                                     @else
-                                        {{ $index + 1 }}
+                                        {{ $loop->index + 1 }}
                                     @endif
                                 </div>
 

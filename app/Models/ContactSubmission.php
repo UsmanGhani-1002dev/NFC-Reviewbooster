@@ -33,6 +33,14 @@ class ContactSubmission extends Model
     ];
 
     /**
+     * Admin replies sent for this submission (oldest first for a thread view).
+     */
+    public function replies()
+    {
+        return $this->hasMany(ContactReply::class)->oldest();
+    }
+
+    /**
      * Get the full name attribute
      */
     public function getFullNameAttribute()

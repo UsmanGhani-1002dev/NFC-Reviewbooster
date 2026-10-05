@@ -86,6 +86,7 @@
                             <th class="px-6 py-4">#</th>
                             <th class="px-6 py-4">Name</th>
                             <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4">Partner Tier</th>
                             <th class="px-6 py-4">Plan</th>
                             <th class="px-6 py-4">Role</th>
                             <th class="px-6 py-4">Cards</th>
@@ -126,6 +127,39 @@
                                             </div>
                                         </button>
                                     </form>
+                                </td>
+                                <td class="px-4 py-2 text-center">
+                                    <div class="flex flex-col items-center gap-1">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold {{ $user->partner_status_badge }}">
+                                            {{ $user->partner_type_label }}
+                                            @if(in_array($user->partner_type, ['wholesaler', 'retailer', 'corporate']))
+                                                ({{ ucfirst($user->partner_status ?? 'pending') }})
+                                            @endif
+                                        </span>
+                                        
+                                        @if(in_array($user->partner_type, ['wholesaler', 'retailer', 'corporate']))
+                                            <div class="flex items-center gap-1 mt-1">
+                                                @if($user->partner_status !== 'approved')
+                                                    <form method="POST" action="{{ route('admin.users.partner-status', $user) }}" class="inline">
+                                                        @csrf
+                                                        <input type="hidden" name="partner_status" value="approved">
+                                                        <button type="submit" class="px-2 py-0.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold rounded shadow-sm">
+                                                            Approve
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                @if($user->partner_status !== 'rejected')
+                                                    <form method="POST" action="{{ route('admin.users.partner-status', $user) }}" class="inline">
+                                                        @csrf
+                                                        <input type="hidden" name="partner_status" value="rejected">
+                                                        <button type="submit" class="px-2 py-0.5 bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold rounded shadow-sm">
+                                                            Reject
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="capitalize font-bold text-blue-600">
                                     {{ $user->subscription && $user->subscription->plan ? $user->subscription->plan->name : 'No Plan' }}

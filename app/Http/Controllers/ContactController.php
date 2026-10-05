@@ -199,6 +199,52 @@ class ContactController extends Controller
     }
 
 
+    /**
+     * Admin replies to a contact submission: saves the reply to the thread and
+     * emails the customer with a "RE: <original subject>" message.
+     */
+    public function reply(Request $request, $id)
+    {
+        $submission = ContactSubmission::findOrFail($id);
+
+        $validated = $request->validate([
+            'message' => 'required|string|max:5000',
+        ]);
+
+        $original = trim($submission->subject ?: 'your enquiry');
+        $replySubject = \Illuminate\Support\Str::startsWith(strtolower($original), 're:')
+            ? $original
+            : 'RE: ' . $original;
+
+        $reply = \App\Models\ContactReply::create([
+            'contact_submission_id' => $submission->id,
+            'admin_id' => auth()->id(),
+            'subject' => $replySubject,
+            'message' => $validated['message'],
+        ]);
+
+        $message = 'Reply saved.';
+        try {
+            if (!empty($submission->email)) {
+                Mail::to($submission->email)
+                    ->send(new \App\Mail\ContactReplyMail($submission, $validated['message'], $replySubject));
+                $message = 'Reply sent to ' . $submission->email . '.';
+            } else {
+                $message = 'Reply saved, but this submission has no email address to send to.';
+            }
+
+            // Move the submission along once we've responded.
+            if ($submission->status === 'new') {
+                $submission->update(['status' => 'in_progress']);
+            }
+        } catch (\Throwable $e) {
+            Log::error('Contact reply email failed: ' . $e->getMessage(), ['submission_id' => $submission->id]);
+            $message = 'Reply saved, but the email could not be sent: ' . $e->getMessage();
+        }
+
+        return redirect()->route('admin.contact-submissions.view', $submission->id)->with('success', $message);
+    }
+
    public function destroy(ContactSubmission $submission)
     {
         $submission->delete();

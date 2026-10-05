@@ -29,7 +29,6 @@
         window.deferredPrompt = null;
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // e.preventDefault(); // Removed to allow automatic browser popup
             window.deferredPrompt = e;
             window.dispatchEvent(new CustomEvent('pwa-installable'));
         });
@@ -40,14 +39,25 @@
         });
 
         window.installPWA = function() {
-            if (!window.deferredPrompt) return;
-            window.deferredPrompt.prompt();
-            window.deferredPrompt.userChoice.then(() => {
-                window.deferredPrompt = null;
-                window.dispatchEvent(new CustomEvent('pwa-installed'));
-            });
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                window.deferredPrompt.userChoice.then(() => {
+                    window.deferredPrompt = null;
+                    window.dispatchEvent(new CustomEvent('pwa-installed'));
+                });
+            } else {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (isIOS) {
+                    window.dispatchEvent(new CustomEvent('open-ios-install-modal'));
+                } else {
+                    alert('To install this app, tap your browser menu and select "Install App" or "Add to Home screen".');
+                }
+            }
         };
     </script>
+
+    <!-- iOS PWA Install Modal -->
+    <x-ios-pwa-modal />
 
 </body>
 </html>

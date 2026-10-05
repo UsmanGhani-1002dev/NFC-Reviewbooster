@@ -12,9 +12,11 @@ class HomeController extends Controller
         $cards = \App\Models\SubscriptionPlan::all();
         $products = \App\Models\Product::where('is_active', true)
             ->with(['variants' => function($q) {
-                $q->where('stock', '>', 0)->orderBy('sort_order');
+                $q->where('stock', '>', 0)->orderBy('sort_order')
+                ->where('name', 'NOT LIKE', '%Plan%')
+                ->where('name', 'NOT LIKE', '%Monthly%')
+                ->where('name', 'NOT LIKE', '%Annual%');
             }])
-            ->orderBy('sort_order')
             ->get();
 
         return view('home', compact('cards', 'products'));
@@ -27,7 +29,8 @@ class HomeController extends Controller
 
     public function howitswork()
     {
-        return view('howitswork');
+        $cards = \App\Models\SubscriptionPlan::all();
+        return view('howitswork', compact('cards'));
     }
 
     public function shippingReturns()

@@ -1,7 +1,11 @@
 {{-- resources/views/components/adminsidebar.blade.php --}}
 <div x-data="{
         sidebarOpen: false,
-        canInstall: false,
+        canInstall: (function() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            return isIOS && !isStandalone;
+        })(),
         init() {
             window.addEventListener('pwa-installable', () => { this.canInstall = true; });
             window.addEventListener('pwa-installed', () => { this.canInstall = false; });
@@ -63,25 +67,25 @@
                 <span class="truncate">Dashboard</span>
             </a>
 
+            <!-- Analytics -->
+            <a href="{{ route('admin.analytics') }}"
+               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.analytics') ? 'bg-blue-100 text-blue-600' : '' }}"
+               @click="sidebarOpen = false">
+                <i data-lucide="bar-chart-3" class="h-5 w-5 flex-shrink-0"></i>
+                <span class="truncate">Analytics</span>
+            </a>
+
             <!-- Manage Reviews -->
-            <a href="{{ route('admin.reviews') }}" 
-               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('business.reviews') ? 'bg-blue-100 text-blue-600' : '' }}"
+            <a href="{{ route('admin.reviews') }}"
+               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.reviews') ? 'bg-blue-100 text-blue-600' : '' }}"
                @click="sidebarOpen = false">
                 <i data-lucide="message-square" class="h-5 w-5 flex-shrink-0"></i>
                 <span class="truncate">Manage Reviews</span>
             </a>
 
-            <!-- View Negative Reviews -->
-            <!-- <a href="{{ route('business.reviews.feedback') }}" 
-               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('business.reviews.feedback') ? 'bg-blue-100 text-blue-600' : '' }}"
-               @click="sidebarOpen = false">
-                <i data-lucide="message-square-off" class="h-5 w-5 flex-shrink-0"></i>
-                <span class="truncate">View Negative Reviews</span>
-            </a> -->
-
             <!-- Manage Users -->
             <a href="{{ route('admin.users.index') }}" 
-               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition"
+               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.users.index') ? 'bg-blue-100 text-blue-600' : '' }}"
                @click="sidebarOpen = false">
                 <i data-lucide="users" class="h-5 w-5 flex-shrink-0"></i>
                 <span class="truncate">Manage Users</span>
@@ -89,7 +93,7 @@
             
             <!-- Manage Businesses -->
             <a href="{{ route('admin.manage_business.index') }}" 
-               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.manage_business.index.*') ? 'bg-blue-100 text-blue-600' : '' }}"
+               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.manage_business.index') ? 'bg-blue-100 text-blue-600' : '' }}"
                @click="sidebarOpen = false">
                 <i data-lucide="building-2" class="h-5 w-5 flex-shrink-0"></i>
                 <span class="truncate">Manage Businesses</span>
@@ -111,9 +115,17 @@
                 <span class="truncate">Manage Orders</span>
             </a>
 
+            <!-- Manage Blog -->
+            <a href="{{ route('admin.blogs.index') }}" 
+               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.blogs.*') ? 'bg-blue-100 text-blue-600' : '' }}"
+               @click="sidebarOpen = false">
+                <i data-lucide="newspaper" class="h-5 w-5 flex-shrink-0"></i>
+                <span class="truncate">Manage Blog</span>
+            </a>
+
             <!-- Manage Subscriptions -->
             <a href="{{ route('admin.manage-subscription.index') }}" 
-               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.manage-subscription.index.*') ? 'bg-blue-100 text-blue-600' : '' }}"
+               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.manage-subscription.index') ? 'bg-blue-100 text-blue-600' : '' }}"
                @click="sidebarOpen = false">
                 <i data-lucide="book-check" class="h-5 w-5 flex-shrink-0"></i>
                 <span class="truncate">Manage Subscriptions</span>
@@ -129,7 +141,7 @@
 
             <!-- Contact Submissions -->
             <a href="{{ route('admin.contact-submissions.index') }}" 
-               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.contact-submissions.index.*') ? 'bg-blue-100 text-blue-600' : '' }}"
+               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('admin.contact-submissions.index') ? 'bg-blue-100 text-blue-600' : '' }}"
                @click="sidebarOpen = false">
                 <i data-lucide="mail" class="h-5 w-5 flex-shrink-0"></i>
                 <span class="truncate">Contact Submissions</span>

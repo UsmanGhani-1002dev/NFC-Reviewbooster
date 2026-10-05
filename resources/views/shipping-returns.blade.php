@@ -25,7 +25,7 @@
      <section class="relative -mt-[100px] pt-[100px] bg-cover bg-center bg-no-repeat text-[#1800ad] font-mulish" style="background-image: url('https://d1yei2z3i6k35z.cloudfront.net/161/609bb9ff8ffc9_Groupedemasques1.jpg');">
         <div class="relative max-w-3xl mx-auto text-center py-20 px-6 md:px-10">
             <h1 class="text-4xl sm:text-5xl font-bold mb-4 leading-tight font-ubuntu ">
-                Shipping & Returns
+                Shipping & Returns Policy
             </h1>
             <p class="text-lg sm:text-md mb-8 leading-relaxed text-[#142D63]">
                 Everything you need to know about how we deliver your Tap Review Cards <br>
@@ -36,13 +36,19 @@
 
     <!-- Content Section -->
     <section class="py-16 bg-white">
-        <div class="max-w-6xl mx-auto px-6 font-mulish text-gray-700 leading-relaxed space-y-20">
+        <div class="max-w-6xl mx-auto px-6 font-mulish text-gray-700 leading-relaxed space-y-12">
             
             <!-- Shipping Info -->
             <div class="space-y-6">
                 <h2 class="text-3xl font-bold text-[#0F172A] font-ubuntu">Shipping Information</h2>
                 <p>
-                    We aim to process and ship all orders within 24-48 hours of purchase (excluding weekends and public holidays). All orders are shipped from our UK facility via Royal Mail or preferred local couriers.
+                    We aim to dispatch all orders within 24–48 hours after your order is confirmed.<br/>
+
+                    UK orders are typically delivered within 1–2 working days using tracked delivery services.
+
+                    International orders may take between 5–10 working days depending on your location.
+
+                    Once your order has been dispatched, you will receive a tracking number via email.
                 </p>
                 <div class="grid md:grid-cols-2 gap-6 mt-6">
                     <div class="p-6 bg-blue-50 rounded-xl border border-blue-100">
@@ -50,7 +56,7 @@
                         <ul class="space-y-2 text-blue-800 text-sm">
                             <li>• Standard Tracked (2-3 working days)</li>
                             <li>• Express Tracked (1-2 working days)</li>
-                            <li>• Free shipping on orders over £50</li>
+                            <li>• Free shipping on orders over £25</li>
                         </ul>
                     </div>
                     <div class="p-6 bg-green-50 rounded-xl border border-green-100">
@@ -67,12 +73,12 @@
       
 
             <!-- Returns Policy -->
-            <div class="space-y-4 pt-6">
+            <div class="space-y-4 pt-2">
                 <h2 class="text-2xl font-bold text-[#0F172A] font-ubuntu">Returns & Refunds</h2>
                 <p>
                     We want you to be 100% satisfied with your Tap Review Cards. If you're not happy with your purchase, we offer a <strong>30-day return policy</strong> for non-customized products.
                 </p>
-                <h3 class="text-xl font-bold text-gray-900 mt-6">Eligibility for Returns:</h3>
+                <h3 class="text-md font-bold text-gray-900 mt-6">Eligibility for Returns:</h3>
                 <ul class="list-disc pl-6 space-y-2">
                     <li>Items must be in the same condition that you received them.</li>
                     <li>Items must be in the original packaging.</li>
@@ -80,26 +86,24 @@
                 </ul>
             </div>
 
-   
-
-            <!-- Damaged Items -->
-            <div class="space-y-4 pt-6">
-                <h2 class="text-2xl font-bold text-[#0F172A] font-ubuntu">Damaged or Defective Items</h2>
+            <!-- NON-RETURNABLE -->
+            <div class="space-y-4 pt-2">
+                <h2 class="text-2xl font-bold text-[#0F172A] font-ubuntu">Non-Returnable</h2>
                 <p>
-                    In the rare event that your order arrives damaged or if there is a printing error, please contact us immediately at <a href="mailto:info@tapreviewcards.co.uk" class="text-blue-600 font-semibold underline">info@tapreviewcards.co.uk</a> with your order number and a photo of the issue.
+                    We cannot accept returns for:
                 </p>
-                <p>
-                    We will prioritize a free replacement for any defective products reported within 7 days of delivery.
-                </p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li>Custom-configured NFC cards</li>
+                    <li>Used or activated products</li>
+                    <li>Digital services or subscriptions</li>
+                </ul>
             </div>
 
-         
-
             <!-- How to start a return -->
-            <div class="space-y-4 pt-6">
+            <div class="space-y-4 pt-2">
                 <h2 class="text-2xl font-bold text-[#0F172A] font-ubuntu">How to Initiate a Return</h2>
                 <ol class="list-decimal pl-6 space-y-4">
-                    <li>Email us at info@tapreviewcards.co.uk with your order number and reason for return.</li>
+                    <li>Email us at <a href="mailto:info@tapreviewcards.co.uk" class="text-blue-600 font-semibold underline">info@tapreviewcards.co.uk</a> with your order number and reason for return.</li>
                     <li>Once approved, we will provide you with the return shipping address.</li>
                     <li>Pack the item securely and ship it back to us (we recommend using a tracked service).</li>
                     <li>Once received and inspected, we will process your refund to your original payment method.</li>

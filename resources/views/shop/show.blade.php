@@ -41,11 +41,13 @@
 
 @section('content')
 
+<style>[x-cloak]{display:none!important;}</style>
+
 <div class="bg-gray-50 py-12 -mt-[100px] pt-[140px]">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
 
-        <div id="product-shop-container" class="grid grid-cols-1 lg:grid-cols-2 gap-12" x-data="productPage()">
+        <div id="product-shop-container" class="grid grid-cols-1 lg:grid-cols-2 gap-12" x-data="productPage()" @place-selected.window="tempPlaceId = $event.detail.id; tempPlaceName = $event.detail.name;">
             <!-- Left: Product Image -->
             <div>
                 <div class="bg-[#d8e4ef] rounded-3xl flex items-center justify-center h-[500px] shadow-inner relative overflow-hidden">
@@ -113,9 +115,19 @@
                 </div>
 
                 <!-- Variant Selector -->
-                <div class="space-y-3 mb-6">
+                @php
+                    $isPartner = auth()->check() && auth()->user()->isApprovedPartner();
+                    $partnerDiscount = $isPartner ? auth()->user()->getPartnerDiscountPercent() : 0;
+                @endphp
+                <div class="-mb-4">
+                    <span class="text-base font-semibold font-ubuntu text-[#6e6e6e]">Select Your Style & Option:</span>
+                </div>
+                <div class="space-y-3 my-6">
                     @foreach($product->variants->sortByDesc('price') as $index => $variant)
-                    <div @click="selectVariant({{ $variant->id }}, '{{ $variant->name }}', {{ $variant->price }}, {{ $variant->original_price }}, {{ $variant->discount_percent }}, {{ $variant->stock }}, '{{ $variant->image ? asset('storage/' . $variant->image) : asset('storage/' . $product->image) }}')"
+                    @php
+                        $vFinalPrice = $partnerDiscount > 0 ? round($variant->price * (1 - ($partnerDiscount / 100)), 2) : $variant->price;
+                    @endphp
+                    <div @click="selectVariant({{ $variant->id }}, '{{ $variant->name }}', {{ $vFinalPrice }}, {{ $variant->original_price }}, {{ $variant->discount_percent }}, {{ $variant->stock }}, '{{ $variant->image ? asset('storage/' . $variant->image) : asset('storage/' . $product->image) }}', {{ $variant->quantity ?? 1 }})"
                          :class="selectedVariantId === {{ $variant->id }} ? 'ring-2 ring-[#142D63] bg-[#142D63] text-white' : 'bg-white border border-gray-200 hover:border-[#00A0FF]'"
                          class="relative flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all duration-300 group">
 
@@ -135,8 +147,10 @@
                         <div class="flex-1">
                             <div class="font-semibold font-ubuntu" :class="selectedVariantId === {{ $variant->id }} ? 'text-white' : 'text-[#142D63]'">{{ $variant->name }}</div>
                             <div class="flex items-center gap-3">
-                                <span class="text-lg font-bold" :class="selectedVariantId === {{ $variant->id }} ? 'text-white' : 'text-[#142D63]'">£{{ number_format($variant->price, 2) }}</span>
-                                @if($variant->discount_percent > 0)
+                                <span class="text-lg font-bold" :class="selectedVariantId === {{ $variant->id }} ? 'text-white' : 'text-[#142D63]'">£{{ number_format($vFinalPrice, 2) }}</span>
+                                @if($partnerDiscount > 0)
+                                <span class="bg-purple-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $partnerDiscount }}% Partner Off</span>
+                                @elseif($variant->discount_percent > 0)
                                 <span class="bg-[#0cc0df] text-white text-xs font-bold px-2 py-0.5 rounded-full">save {{ $variant->discount_percent }}%</span>
                                 @endif
                             </div>
@@ -153,6 +167,78 @@
                     @endforeach
                 </div>
 
+                <!-- Custom Logo Add-on Swatch / Checkbox -->
+                @php
+                    $productSearchText = strtolower(($product->name ?? '') . ' ' . ($product->slug ?? '') . ' ' . ($product->subtitle ?? ''));
+                    $isKeyringProduct = \Illuminate\Support\Str::contains($productSearchText, ['keyring', 'key ring', 'keychain', 'key chain', 'rating tag']);
+                @endphp
+
+                @if($isKeyringProduct)
+                <div class="mb-6 bg-gradient-to-r from-blue-50/80 via-indigo-50/60 to-cyan-50/80 p-4 rounded-2xl border border-blue-200 shadow-sm transition-all duration-300 hover:border-blue-400">
+                    <label class="flex items-start gap-3.5 cursor-pointer select-none">
+                        <input type="checkbox" x-model="hasCustomLogo" @change="updateFinalPrice()" 
+                               class="mt-1 w-5 h-5 rounded border-gray-300 text-[#142D63] focus:ring-[#00A0FF] transition-all">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-[#142D63] font-ubuntu text-sm sm:text-base flex items-center gap-2">
+                                    <span>🎨 Custom Company Logo & Design</span>
+                                    <span class="bg-[#00A0FF] text-white text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full shadow-sm">Add-on</span>
+                                </span>
+                                <span class="font-extrabold text-[#142D63] text-sm sm:text-base">+£2.99</span>
+                            </div>
+                            <p class="text-xs text-gray-600 font-mulish mt-1">
+                                Print your custom business logo, branding colors, and unique artwork onto your review products.
+                            </p>
+                        </div>
+                    </label>
+
+                    <!-- Logo File Uploader (shown when add-on selected) -->
+                    <div x-show="hasCustomLogo" x-transition x-cloak class="mt-4 pt-4 border-t border-blue-200/70">
+                        <label class="block text-xs font-bold text-[#142D63] font-ubuntu mb-2">
+                            Upload your logo / artwork <span class="text-red-500">*</span>
+                        </label>
+
+                        <!-- Empty state: choose file -->
+                        <label x-show="!customLogoPath && !customLogoUploading"
+                               class="flex flex-col items-center justify-center gap-2 w-full border-2 border-dashed border-blue-300 rounded-xl p-5 cursor-pointer bg-white/60 hover:bg-white hover:border-[#00A0FF] transition-all text-center">
+                            <svg class="w-8 h-8 text-[#00A0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.9A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                            <span class="text-xs font-semibold text-gray-600 font-mulish">Click to upload your logo</span>
+                            <span class="text-[10px] text-gray-400 font-mulish">PNG, JPG, SVG, WEBP or PDF · max 5MB</span>
+                            <input type="file" class="hidden" accept=".jpg,.jpeg,.png,.svg,.webp,.pdf,image/*,application/pdf" @change="uploadLogo($event)">
+                        </label>
+
+                        <!-- Uploading state -->
+                        <div x-show="customLogoUploading" class="flex items-center gap-3 w-full border border-blue-200 rounded-xl p-4 bg-white">
+                            <svg class="animate-spin h-5 w-5 text-[#00A0FF]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                            <span class="text-xs font-semibold text-gray-600 font-mulish">Uploading your logo…</span>
+                        </div>
+
+                        <!-- Uploaded state -->
+                        <div x-show="customLogoPath && !customLogoUploading" class="flex items-center justify-between gap-3 w-full border border-green-200 rounded-xl p-3 bg-green-50">
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <div class="w-10 h-10 rounded-lg bg-white border border-green-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                    <template x-if="customLogoIsImage">
+                                        <img :src="customLogoUrl" class="w-full h-full object-contain" alt="Logo preview">
+                                    </template>
+                                    <template x-if="!customLogoIsImage">
+                                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    </template>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-bold text-green-800 font-mulish truncate" x-text="customLogoName"></p>
+                                    <p class="text-[10px] text-green-600 font-mulish">Logo attached ✓</p>
+                                </div>
+                            </div>
+                            <button type="button" @click="removeLogo()" class="text-gray-400 hover:text-red-500 transition-colors p-1 flex-shrink-0" title="Remove logo">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+
+                        <p x-show="customLogoError" x-text="customLogoError" class="text-xs text-red-600 font-mulish mt-2"></p>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Stock Urgency -->
                 <div class="mb-6" x-show="selectedStock > 0">
                     <p class="text-sm text-gray-500 uppercase tracking-wider font-mulish">
@@ -163,46 +249,151 @@
                     </div>
                 </div>
 
+                <!-- Quantity Selector -->
+                <div class="mb-6 flex flex-wrap items-center justify-between gap-4 p-4 bg-gray-100/70 rounded-2xl border border-gray-200 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-bold text-[#142D63] font-ubuntu uppercase tracking-wider">Quantity:</span>
+                        <div class="inline-flex items-center bg-white border border-gray-300 rounded-xl overflow-hidden shadow-sm">
+                            <button type="button" @click="decreaseQty()" 
+                                    :disabled="selectedQty <= 1"
+                                    :class="selectedQty <= 1 ? 'text-gray-300 cursor-not-allowed' : 'text-[#142D63] hover:bg-gray-100 cursor-pointer'"
+                                    class="w-10 h-10 flex items-center justify-center text-lg font-bold transition-colors select-none">
+                                −
+                            </button>
+                            <input type="number" x-model.number="selectedQty" @input="validateQty()" min="1" :max="selectedStock > 0 ? selectedStock : 99"
+                                   class="w-12 h-10 text-center font-bold text-[#142D63] font-ubuntu border-none focus:ring-0 p-0 text-base [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                            <button type="button" @click="increaseQty()" 
+                                    :disabled="selectedStock > 0 && selectedQty >= selectedStock"
+                                    :class="(selectedStock > 0 && selectedQty >= selectedStock) ? 'text-gray-300 cursor-not-allowed' : 'text-[#142D63] hover:bg-gray-100 cursor-pointer'"
+                                    class="w-10 h-10 flex items-center justify-center text-lg font-bold transition-colors select-none">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-gray-500 font-mulish block">Total Price</span>
+                        <span class="text-xl font-extrabold text-[#142D63] font-ubuntu" x-text="'£' + (parseFloat(selectedPrice) * selectedQty).toFixed(2)"></span>
+                    </div>
+                </div>
+
                 <!-- Location Selection -->
                 <div class="mb-6">
-                    <p class="text-gray-700 font-bold mb-4 font-ubuntu text-lg">Where should we link your cards?</p>
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <p class="text-gray-700 font-bold font-ubuntu text-lg">Where should we link your cards?</p>
+                            <p class="text-xs text-gray-500 font-mulish mt-0.5" x-show="!skipForNow">
+                                Locations: <span class="font-bold text-[#142D63]" x-text="locations.length"></span> / <span class="font-bold text-[#142D63]" x-text="maxAllowedLocations()"></span> max
+                            </p>
+                        </div>
+                        
+                        <!-- Small Toggle -->
+                        <div class="inline-flex p-0.5 bg-gray-100 rounded-lg border border-gray-200 text-xs font-semibold">
+                            <button type="button" @click="setLinkMode('search')"
+                                    :class="linkMode === 'search' ? 'bg-white text-[#142D63] shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+                                    class="px-2.5 py-1 rounded-md transition-all flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                <span>Search</span>
+                            </button>
+                            <button type="button" @click="setLinkMode('direct')"
+                                    :class="linkMode === 'direct' ? 'bg-white text-[#142D63] shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+                                    class="px-2.5 py-1 rounded-md transition-all flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                <span>Paste Direct URL</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Location Limit Max Reached Notice -->
+                    <div x-show="!skipForNow && locations.length >= maxAllowedLocations()" class="p-3 bg-amber-50 border border-amber-200 rounded-xl mb-3 text-xs text-amber-900 font-mulish flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Max location limit (<strong x-text="maxAllowedLocations()"></strong>) reached for quantity <strong x-text="selectedQty"></strong>.</span>
+                        </div>
+                        <button type="button" @click="increaseQty()" class="text-xs font-bold text-amber-900 underline hover:text-amber-700 cursor-pointer flex-shrink-0 ml-2">
+                            + Add Qty
+                        </button>
+                    </div>
                     
                     <!-- Added Locations List -->
-                    <div class="space-y-3 mb-4" x-show="locations.length > 0">
+                    <div class="space-y-3 mb-4" x-show="!skipForNow && locations.length > 0">
                         <template x-for="(loc, index) in locations" :key="index">
                             <div class="flex items-center justify-between bg-white border border-gray-200 p-3 rounded-xl shadow-sm animate-fade-in group hover:border-green-400 transition-all duration-200">
-                                <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-3 overflow-hidden">
                                     <div class="w-8 h-8 bg-green-50 text-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     </div>
-                                    <span class="text-sm font-semibold text-[#142D63] font-mulish" x-text="loc.name"></span>
+                                    <span class="text-sm font-semibold text-[#142D63] font-mulish truncate" x-text="loc.name"></span>
                                 </div>
-                                <button @click="removeLocation(index)" class="text-gray-300 hover:text-red-500 transition-colors p-1 group-hover:bg-red-50 rounded-lg">
+                                <button @click="removeLocation(index)" class="text-gray-300 hover:text-red-500 transition-colors p-1 group-hover:bg-red-50 rounded-lg flex-shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                 </button>
                             </div>
                         </template>
                     </div>
 
-                    <p class="text-gray-600 font-mulish mb-2 text-sm font-bold" x-text="locations.length > 0 ? 'Add another location' : 'Search your business location'"></p>
-                    <div class="relative flex gap-2">
-                        <div class="relative flex-1">
-                            <input type="text" id="google-places-input" x-model="tempPlaceName"
-                                   :placeholder="locations.length > 0 ? 'e.g. 2nd branch address' : 'Please search your business here'"
-                                   class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all font-mulish pr-10">
-                            <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" x-show="!tempPlaceName">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                            </div>
+                    <!-- Skip for now active notice -->
+                    <div x-show="skipForNow" class="p-3.5 bg-blue-50/80 border border-blue-200 rounded-xl mb-4 animate-fade-in flex items-start gap-3">
+                        <div class="w-7 h-7 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
-                        <button @click="addLocation()" 
-                                :disabled="!tempPlaceId"
-                                :class="!tempPlaceId ? 'bg-gray-100 text-gray-400' : 'bg-[#142D63] text-white hover:bg-[#00A0FF]'"
-                                class="px-6 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center shadow-md">
-                            Confirm
+                        <div class="flex-1 text-xs font-mulish text-[#142D63]">
+                            <p class="font-bold text-sm text-[#142D63] mb-0.5">Linking skipped for now</p>
+                            <p class="text-gray-600">No problem! You can order now and our team will contact you for your Google review link before dispatch, or you can supply it via your order confirmation.</p>
+                        </div>
+                        <button type="button" @click="skipForNow = false" class="text-xs font-bold text-blue-600 hover:underline">
+                            Change
                         </button>
                     </div>
-                    <p class="text-xs text-gray-400 mt-2 font-mulish" x-show="locations.length === 0">Example: 38 Mayfair Row, London 1BX456</p>
-                    <input type="hidden" id="google-place-id" x-model="tempPlaceId">
+
+                    <!-- Location Input Container (hidden when skipForNow is true or locations limit reached) -->
+                    <div x-show="!skipForNow && locations.length < maxAllowedLocations()">
+                        <p class="text-gray-600 font-mulish mb-2 text-sm font-bold" 
+                           x-text="locations.length > 0 ? 'Add another location' : (linkMode === 'search' ? 'Search your business location' : 'Paste Your Website link or business name')"></p>
+                        
+                        <div class="relative flex gap-2">
+                            <div class="relative flex-1">
+                                <!-- Mode 1: Search (Google Autocomplete) -->
+                                <input x-show="linkMode === 'search'" type="text" id="google-places-input" x-model="tempPlaceName"
+                                       :placeholder="locations.length > 0 ? 'e.g. 2nd branch address' : 'Please search your business here'"
+                                       class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all font-mulish pr-10">
+                                
+                                <!-- Mode 2: Direct Link / Service Business -->
+                                <input x-show="linkMode === 'direct'" type="text" id="direct-link-input" x-model="tempDirectInput"
+                                       placeholder="e.g. Google link, Trustpilot, Instagram, or website URL"
+                                       @keydown.enter.prevent="addLocation()"
+                                       class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all font-mulish pr-10">
+
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" x-show="(linkMode === 'search' && !tempPlaceName) || (linkMode === 'direct' && !tempDirectInput)">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                </div>
+                            </div>
+                            <button type="button" @click="addLocation()" 
+                                    :disabled="(linkMode === 'search' && !tempPlaceName) || (linkMode === 'direct' && !tempDirectInput)"
+                                    :class="((linkMode === 'search' && !tempPlaceName) || (linkMode === 'direct' && !tempDirectInput)) ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-[#142D63] text-white hover:bg-[#00A0FF] cursor-pointer'"
+                                    class="px-6 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center shadow-md">
+                                Confirm
+                            </button>
+                        </div>
+
+                        <!-- Helper notes -->
+                        <p class="text-xs text-gray-400 mt-2 font-mulish" x-show="linkMode === 'search' && locations.length === 0">
+                            Example: 38 Mayfair Row, London 1BX456
+                        </p>
+                        <p class="text-xs text-blue-600 mt-2 font-mulish flex items-center gap-1" x-show="linkMode === 'direct' && locations.length === 0">
+                            <span>💡 Works with Google, Trustpilot, Instagram, TripAdvisor, or any custom URL/business name.</span>
+                        </p>
+                        <input type="hidden" id="google-place-id" x-model="tempPlaceId">
+                    </div>
+
+                    <!-- Skip for now button/toggle -->
+                    <div class="mt-3 flex items-center justify-between pt-2 border-t border-gray-100">
+                        <button type="button" @click="toggleSkip()" 
+                                class="inline-flex items-center gap-1.5 text-xs font-semibold transition-colors cursor-pointer"
+                                :class="skipForNow ? 'text-gray-500 hover:text-gray-700' : 'text-blue-600 hover:text-blue-800 hover:underline'">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+                            <span x-text="skipForNow ? '← Add a location or link instead' : 'Don\'t have your link ready? Skip for now and set up later'"></span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Buy Now Button -->
@@ -437,7 +628,7 @@
         @endif
 
         <!-- SEO Content: Internal Links -->
-        <div class="mt-8 bg-gradient-to-r from-[#1800ad] to-[#0cc0df] rounded-2xl p-8 md:p-12 text-white text-center">
+        <div class="mt-8 bg-gradient-to-br from-[#1800ad] to-[#0a0060] rounded-2xl p-8 md:p-12 text-white text-center">
             <h2 class="text-2xl font-bold mb-4 font-ubuntu">Explore More From Tap Review Cards</h2>
             <p class="text-white/80 font-mulish mb-8">Discover our full range of NFC review cards, stands, and keyrings designed for UK businesses.</p>
             <div class="flex flex-wrap justify-center gap-4">
@@ -491,54 +682,196 @@ function productPage() {
     return {
         selectedVariantId: {{ $initialVariant?->id ?? 'null' }},
         selectedVariantName: '{{ $initialVariant?->name ?? '' }}',
-        selectedPrice: {{ $initialVariant?->price ?? 0 }},
+        variantPackQty: {{ $initialVariant?->quantity ?? 1 }},
+        selectedQty: 1,
+        basePrice: {{ $initialVariant ? ($partnerDiscount > 0 ? round($initialVariant->price * (1 - ($partnerDiscount / 100)), 2) : $initialVariant->price) : 0 }},
+        selectedPrice: {{ $initialVariant ? ($partnerDiscount > 0 ? round($initialVariant->price * (1 - ($partnerDiscount / 100)), 2) : $initialVariant->price) : 0 }},
         selectedOriginalPrice: {{ $initialVariant?->original_price ?? 0 }},
         selectedDiscount: {{ $initialVariant?->discount_percent ?? 0 }},
         selectedStock: {{ $initialVariant?->stock ?? 0 }},
+        hasCustomLogo: false,
+        customLogoPath: '',
+        customLogoUrl: '',
+        customLogoName: '',
+        customLogoUploading: false,
+        customLogoError: '',
+        get customLogoIsImage() {
+            return /\.(png|jpe?g|svg|webp)$/i.test((this.customLogoName || this.customLogoUrl || '').toLowerCase());
+        },
         mainImage: '{{ $initialImage }}',
         galleryImages: @json($galleryItems),
         activeGalleryIdx: {{ $initialGalleryIdx }},
         locations: [],
         tempPlaceName: '',
         tempPlaceId: '',
+        linkMode: 'search',
+        skipForNow: false,
+        tempDirectInput: '',
+
+        maxAllowedLocations() {
+            const qty = parseInt(this.selectedQty) || 1;
+            const packQty = parseInt(this.variantPackQty) || 1;
+            return qty * packQty;
+        },
+
+        enforceLocationLimit() {
+            const maxLocs = this.maxAllowedLocations();
+            if (this.locations.length > maxLocs) {
+                this.locations = this.locations.slice(0, maxLocs);
+            }
+        },
+
+        increaseQty() {
+            if (this.selectedStock > 0 && this.selectedQty >= this.selectedStock) {
+                alert(`Sorry, only ${this.selectedStock} item(s) available in stock.`);
+                return;
+            }
+            this.selectedQty++;
+        },
+
+        decreaseQty() {
+            if (this.selectedQty > 1) {
+                this.selectedQty--;
+                this.enforceLocationLimit();
+            }
+        },
+
+        validateQty() {
+            if (!this.selectedQty || this.selectedQty < 1) {
+                this.selectedQty = 1;
+            } else if (this.selectedStock > 0 && this.selectedQty > this.selectedStock) {
+                this.selectedQty = this.selectedStock;
+            }
+            this.enforceLocationLimit();
+        },
+
+        setLinkMode(mode) {
+            this.linkMode = mode;
+            if (this.skipForNow) this.skipForNow = false;
+        },
+
+        toggleSkip() {
+            this.skipForNow = !this.skipForNow;
+            if (this.skipForNow) {
+                this.tempPlaceName = '';
+                this.tempDirectInput = '';
+                this.tempPlaceId = '';
+            }
+        },
+
+        init() {
+            window.addEventListener('place-selected', (e) => {
+                this.tempPlaceId = e.detail.id;
+                this.tempPlaceName = e.detail.name;
+                const input = document.getElementById('google-places-input');
+                if (input) input.value = e.detail.name;
+            });
+        },
+
+        updateFinalPrice() {
+            const base = parseFloat(this.basePrice) || 0;
+            this.selectedPrice = (this.hasCustomLogo ? (base + 2.99) : base).toFixed(2);
+            // Clear any attached logo when the add-on is switched off.
+            if (!this.hasCustomLogo) {
+                this.removeLogo();
+            }
+        },
+
+        async uploadLogo(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            this.customLogoError = '';
+            this.customLogoUploading = true;
+
+            const formData = new FormData();
+            formData.append('logo', file);
+
+            try {
+                const res = await fetch('{{ route('shop.upload-logo') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    this.customLogoPath = data.path;
+                    this.customLogoUrl = data.url;
+                    this.customLogoName = data.name || 'logo';
+                } else {
+                    this.customLogoError = data.message || 'Upload failed. Please try again.';
+                }
+            } catch (e) {
+                console.error('Logo upload failed:', e);
+                this.customLogoError = 'Upload failed. Please check your connection and try again.';
+            } finally {
+                this.customLogoUploading = false;
+                if (event.target) event.target.value = '';
+            }
+        },
+
+        removeLogo() {
+            this.customLogoPath = '';
+            this.customLogoUrl = '';
+            this.customLogoName = '';
+            this.customLogoError = '';
+        },
 
         addLocation() {
-            if (!this.tempPlaceId || !this.tempPlaceName) return;
-            
-            // Check for duplicates
-            const exists = this.locations.some(loc => loc.id === this.tempPlaceId);
-            if (exists) {
-                // If using a global toast system, use it here
-                if (window.toast) window.toast('This location has already been added.', 'warning');
-                else alert('This location has already been added.');
-                
-                this.tempPlaceId = '';
-                this.tempPlaceName = '';
+            if (this.locations.length >= this.maxAllowedLocations()) {
+                alert(`Maximum allowed locations (${this.maxAllowedLocations()}) reached for quantity ${this.selectedQty}. Please increase item quantity to add more locations.`);
                 return;
             }
 
+            let placeName = '';
+            let placeId = '';
+
+            if (this.linkMode === 'direct') {
+                placeName = (this.tempDirectInput || '').trim();
+                if (!placeName) return;
+                placeId = (placeName.startsWith('http://') || placeName.startsWith('https://'))
+                    ? placeName
+                    : ('direct-' + Date.now());
+                this.tempDirectInput = '';
+            } else {
+                const input = document.getElementById('google-places-input');
+                placeName = (this.tempPlaceName || (input ? input.value : '')).trim();
+                if (!placeName) return;
+                placeId = this.tempPlaceId || ('loc-' + Date.now());
+                this.tempPlaceId = '';
+                this.tempPlaceName = '';
+                if (input) input.value = '';
+            }
+
+            // Check for duplicates
+            const exists = this.locations.some(loc => loc.id === placeId || loc.name === placeName);
+            if (exists) return;
+
             this.locations.push({
-                id: this.tempPlaceId,
-                name: this.tempPlaceName
+                id: placeId,
+                name: placeName
             });
-            this.tempPlaceId = '';
-            this.tempPlaceName = '';
-            // Blur the input to show the updated list clearly
-            document.getElementById('google-places-input').blur();
+            this.skipForNow = false;
         },
 
         removeLocation(index) {
             this.locations.splice(index, 1);
         },
 
-        selectVariant(id, name, price, originalPrice, discount, stock, image) {
+        selectVariant(id, name, price, originalPrice, discount, stock, image, quantity = 1) {
             this.selectedVariantId = id;
             this.selectedVariantName = name;
-            this.selectedPrice = price;
+            this.basePrice = price;
             this.selectedOriginalPrice = originalPrice;
             this.selectedDiscount = discount;
             this.selectedStock = stock;
             this.mainImage = image;
+            this.variantPackQty = quantity || 1;
+            this.updateFinalPrice();
+            this.enforceLocationLimit();
             // Sync gallery active thumbnail
             for (let i = 0; i < this.galleryImages.length; i++) {
                 if (this.galleryImages[i].src === image) {
@@ -550,32 +883,61 @@ function productPage() {
 
         addToCart() {
             if (!this.selectedVariantId) return;
-            
-            // If locations list is empty but search box has a value that was matched, add it first
-            if (this.locations.length === 0 && this.tempPlaceId) {
-                this.addLocation();
-            }
 
-            if (this.locations.length === 0) {
-                alert('Please add at least one location.');
+            if (this.customLogoUploading) {
+                alert('Please wait for your logo to finish uploading.');
+                return;
+            }
+            if (this.hasCustomLogo && !this.customLogoPath) {
+                this.customLogoError = 'Please upload your logo to continue, or uncheck the custom logo add-on.';
+                alert('Please upload your custom logo, or uncheck the "Custom Company Logo & Design" add-on.');
                 return;
             }
 
+            if (this.skipForNow) {
+                this.locations = [{
+                    id: 'skip-setup-later',
+                    name: 'Skip for now (Link later)'
+                }];
+            } else {
+                // If locations list is empty but search box has a value, auto-confirm it (if within max limit)
+                if (this.locations.length < this.maxAllowedLocations()) {
+                    if (this.linkMode === 'direct' && (this.tempDirectInput || '').trim()) {
+                        this.addLocation();
+                    } else if (this.linkMode === 'search') {
+                        const input = document.getElementById('google-places-input');
+                        if (this.tempPlaceName || (input && input.value.trim())) {
+                            this.addLocation();
+                        }
+                    }
+                }
+
+                if (this.locations.length === 0) {
+                    alert('Please search your business location, enter a direct review link, or select "Skip for now".');
+                    return;
+                }
+            }
+
             const cart = JSON.parse(localStorage.getItem('rb_cart') || '[]');
+            const finalVariantName = this.hasCustomLogo ? (this.selectedVariantName + ' + Custom Logo') : this.selectedVariantName;
             
-            // We use a formatted location name and join multiple IDs if necessary
-            // For better UX, we'll store the full array in a new 'locationList' property
+            const itemQty = parseInt(this.selectedQty) || 1;
+
             const newItem = {
                 variantId: this.selectedVariantId,
-                name: this.selectedVariantName,
+                name: finalVariantName,
                 productName: '{{ $product->name }}',
                 price: parseFloat(this.selectedPrice),
+                hasCustomLogo: this.hasCustomLogo,
+                customLogoFee: this.hasCustomLogo ? 2.99 : 0.00,  // Custom Logo Price
+                customLogoPath: this.hasCustomLogo ? this.customLogoPath : '',
+                customLogoName: this.hasCustomLogo ? this.customLogoName : '',
                 image: this.mainImage,
                 placeId: this.locations[0].id, // Fallback for existing checkout
                 placeName: this.locations[0].name, // Fallback for existing checkout
                 locationList: this.locations, // Full array for enhanced features
                 locationText: this.locations.map(l => l.name).join(', '),
-                qty: 1
+                qty: itemQty
             };
 
             const existingIdx = cart.findIndex(i => 
@@ -584,7 +946,7 @@ function productPage() {
             );
             
             if (existingIdx > -1) {
-                cart[existingIdx].qty++;
+                cart[existingIdx].qty += newItem.qty;
             } else {
                 cart.push(newItem);
             }
@@ -592,13 +954,29 @@ function productPage() {
             localStorage.setItem('rb_cart', JSON.stringify(cart));
             window.dispatchEvent(new CustomEvent('cart-updated'));
             window.dispatchEvent(new CustomEvent('open-cart'));
+
+            // Analytics: add-to-cart beacon (fire and forget)
+            try {
+                fetch('{{ route('track.event') }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'add_to_cart',
+                        variant_id: newItem.variantId,
+                        quantity: newItem.qty,
+                        value: (parseFloat(newItem.price) || 0) * (newItem.qty || 1)
+                    }),
+                    keepalive: true
+                }).catch(function () {});
+            } catch (e) {}
         }
     };
 }
 
 function initAutocomplete() {
     const input = document.getElementById('google-places-input');
-    if (!input) return;
+    if (!input || input.dataset.autocompleteBound) return;
+    input.dataset.autocompleteBound = "true";
 
     const autocomplete = new google.maps.places.Autocomplete(input, {
         types: ['establishment'],
@@ -607,11 +985,28 @@ function initAutocomplete() {
 
     autocomplete.addListener('place_changed', function () {
         const place = autocomplete.getPlace();
-        if (place.place_id) {
-            // Update Alpine.js data with specific selector
-            const component = document.getElementById('product-shop-container').__x.$data;
-            component.tempPlaceId = place.place_id;
-            component.tempPlaceName = place.formatted_address || place.name;
+        if (place) {
+            const pId = place.place_id || ('loc-' + Date.now());
+            
+            let pName = input.value;
+            if (place.name && place.formatted_address) {
+                if (place.formatted_address.toLowerCase().includes(place.name.toLowerCase())) {
+                    pName = place.formatted_address;
+                } else {
+                    pName = place.name + ' - ' + place.formatted_address;
+                }
+            } else if (place.name) {
+                pName = place.name;
+            } else if (place.formatted_address) {
+                pName = place.formatted_address;
+            }
+
+            window.dispatchEvent(new CustomEvent('place-selected', {
+                detail: {
+                    id: pId,
+                    name: pName
+                }
+            }));
         }
     });
 }

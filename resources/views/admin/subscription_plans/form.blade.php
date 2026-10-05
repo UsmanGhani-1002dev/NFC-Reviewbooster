@@ -33,7 +33,9 @@
         <input 
             type="number" 
             id="price" 
-            name="price" 
+            name="price"
+            step="any"
+            min="0" 
             value="{{ old('price', $plan->price ?? '') }}" 
             required 
             class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -81,6 +83,19 @@
         />
     </div>
 
+    {{-- AI Review Replies --}}
+    <div class="mb-8">
+        <label class="flex items-start gap-3 cursor-pointer select-none rounded-lg border border-gray-200 bg-gray-50/60 p-4 hover:border-blue-300 transition">
+            <input type="checkbox" name="has_ai_replies" value="1"
+                   {{ old('has_ai_replies', $plan->has_ai_replies ?? false) ? 'checked' : '' }}
+                   class="mt-0.5 w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+            <span>
+                <span class="block text-sm font-semibold text-gray-800">Enable AI Review Replies</span>
+                <span class="block text-xs text-gray-500">Subscribers on this plan can generate AI-written responses to their reviews (Google Gemini).</span>
+            </span>
+        </label>
+    </div>
+
     {{-- Actions --}}
     <div class="flex items-center justify-between">
         <a href="{{ route('admin.subscription-plans.index') }}"
@@ -102,8 +117,6 @@
             console.log('Initializing CKEditor 4.16.2...');
 
             const textareaEl = document.getElementById('description');
-            // const textareaEn = document.getElementById('text_en');
-
 
             const config = {
                 height: 400,

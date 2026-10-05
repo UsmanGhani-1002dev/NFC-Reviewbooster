@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>New Registration - Review Booster</title>
+    <title>New Registration - Tap Review Cards</title>
     <style>
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f1f5f9; color: #0f172a; margin: 0; padding: 0; }
         .wrapper { background: #f1f5f9; padding: 40px 20px; }

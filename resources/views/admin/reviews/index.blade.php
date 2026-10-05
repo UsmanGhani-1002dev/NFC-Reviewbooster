@@ -536,6 +536,12 @@
     
         document.addEventListener('DOMContentLoaded', function() {
             const modal = document.getElementById('reviewModal');
+            // Keep the modal pinned to the viewport: move it out of any
+            // transformed/animated ancestor so position:fixed centres on the
+            // screen instead of mid-page (which would require scrolling).
+            if (modal && modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
             const viewButtons = document.querySelectorAll('.view-review-btn');
             const closeButtons = document.querySelectorAll('.close-modal');
     

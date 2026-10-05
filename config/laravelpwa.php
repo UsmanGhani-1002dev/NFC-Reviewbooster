@@ -3,7 +3,7 @@
 return [
     'name'             => 'Tap Review Cards',
     'short_name'       => 'Tap Review Cards',
-    'start_url'        => '/',
+    'start_url'        => '/dashboard',
     'background_color' => '#0f2158',
     'theme_color'      => '#0f2158',
     'display'          => 'standalone',

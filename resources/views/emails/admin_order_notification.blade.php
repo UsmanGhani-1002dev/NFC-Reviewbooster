@@ -29,12 +29,23 @@
             <span class="label">Order Total</span>
             <div class="value">£{{ number_format($order->total, 2) }}</div>
 
-            <span class="label">Product</span>
+            <span class="label">Products</span>
             @foreach($order->items as $item)
-                <div class="value">{{ $item->product_name }} - {{ $item->variant_name }}</div>
+                <div class="value">
+                    {{ $item->product_name }} - {{ $item->variant_name }} &times; {{ $item->quantity }}
+                    @if(!empty($item->locations))
+                        @foreach($item->locations as $loc)
+                        <div style="font-size: 12px; color: #555555; margin-top: 3px; font-weight: 400;">
+                            &#128205; {{ $loc['name'] }} &mdash;
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($loc['name']) }}&query_place_id={{ $loc['id'] }}" style="color: #01A0FF; text-decoration: none;">Map</a>
+                        </div>
+                        @endforeach
+                    @endif
+                </div>
             @endforeach
 
-            @if($order->google_place_name)
+            @php $hasItemLocations = $order->items->contains(fn($i) => !empty($i->locations)); @endphp
+            @if(!$hasItemLocations && $order->google_place_name)
                 <span class="label">Target Business</span>
                 <div class="value">{{ $order->google_place_name }}</div>
                 <div class="label" style="margin-top: -10px; margin-bottom: 15px;">Place ID: {{ $order->google_place_id }}</div>

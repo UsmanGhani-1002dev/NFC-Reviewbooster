@@ -34,7 +34,7 @@ class UserRegisteredAndSubscribed extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🎉 New User Registered & Subscribed'
+            subject: 'New User Registered & Subscribed'
         );
     }
 

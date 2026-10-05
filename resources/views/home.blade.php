@@ -26,10 +26,10 @@
     "mainEntity": [
         {
             "@type": "Question",
-            "name": "What type of businesses does this work for?",
+            "name": "What type of businesses does Tap Review Cards work for?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The Review Boost system will work for any business that sees its customers or clients face to face and so can tap the card on the customer's phone. As an example, we have users who are hairdressers, restaurants, plumbers, beauty salons, electricians etc."
+                "text": "Tap Review Cards works for any business that serves customers face to face — so staff can simply tap the card on the customer's phone at the point of service. We have users who are hairdressers, restaurants, plumbers, beauty salons, electricians, and many more."
             }
         },
         {
@@ -37,23 +37,23 @@
             "name": "Do the Tap Cards work on every phone?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The Tap Cards work on both iPhone and Android phones. If your customer has an old non-smartphone though, the Tap Card may not work. They do work on the vast majority of phones though, and for the few that don't, we also include a QR code on every card that the customer can scan with their phone instead."
+                "text": "Tap Cards work on both iPhone and Android phones. For older non-smartphones, the NFC tap may not work, but every card also includes a QR code that customers can scan with their camera instead — so you never miss a review opportunity."
             }
         },
         {
             "@type": "Question",
-            "name": "Will it improve my Google ranking?",
+            "name": "Will collecting more reviews improve my Google ranking?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. More positive reviews help improve your visibility in Google search and maps."
+                "text": "Yes. A consistent stream of genuine customer reviews helps improve your visibility in Google Search and Google Maps, making it easier for new customers to find your business."
             }
         },
         {
             "@type": "Question",
-            "name": "If an employee leaves, can a Tap Card be used by someone else?",
+            "name": "If an employee leaves, can their Tap Card be reassigned?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes of course. You can simply log in to your Dashboard and change the employee's name to the new name. The new person will then be able to use the same Tap Card and will appear on the Leaderboard as the new name."
+                "text": "Yes. Simply log in to your Dashboard and update the employee name. The new team member can immediately use the same Tap Card and will appear on the Leaderboard under their name."
             }
         },
         {
@@ -61,31 +61,31 @@
             "name": "What happens after I place my order?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Once you've placed your order we'll send you an email asking you for some information to enable us to set up your Review Boost system. We'll then create your Dashboard login, add your staff to the system and create their Tap Cards. This is normally all done within 48 hours of receiving your order."
+                "text": "After your order is placed, we'll email you to collect a few details needed to set up your account. We'll then create your Dashboard login, add your team members, and prepare your Tap Cards — all typically completed within 48 hours of receiving your information."
             }
         },
         {
             "@type": "Question",
-            "name": "How quickly will we see results?",
+            "name": "How quickly will I see results?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Most businesses start to see results the very first day they begin using their cards. New 4 and 5-star reviews which immediately get seen by new potential customers."
+                "text": "Most businesses start collecting genuine customer reviews on their very first day of use. New reviews appear on your Google Business Profile quickly and are immediately visible to potential customers searching for your services."
             }
         },
         {
             "@type": "Question",
-            "name": "Why do we need more reviews and regular reviews?",
+            "name": "Why are regular reviews important for my business?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "For two main reasons: Customers check reviews before choosing a business, and Search Engines rank businesses with lots of quality 4 and 5-star reviews higher than businesses with fewer or lower-rated reviews."
+                "text": "For two key reasons: First, the majority of customers read reviews before choosing a business. Second, search engines like Google rank businesses with consistent, genuine reviews higher in local search results — helping you attract more customers over time."
             }
         },
         {
             "@type": "Question",
-            "name": "How fast can I start getting reviews?",
+            "name": "How fast can I start collecting reviews?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Instantly. Once your account is live, you can begin collecting reviews the same day with your smart tap card or link."
+                "text": "Instantly. Once your account is live and your Tap Cards arrive, you can start collecting genuine customer reviews the same day — with no app, no login, and no friction for your customers."
             }
         }
     ]
@@ -95,7 +95,7 @@
 
 @section('content')
 
-    <div class="bg-cover bg-no-repeat relative -mt-[100px] pt-[120px] rounded-b-[100px]" style="background-image: url('https://d1yei2z3i6k35z.cloudfront.net/161/609bb9ff8ffc9_Groupedemasques1.jpg');">
+    <div class="bg-cover bg-no-repeat relative -mt-[100px] pt-[120px]" style="background-image: url('https://d1yei2z3i6k35z.cloudfront.net/161/609bb9ff8ffc9_Groupedemasques1.jpg');">
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-20 left-10 w-32 h-32 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
@@ -108,7 +108,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     
                     <!-- Left Column: Copy -->
-                    <div class="text-center md:text-left space-y-8 order-2 md:order-1">
+                    <div class="text-center md:text-left space-y-8">
                         <h1 class="text-3xl md:text-5xl font-black font-ubuntu text-[#1800ad] !leading-[1.1] uppercase tracking-tight mb-6">
                             NFC Google <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#1800ad] to-[#0cc0df]">Review Cards for UK Businesses</span> 
                         </h1>
@@ -140,7 +140,7 @@
                     </div>
 
                     <!-- Right Column: Video Mockup -->
-                    <div class="flex justify-center items-center order-1 md:order-2">
+                    <div class="flex justify-center items-center">
                         <div class="relative w-[320px] md:w-[250px] lg:w-[320px]">
                             <!-- Animated Glow Background -->
                             <div class="absolute -inset-4 bg-gradient-to-r from-blue-400 to-cyan-400 opacity-20 blur-3xl animate-pulse"></div>
@@ -407,10 +407,22 @@
                                 <h3 class="text-xl font-bold text-[#1800ad] mb-3 font-ubuntu leading-tight">{{ $variant->name }}</h3>
 
                                 <!-- Pricing -->
-                                <div class="flex items-center justify-center gap-3">
-                                    <span class="text-3xl font-black text-[#1800ad]">&pound;{{ number_format($variant->price, 2) }}</span>
-                                    @if($variant->original_price > $variant->price)
-                                    <span class="text-lg text-gray-400 line-through decoration-red-400/50">&pound;{{ number_format($variant->original_price, 2) }}</span>
+                                @php
+                                    $isPartner = auth()->check() && auth()->user()->isApprovedPartner();
+                                    $discountPercent = $isPartner ? auth()->user()->getPartnerDiscountPercent() : 0;
+                                    $finalPrice = $discountPercent > 0 ? round($variant->price * (1 - ($discountPercent / 100)), 2) : $variant->price;
+                                @endphp
+                                <div class="flex flex-col items-center justify-center gap-1">
+                                    <div class="flex items-center justify-center gap-3">
+                                        <span class="text-3xl font-black {{ $isPartner && $discountPercent > 0 ? 'text-purple-700' : 'text-[#1800ad]' }}">&pound;{{ number_format($finalPrice, 2) }}</span>
+                                        @if($isPartner && $discountPercent > 0)
+                                            <span class="text-lg text-gray-400 line-through">&pound;{{ number_format($variant->price, 2) }}</span>
+                                        @elseif($variant->original_price > $variant->price)
+                                            <span class="text-lg text-gray-400 line-through decoration-red-400/50">&pound;{{ number_format($variant->original_price, 2) }}</span>
+                                        @endif
+                                    </div>
+                                    @if($isPartner && $discountPercent > 0)
+                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-purple-100 text-purple-700 border border-purple-200">👑 {{ auth()->user()->partner_type_label }} ({{ $discountPercent }}% OFF)</span>
                                     @endif
                                 </div>
                                 
@@ -849,146 +861,6 @@
         </div>
     </section>
 
-
-    <!-- Membership Plan Section -->
-    <style>
-        @keyframes fade-in-up {
-            0% {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in-up {
-            animation: fade-in-up 1s ease forwards;
-        }
-    </style>
-    <div class="bg-white pt-16 pb-24 sm:pb-32">
-        <div class="mx-auto max-w-7xl px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl sm:text-4xl font-bold text-[#1800ad] text-center mb-6 font-ubuntu">Membership Plans</h2>
-                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto font-mulish">
-                    Simple, transparent pricing that grows with you. Choose the plan that's right for your business.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                 @foreach($cards->take(2) as $index => $card)
-                    @php
-                        $planColors = [
-                            0 => [
-                                // First plan (Basic)
-                                'badge_bg' => 'bg-indigo-100',
-                                'badge_text' => 'text-indigo-600',
-                                'button_bg' => 'bg-[#1800ad]',
-                                'button_hover' => 'hover:bg-[#0cc0df]',
-                                'border' => 'border-gray-200',
-                                'card_bg' => '',
-                                'is_popular' => false,
-                            ],
-                            1 => [
-                                // Second plan (Standard)
-                                'badge_bg' => 'bg-indigo-200',
-                                'badge_text' => 'text-indigo-700',
-                                'button_bg' => 'bg-[#1800ad]',
-                                'button_hover' => 'hover:bg-[#0cc0df]',
-                                'border' => 'border-2 border-[#1800ad]',
-                                'card_bg' => 'bg-indigo-50',
-                                'is_popular' => true,
-                            ],
-                        ];
-
-                        // Use index or is_popular field from database
-                        $colors = $planColors[$index] ?? $planColors[0];
-                        if (isset($card->is_popular) && $card->is_popular) {
-                            $colors['is_popular'] = true;
-                        }
-
-                        // Animation delay
-                        $animationDelay = $index * 0.15;
-                    @endphp
-
-                    <!-- {{ $card->name }} Plan -->
-                    <div class="relative rounded-2xl {{ $colors['border'] }} p-8 shadow-md transition-all duration-500 ease-in-out transform hover:scale-105 {{ $colors['card_bg'] }} opacity-0 animate-fade-in-up"
-                        style="animation-delay: {{ $animationDelay }}s">
-
-                        @if ($colors['is_popular'])
-                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                                <span
-                                    class="bg-[#1800ad] text-white text-xs px-4 py-1 rounded-full uppercase tracking-wider shadow">
-                                    {{ $card->popular_badge ?? 'Most Popular' }}
-                                </span>
-                            </div>
-                        @endif
-
-                        <div class="mb-6 {{ $colors['is_popular'] ? '' : '' }}">
-                            <span
-                                class="inline-block text-sm font-medium capitalize {{ $colors['badge_text'] }} {{ $colors['badge_bg'] }} px-3 py-1 rounded-full">
-                                {{ $card->name }}
-                            </span>
-                        </div>
-
-                        <h3 class="text-4xl font-bold text-gray-900 mb-2 font-ubuntu">
-                            &pound;{{ number_format($card->price, 0) }}<span class="text-base font-medium text-gray-500">{{ $card->price_suffix ?? '/month' }}</span>
-                        </h3>
-
-                        <div class="text-gray-600 mb-6 text-sm font-mulish !leading-[35px] mt-4">{!! $card->description !!}</div>
-
-                        <a href="/register?plan={{ $card->id }}"
-                            class="block text-center w-full {{ $colors['button_bg'] }} text-white py-3 rounded-xl font-semibold transition-all duration-500 {{ $colors['button_hover'] }}">
-                                Order Now
-                        </a>
-
-                    </div>
-                @endforeach
-
-                <!-- Enterprise Plan (Static) -->
-                <div class="relative rounded-2xl border border-gray-200 p-8 shadow-md transition-all duration-500 ease-in-out transform hover:scale-105 opacity-0 animate-fade-in-up"
-                    style="animation-delay: 0.45s">
-
-                    <div class="mb-6">
-                        <span class="inline-block text-sm font-medium capitalize text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">
-                            Enterprise
-                        </span>
-                    </div>
-
-                    <h3 class="text-4xl font-bold text-gray-900 mb-2 font-ubuntu">
-                        Custom
-                    </h3>
-
-                    <div class="text-gray-600 mb-6 text-sm font-mulish !leading-[35px] mt-4">
-                        <ul>
-                            <li class="flex items-center">
-                                🔷 Unlimited Cards & Businesses
-                            </li>
-                            <li class="flex items-center">
-                                🔷 Advanced Dashboard with Insights
-                            </li>
-                            <li class="flex items-center">
-                                🔷 Team Leaderboard & Staff Tracking
-                            </li>
-                            <li class="flex items-center">
-                                🔷 Dedicated Account Manager
-                            </li>
-                            <li class="flex items-center">
-                                🔷 AI Response Generator
-                            </li>
-                        </ul>
-                    </div>
-                    <a href="{{ route('contact', ['inquiry' => 'enterprise']) }}"
-                        class="block text-center w-full bg-[#1800ad] text-white py-3 rounded-xl font-semibold transition-all duration-500 hover:bg-[#0cc0df]">
-                            Contact Us
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Call to Action Section -->
     <section class="relative bg-cover bg-center bg-no-repeat text-[#1800ad] py-24 px-4 sm:px-6 lg:px-8 font-mulish" style="background-image: url('https://d1yei2z3i6k35z.cloudfront.net/161/609bb9ff8ffc9_Groupedemasques1.jpg');;">
         <div class="relative max-w-3xl mx-auto text-center">
@@ -1009,145 +881,6 @@
         </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="bg-gray-50 py-20 px-4 sm:px-6 lg:px-8 font-mulish">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl sm:text-4xl font-bold text-[#1800ad] text-center mb-10 font-ubuntu">
-            Frequently Asked Questions
-            </h2>
-
-            <div class="space-y-4" x-data="{ selected: null }">
-            <!-- FAQ 1 -->
-            <div class="bg-white shadow-md rounded-xl overflow-hidden">
-                <button @click="selected !== 1 ? selected = 1 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
-                <span class="text-lg font-semibold text-[#142D63]">What type of businesses does this work for?</span>
-                <svg :class="selected === 1 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                </button>
-                <div x-show="selected === 1" x-collapse.duration.500ms x-cloak>
-                    <div class="px-6 pb-4 text-gray-600">
-                        The Tap Review system will work for any business that sees its customers or clients face to face and so can tap the card on the customer's phone. As an example, we have users who are hairdressers, restaurants, plumbers, beauty salons, electricians etc.
-                    </div>
-                </div>
-            </div>
-
-            <!-- FAQ 2 -->
-            <div class="bg-white shadow-md rounded-xl overflow-hidden">
-                <button @click="selected !== 2 ? selected = 2 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
-                <span class="text-lg font-semibold text-[#142D63]">Do the Tap Cards work on every phone?</span>
-                <svg :class="selected === 2 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                </button>
-                <div x-show="selected === 2" x-collapse.duration.500ms x-cloak>
-                    <div class="px-6 pb-4 text-gray-600">
-                        The Tap Cards work on both iPhone and Android phones. If your customer has an old non-smartphone though, the Tap Card may not work. There are also some older iPhones where the customer would need to enable the function so that the card works. They do work on the vast majority of phones though, and for the few that don't, we also include a QR code on every card that the customer can scan with their phone instead.
-                    </div>
-                </div>
-            </div>
-
-            <!-- FAQ 3 -->
-            <div class="bg-white shadow-md rounded-xl overflow-hidden">
-                <button @click="selected !== 3 ? selected = 3 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
-                <span class="text-lg font-semibold text-[#142D63]">Will it improve my Google ranking?</span>
-                <svg :class="selected === 3 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                </button>
-                <div x-show="selected === 3" x-collapse.duration.500ms x-cloak>
-                    <div class="px-6 pb-4 text-gray-600">
-                        Yes. More positive reviews help improve your visibility in Google search and maps.
-                    </div>
-                </div>
-            </div>
-
-            <!-- FAQ 4 -->
-            <div class="bg-white shadow-md rounded-xl overflow-hidden">
-                <button @click="selected !== 4 ? selected = 4 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
-                <span class="text-lg font-semibold text-[#142D63]">If an employee leaves, can a Tap Card be used by someone else?</span>
-                <svg :class="selected === 4 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                </button>
-                <div x-show="selected === 4" x-collapse.duration.500ms x-cloak>
-                    <div class="px-6 pb-4 text-gray-600">
-                        Yes of course. You can simply log in to your Dashboard and change the employee's name to the new name. The new person will then be able to use the same Tap Card and will appear on the Leaderboard as the new name.
-                    </div>
-                </div>
-            </div>
-
-            <!-- FAQ 5 -->
-            <div class="bg-white shadow-md rounded-xl overflow-hidden">
-                <button @click="selected !== 5 ? selected = 5 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
-                <span class="text-lg font-semibold text-[#142D63]">What happens after I place my order?</span>
-                <svg :class="selected === 5 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                </button>
-                <div x-show="selected === 5" x-collapse.duration.500ms x-cloak>
-                    <div class="px-6 pb-4 text-gray-600">
-                        Once you've placed your order we'll send you an email asking you for some information to enable us to set up your Review Boost system, including the names of the staff that you want to have Tap Cards etc.<br>
-                        We'll then create your Dashboard login, add your staff to the system and create their Tap Cards.<br>
-                        Then we'll send you an email with your Dashboard login info and send you your Tap Cards in the post.<br>
-
-                        This is normally all done within 48 hours of receiving your order so you'll be able to start getting more reviews within days.
-                    </div>
-                </div>
-            </div>
-
-            <!-- FAQ 6 -->
-            <div class="bg-white shadow-md rounded-xl overflow-hidden">
-                <button @click="selected !== 6 ? selected = 6 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
-                <span class="text-lg font-semibold text-[#142D63]">How quickly will we see results?</span>
-                <svg :class="selected === 6 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                </button>
-                <div x-show="selected === 6" x-collapse.duration.500ms x-cloak>
-                    <div class="px-6 pb-4 text-gray-600">
-                        This is the great thing about Tap Review Cards... most businesses start to see results the very first day they begin using their cards. New 4 and 5-star reviews which immediately get seen by new potential customers. All leading to more business for you as well as higher rankings in the search engines.
-                    </div>
-                </div>
-            </div>
-
-            <!-- FAQ 7 -->
-            <div class="bg-white shadow-md rounded-xl overflow-hidden">
-                <button @click="selected !== 7 ? selected = 7 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
-                <span class="text-lg font-semibold text-[#142D63]">Why do we need more reviews and regular  reviews?</span>
-                <svg :class="selected === 7 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                </button>
-                <div x-show="selected === 7" x-collapse.duration.500ms x-cloak>
-                    <div class="px-6 pb-4 text-gray-600">
-                        This is for two main reasons... Customers and Search Engines.<br><br>
-
-                        <span class="font-bold">1. Customers:</span> In this day and age, before we buy anything on Amazon, choose a restaurant to eat at, or decide to use any business, we check their reviews. If they don't have a high star rating or don't have good recent reviews, we move on and look at another option. So you need good reviews on a regular basis so that customers will choose your business.<br><br>
-
-                        <span class="font-bold">2. Search Engines:</span> Google and the other search engines want to give their users the best results possible when they do a search. So they want to show them the best businesses first. You guessed it - one of the main ways they decide which businesses are best is by looking at the recent quality reviews. So they will rank a business with lots of quality 4 and 5-star reviews higher than a business with a few 3-star reviews.
-                    </div>
-                </div>
-            </div>
-
-            <!-- FAQ 8 -->
-            <div class="bg-white shadow-md rounded-xl overflow-hidden">
-                <button @click="selected !== 8 ? selected = 8 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
-                <span class="text-lg font-semibold text-[#142D63]">How fast can I start getting reviews?</span>
-                <svg :class="selected === 8 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                </button>
-                <div x-show="selected === 8" x-collapse.duration.500ms x-cloak>
-                    <div class="px-6 pb-4 text-gray-600">
-                        Instantly. Once your account is live, you can begin collecting reviews the same day with your smart tap card or link.
-                    </div>
-                </div>
-            </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Testimonial Section -->
     <style>
         .testimonial-card {
@@ -1162,7 +895,7 @@
         }
     </style>
 
-    <div class="max-w-6xl mx-auto px-4 pt-8">
+    <div class="max-w-6xl mx-auto px-4 pt-20 mt-12">
         <!-- Header Section -->
         <div class="text-center mb-16">
             <h2 class="text-4xl font-bold text-[#1800ad] mb-4 font-ubuntu">What Our Customers Say</h2>
@@ -1309,7 +1042,143 @@
         </div>
     </div>
 
+        <!-- FAQ Section -->
+    <section class="bg-gray-50 py-20 px-4 sm:px-6 lg:px-8 font-mulish">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl sm:text-4xl font-bold text-[#1800ad] text-center mb-10 font-ubuntu">
+            Frequently Asked Questions
+            </h2>
 
+            <div class="space-y-4" x-data="{ selected: null }">
+            <!-- FAQ 1 -->
+            <div class="bg-white shadow-md rounded-xl overflow-hidden">
+                <button @click="selected !== 1 ? selected = 1 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
+                <span class="text-lg font-semibold text-[#142D63]">What type of businesses does this work for?</span>
+                <svg :class="selected === 1 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                </button>
+                <div x-show="selected === 1" x-collapse.duration.500ms x-cloak>
+                    <div class="px-6 pb-4 text-gray-600">
+                        The Tap Review system will work for any business that sees its customers or clients face to face and so can tap the card on the customer's phone. As an example, we have users who are hairdressers, restaurants, plumbers, beauty salons, electricians etc.
+                    </div>
+                </div>
+            </div>
 
+            <!-- FAQ 2 -->
+            <div class="bg-white shadow-md rounded-xl overflow-hidden">
+                <button @click="selected !== 2 ? selected = 2 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
+                <span class="text-lg font-semibold text-[#142D63]">Do the Tap Cards work on every phone?</span>
+                <svg :class="selected === 2 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                </button>
+                <div x-show="selected === 2" x-collapse.duration.500ms x-cloak>
+                    <div class="px-6 pb-4 text-gray-600">
+                        The Tap Cards work on both iPhone and Android phones. If your customer has an old non-smartphone though, the Tap Card may not work. There are also some older iPhones where the customer would need to enable the function so that the card works. They do work on the vast majority of phones though, and for the few that don't, we also include a QR code on every card that the customer can scan with their phone instead.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="bg-white shadow-md rounded-xl overflow-hidden">
+                <button @click="selected !== 3 ? selected = 3 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
+                <span class="text-lg font-semibold text-[#142D63]">Will it improve my Google ranking?</span>
+                <svg :class="selected === 3 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                </button>
+                <div x-show="selected === 3" x-collapse.duration.500ms x-cloak>
+                    <div class="px-6 pb-4 text-gray-600">
+                        Yes. More positive reviews help improve your visibility in Google search and maps.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div class="bg-white shadow-md rounded-xl overflow-hidden">
+                <button @click="selected !== 4 ? selected = 4 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
+                <span class="text-lg font-semibold text-[#142D63]">If an employee leaves, can a Tap Card be used by someone else?</span>
+                <svg :class="selected === 4 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                </button>
+                <div x-show="selected === 4" x-collapse.duration.500ms x-cloak>
+                    <div class="px-6 pb-4 text-gray-600">
+                        Yes of course. You can simply log in to your Dashboard and change the employee's name to the new name. The new person will then be able to use the same Tap Card and will appear on the Leaderboard as the new name.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 5 -->
+            <div class="bg-white shadow-md rounded-xl overflow-hidden">
+                <button @click="selected !== 5 ? selected = 5 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
+                <span class="text-lg font-semibold text-[#142D63]">What happens after I place my order?</span>
+                <svg :class="selected === 5 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                </button>
+                <div x-show="selected === 5" x-collapse.duration.500ms x-cloak>
+                    <div class="px-6 pb-4 text-gray-600">
+                        Once you've placed your order we'll send you an email asking you for some information to enable us to set up your Review Boost system, including the names of the staff that you want to have Tap Cards etc.<br>
+                        We'll then create your Dashboard login, add your staff to the system and create their Tap Cards.<br>
+                        Then we'll send you an email with your Dashboard login info and send you your Tap Cards in the post.<br>
+
+                        This is normally all done within 48 hours of receiving your order so you'll be able to start getting more reviews within days.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 6 -->
+            <div class="bg-white shadow-md rounded-xl overflow-hidden">
+                <button @click="selected !== 6 ? selected = 6 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
+                <span class="text-lg font-semibold text-[#142D63]">How quickly will we see results?</span>
+                <svg :class="selected === 6 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                </button>
+                <div x-show="selected === 6" x-collapse.duration.500ms x-cloak>
+                    <div class="px-6 pb-4 text-gray-600">
+                        This is the great thing about Tap Review Cards... most businesses start to see results the very first day they begin using their cards. New 4 and 5-star reviews which immediately get seen by new potential customers. All leading to more business for you as well as higher rankings in the search engines.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 7 -->
+            <div class="bg-white shadow-md rounded-xl overflow-hidden">
+                <button @click="selected !== 7 ? selected = 7 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
+                <span class="text-lg font-semibold text-[#142D63]">Why do we need more reviews and regular  reviews?</span>
+                <svg :class="selected === 7 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                </button>
+                <div x-show="selected === 7" x-collapse.duration.500ms x-cloak>
+                    <div class="px-6 pb-4 text-gray-600">
+                        This is for two main reasons... Customers and Search Engines.<br><br>
+
+                        <span class="font-bold">1. Customers:</span> In this day and age, before we buy anything on Amazon, choose a restaurant to eat at, or decide to use any business, we check their reviews. If they don't have a high star rating or don't have good recent reviews, we move on and look at another option. So you need good reviews on a regular basis so that customers will choose your business.<br><br>
+
+                        <span class="font-bold">2. Search Engines:</span> Google and the other search engines want to give their users the best results possible when they do a search. So they want to show them the best businesses first. You guessed it - one of the main ways they decide which businesses are best is by looking at the recent quality reviews. So they will rank a business with lots of quality 4 and 5-star reviews higher than a business with a few 3-star reviews.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 8 -->
+            <div class="bg-white shadow-md rounded-xl overflow-hidden">
+                <button @click="selected !== 8 ? selected = 8 : selected = null" class="w-full px-6 py-5 text-left flex justify-between items-center">
+                <span class="text-lg font-semibold text-[#142D63]">How fast can I start getting reviews?</span>
+                <svg :class="selected === 8 ? 'rotate-180' : ''" class="w-5 h-5 transition-transform transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                </button>
+                <div x-show="selected === 8" x-collapse.duration.500ms x-cloak>
+                    <div class="px-6 pb-4 text-gray-600">
+                        Instantly. Once your account is live, you can begin collecting reviews the same day with your smart tap card or link.
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
 
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -17,22 +18,24 @@ class AIController extends Controller
 
         $user = auth()->user();
 
-        // Check if user has Premium subscription
-        $hasPremium = $user->subscription 
-            && $user->subscription->plan 
-            && stripos($user->subscription->plan->name, 'premium') !== false
+        // AI replies are enabled per-plan via the has_ai_replies flag.
+        $hasAiReplies = $user->subscription
+            && $user->subscription->plan
+            && $user->subscription->plan->has_ai_replies
             && $user->subscription->ends_at > now();
 
-        if (!$hasPremium) {
+        if (!$hasAiReplies) {
             return response()->json([
-                'success' => false, 
-                'message' => 'This feature is only available for Premium Plan subscribers.'
+                'success' => false,
+                'message' => 'AI review replies are not included in your current plan. Please upgrade to use this feature.'
             ], 403);
         }
 
-        $apiKey = config('services.google.gemini_api_key');
-        $model = config('services.google.gemini_model');
-        
+        // One key for the whole app: the admin Settings value is primary, with
+        // the .env value kept only as a fallback. Same for the model.
+        $apiKey = trim((string) Setting::get('gemini_api_key', '')) ?: (string) config('services.google.gemini_api_key');
+        $model = trim((string) Setting::get('chatbot_model', '')) ?: ((string) config('services.google.gemini_model') ?: 'gemini-2.5-flash');
+
         if (!$apiKey || $apiKey === 'your_gemini_api_key_here') {
             return response()->json([
                 'success' => false, 
@@ -57,7 +60,7 @@ class AIController extends Controller
         try {
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ])->post("https://generativelanguage.googleapis.com/v1/models/{$model}:generateContent?key={$apiKey}", [
+            ])->post("https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}", [
                 'contents' => [
                     [
                         'parts' => [

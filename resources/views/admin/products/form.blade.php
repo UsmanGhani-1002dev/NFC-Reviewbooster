@@ -142,24 +142,25 @@
                                 <input type="text" :name="'variants[' + index + '][name]'" x-model="variant.name" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400" placeholder="e.g. 1 Rating Card + free stand" required>
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-gray-600 mb-1">Quantity *</label>
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Cards Per Pack *</label>
                                 <input type="number" :name="'variants[' + index + '][quantity]'" x-model="variant.quantity" min="1" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400" required>
+                                <p class="mt-1 text-[11px] text-gray-400">How many cards this pack contains (not the purchase quantity).</p>
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-gray-600 mb-1">Stock</label>
                                 <input type="number" :name="'variants[' + index + '][stock]'" x-model="variant.stock" min="0" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400">
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-gray-600 mb-1">Sale Price (£) *</label>
-                                <input type="number" step="0.01" :name="'variants[' + index + '][price]'" x-model="variant.price" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400" required>
-                            </div>
-                            <div>
                                 <label class="block text-xs font-medium text-gray-600 mb-1">Original Price (£) *</label>
-                                <input type="number" step="0.01" :name="'variants[' + index + '][original_price]'" x-model="variant.original_price" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400" required>
+                                <input type="number" step="0.01" :name="'variants[' + index + '][original_price]'" x-model="variant.original_price" @input="calculateDiscount(variant)" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400" placeholder="e.g. 49.99" required>
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-gray-600 mb-1">Discount %</label>
-                                <input type="number" :name="'variants[' + index + '][discount_percent]'" x-model="variant.discount_percent" min="0" max="100" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Sale Price (£) <span class="text-gray-400 font-normal">(Optional)</span></label>
+                                <input type="number" step="0.01" :name="'variants[' + index + '][price]'" x-model="variant.price" @input="calculateDiscount(variant)" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400" placeholder="Leave blank if no sale">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Discount % <span class="text-gray-400 font-normal">(Auto)</span></label>
+                                <input type="number" :name="'variants[' + index + '][discount_percent]'" x-model="variant.discount_percent" @input="calculateSalePrice(variant)" min="0" max="100" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400">
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-gray-600 mb-1">Variant Image</label>
@@ -272,6 +273,28 @@ function productForm() {
 
         addVariant() {
             this.variants.push({ id: null, name: '', quantity: 1, price: '', original_price: '', discount_percent: 0, is_best_value: false, is_most_popular: false, stock: 50, image: null });
+        },
+
+        calculateDiscount(variant) {
+            const orig = parseFloat(variant.original_price);
+            const sale = parseFloat(variant.price);
+
+            if (!isNaN(orig) && orig > 0 && !isNaN(sale) && sale >= 0 && sale < orig) {
+                variant.discount_percent = Math.round(((orig - sale) / orig) * 100);
+            } else {
+                variant.discount_percent = 0;
+            }
+        },
+
+        calculateSalePrice(variant) {
+            const orig = parseFloat(variant.original_price);
+            const disc = parseFloat(variant.discount_percent);
+
+            if (!isNaN(orig) && orig > 0 && !isNaN(disc) && disc > 0 && disc <= 100) {
+                variant.price = (orig * (1 - disc / 100)).toFixed(2);
+            } else if (disc === 0 || isNaN(disc)) {
+                variant.price = '';
+            }
         }
     };
 }

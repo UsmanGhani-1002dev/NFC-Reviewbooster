@@ -1,7 +1,11 @@
 {{-- resources/views/components/usersidebar.blade.php --}}
 <div x-data="{
         sidebarOpen: false,
-        canInstall: false,
+        canInstall: (function() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            return isIOS && !isStandalone;
+        })(),
         init() {
             window.addEventListener('pwa-installable', () => { this.canInstall = true; });
             window.addEventListener('pwa-installed', () => { this.canInstall = false; });
@@ -116,6 +120,14 @@
                @click="window.innerWidth < 1024 && (sidebarOpen = false)">
                 <i data-lucide="package" class="h-5 w-5 flex-shrink-0"></i>
                 <span class="truncate">Manage Subscription</span>
+            </a>
+
+            <!-- My Orders -->
+            <a href="{{ route('user.orders.index') }}" 
+               class="flex items-center gap-3 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition group {{ request()->routeIs('user.orders.*') ? 'bg-blue-100 text-blue-600' : '' }}"
+               @click="window.innerWidth < 1024 && (sidebarOpen = false)">
+                <i data-lucide="shopping-bag" class="h-5 w-5 flex-shrink-0"></i>
+                <span class="truncate">My Orders</span>
             </a>
 
             <!-- Edit Profile -->

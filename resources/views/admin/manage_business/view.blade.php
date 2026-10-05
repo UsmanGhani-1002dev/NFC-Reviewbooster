@@ -110,27 +110,72 @@
                 </div>
             </div>
 
-            @if($business->cards->count() > 0)
-            <div class="mt-8 p-6 bg-blue-50 rounded-2xl border border-blue-100">
+            {{-- Business-level Google Review Link (submitted with form) --}}
+            <input type="hidden" name="google_review_link" id="hidden-google-review-link" value="{{ $business->google_review_link }}">
+
+            <div class="mt-6 p-6 bg-blue-50 rounded-2xl border border-blue-100">
                 <h4 class="text-xs font-black text-blue-600 uppercase tracking-widest mb-4 flex items-center gap-2">
                     <i data-lucide="link" class="w-4 h-4"></i>
-                    Direct Review Links
+                    Direct Review Link (Default for all cards)
                 </h4>
-                <div class="space-y-3">
-                    @foreach($business->cards as $card)
-                    <div class="flex items-center justify-between text-sm bg-white p-3 rounded-xl border border-blue-200 shadow-sm">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-tight">{{ str_replace('_', ' ', $card->type) }}</span>
-                            <span class="font-bold text-gray-900 truncate max-w-[200px] sm:max-w-md">{{ $card->google_review_link }}</span>
-                        </div>
-                        <button type="button" onclick="window.navigator.clipboard.writeText('{{ $card->google_review_link }}'); window.toast('Link Copied!', 'success')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Copy Link">
+
+                {{-- Single unified row that toggles between view & edit --}}
+                <div class="flex items-center bg-white rounded-xl border border-blue-200 shadow-sm overflow-hidden min-w-0">
+
+                    {{-- View: truncated text --}}
+                    <p id="rl-view-text" class="flex-1 min-w-0 px-4 py-3 text-sm font-medium text-gray-700 truncate">
+                        {{ $business->google_review_link ?: 'No default link set' }}
+                    </p>
+
+                    {{-- Edit: url input (hidden by default) --}}
+                    <input type="url" id="rl-edit-input"
+                           value="{{ $business->google_review_link }}"
+                           placeholder="https://search.google.com/local/writereview?placeid=..."
+                           class="hidden flex-1 min-w-0 px-4 py-3 text-sm font-medium text-gray-700 border-0 focus:ring-0 focus:outline-none bg-white">
+
+                    {{-- View mode buttons --}}
+                    <div id="rl-view-actions" class="flex items-center gap-1 px-2 shrink-0">
+                        <button type="button"
+                                onclick="window.navigator.clipboard.writeText(document.getElementById('hidden-google-review-link').value); window.toast('Link Copied!', 'success')"
+                                class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Copy Link">
                             <i data-lucide="copy" class="w-4 h-4"></i>
                         </button>
+                        <button type="button" onclick="enableRLEdit()"
+                                class="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black text-blue-600 bg-blue-100 hover:bg-blue-200 rounded-lg transition-all uppercase tracking-widest">
+                            <i data-lucide="pencil" class="w-3 h-3"></i>
+                            Edit Default Link
+                        </button>
                     </div>
-                    @endforeach
+
+                    {{-- Edit mode buttons (hidden by default) --}}
+                    <div id="rl-edit-actions" class="hidden items-center gap-1 px-2 shrink-0">
+                        <button type="button" onclick="saveRL()"
+                                class="px-3 py-1.5 text-[10px] font-black text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all uppercase tracking-wide">
+                            Save
+                        </button>
+                        <button type="button" onclick="cancelRL()"
+                                class="px-3 py-1.5 text-[10px] font-black text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all uppercase tracking-wide ml-1">
+                            Cancel
+                        </button>
+                    </div>
                 </div>
+
+                @if($business->cards->count() > 0)
+                <div class="mt-4 pt-4 border-t border-blue-100">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Cards using this link</p>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($business->cards as $card)
+                        <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-blue-200 text-xs">
+                            <span class="font-bold text-gray-700">{{ $card->name }}</span>
+                            <span class="text-gray-400">&middot;</span>
+                            <span class="text-gray-400 uppercase tracking-wide font-medium">{{ str_replace('_', ' ', $card->type) }}</span>
+                        </div>
+                        @endforeach
+                    </div>
+                    <p class="text-[10px] text-gray-400 mt-2">To update an individual card's link separately, use the <span class="font-bold">&#9999; edit</span> icon in the Active NFC Cards section below.</p>
+                </div>
+                @endif
             </div>
-            @endif
 
             <div class="flex justify-start">
                 <button type="submit" class="px-8 py-3.5 bg-gray-900 text-white text-[11px] font-black rounded-xl hover:bg-black transition-all shadow-md uppercase tracking-widest">
@@ -202,7 +247,7 @@
                                     <a href="{{ route('admin.manage_business.cards.edit', ['business_id' => $business->id, 'card' => $card->id]) }}" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
                                         <i data-lucide="edit-3" class="w-4 h-4"></i>
                                     </a>
-                                    <button onclick="confirmAdminCardDelete('{{ route('admin.manage_business.cards.destroy', ['business_id' => $business->id, 'card' => $card->id]) }}')" class="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all">
+                                    <button onclick="confirmAdminCardDelete('{{ route('admin.manage_business.cards.destroy', ['business_id' => $business->id, 'card' => $card->id]) }}', {{ json_encode($card->name) }})" class="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all">
                                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                                     </button>
                                 </div>
@@ -253,34 +298,21 @@
             <h4 class="text-rose-600 font-extrabold text-xl mb-1">Danger Zone</h4>
             <p class="text-rose-700 text-sm font-medium opacity-80">Deleting this business will permanently remove all associated review cards and data.</p>
         </div>
-        <form method="POST" action="{{ route('admin.manage_business.delete', $business->id) }}" class="shrink-0">
+        <form id="delete-business-form-{{ $business->id }}" method="POST" action="{{ route('admin.manage_business.delete', $business->id) }}" class="shrink-0">
             @csrf
             @method('DELETE')
-            <button type="submit" onclick="return confirm('Are you sure you want to delete this business?')" class="w-full md:w-auto px-10 py-4 bg-rose-600 text-white text-[11px] font-black rounded-xl hover:bg-rose-700 transition-all shadow-lg shadow-rose-200 uppercase tracking-widest">
+            <button type="button" onclick="confirmBusinessDelete({{ $business->id }}, {{ json_encode($business->legal_business_name) }})" class="w-full md:w-auto px-10 py-4 bg-rose-600 text-white text-[11px] font-black rounded-xl hover:bg-rose-700 transition-all shadow-lg shadow-rose-200 uppercase tracking-widest">
                 Delete Business
             </button>
         </form>
     </div>
 </div>
 
-{{-- Modals --}}
-<div id="admin-card-delete-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[110] hidden px-4">
-    <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-sm p-10 text-center border border-gray-100">
-        <div class="w-20 h-20 bg-rose-50 rounded-3xl flex items-center justify-center text-rose-500 mx-auto mb-8">
-            <i data-lucide="trash-2" class="w-10 h-10"></i>
-        </div>
-        <h3 class="text-2xl font-black text-gray-900 mb-2">Are you sure?</h3>
-        <p class="text-gray-500 mb-10 text-sm font-medium">This card will be gone forever.</p>
-        <div class="flex flex-col gap-3">
-            <form id="admin-delete-card-form" method="POST">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="w-full px-6 py-4 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-2xl uppercase tracking-widest text-xs">Confirm Delete</button>
-            </form>
-            <button onclick="closeAdminDeleteModal()" class="px-6 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-black rounded-2xl uppercase tracking-widest text-xs">Cancel</button>
-        </div>
-    </div>
-</div>
+{{-- Hidden form for card delete (submitted by SweetAlert2 confirm) --}}
+<form id="admin-delete-card-form" method="POST" class="hidden">
+    @csrf
+    @method('DELETE')
+</form>
 
 <div id="nfc-fallback-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[110] hidden px-4 sm:px-6 backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all duration-300 relative">
@@ -356,6 +388,47 @@
 </div>
 
 <script>
+    // --- Inline Edit: Business Default Google Review Link ---
+    function enableRLEdit() {
+        document.getElementById('rl-view-text').classList.add('hidden');
+        document.getElementById('rl-view-actions').classList.add('hidden');
+        document.getElementById('rl-edit-input').classList.remove('hidden');
+        const ea = document.getElementById('rl-edit-actions');
+        ea.classList.remove('hidden');
+        ea.classList.add('flex');
+        const input = document.getElementById('rl-edit-input');
+        input.focus();
+        input.select();
+    }
+
+    function saveRL() {
+        const val = document.getElementById('rl-edit-input').value.trim();
+        document.getElementById('hidden-google-review-link').value = val;
+        document.getElementById('rl-view-text').textContent = val || 'No default link set';
+        cancelRL();
+    }
+
+    function cancelRL() {
+        document.getElementById('rl-edit-input').classList.add('hidden');
+        const ea = document.getElementById('rl-edit-actions');
+        ea.classList.add('hidden');
+        ea.classList.remove('flex');
+        document.getElementById('rl-view-text').classList.remove('hidden');
+        document.getElementById('rl-view-actions').classList.remove('hidden');
+        // restore input to last saved value
+        document.getElementById('rl-edit-input').value = document.getElementById('hidden-google-review-link').value;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const inp = document.getElementById('rl-edit-input');
+        if (inp) {
+            inp.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); saveRL(); }
+                if (e.key === 'Escape') { cancelRL(); }
+            });
+        }
+    });
+
     function downloadQrCode(containerId, filename) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -531,14 +604,71 @@
         }
     }
 
-    function confirmAdminCardDelete(url) {
-        document.getElementById('admin-delete-card-form').action = url;
-        document.getElementById('admin-card-delete-modal').classList.remove('hidden');
+    function confirmAdminCardDelete(url, cardName) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Delete Card?',
+                html: `<p class="text-gray-700 text-sm">Are you sure you want to delete <strong class="text-red-600">${cardName || 'this card'}</strong>? This action cannot be undone.</p>`,
+                icon: 'warning',
+                showCancelButton: true,
+                focusCancel: true,
+                confirmButtonText: 'Yes, Delete it',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'rounded-xl shadow-xl',
+                    confirmButton: 'bg-rose-600 text-white px-4 py-2 rounded-md hover:bg-rose-700 ml-2',
+                    cancelButton: 'bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300'
+                },
+                buttonsStyling: false,
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('admin-delete-card-form');
+                    form.action = url;
+                    form.submit();
+                }
+            });
+        } else {
+            if (confirm('Are you sure you want to delete this card?')) {
+                const form = document.getElementById('admin-delete-card-form');
+                form.action = url;
+                form.submit();
+            }
+        }
     }
 
-    function closeAdminDeleteModal() {
-        document.getElementById('admin-card-delete-modal').classList.add('hidden');
+    function confirmBusinessDelete(id, name) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Confirm Deletion',
+                html: `<p class="text-gray-700 text-sm">Are you sure you want to delete <strong class="text-red-600">${name}</strong>? This action cannot be undone.</p>`,
+                icon: 'warning',
+                showCancelButton: true,
+                focusCancel: true,
+                confirmButtonText: 'Yes, Delete it',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'rounded-xl shadow-xl',
+                    confirmButton: 'bg-rose-600 text-white px-4 py-2 rounded-md hover:bg-rose-700 ml-2',
+                    cancelButton: 'bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300'
+                },
+                buttonsStyling: false,
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById(`delete-business-form-${id}`);
+                    if (form) { form.submit(); }
+                }
+            });
+        } else {
+            if (confirm('Are you sure you want to delete "' + name + '"?')) {
+                const form = document.getElementById(`delete-business-form-${id}`);
+                if (form) { form.submit(); }
+            }
+        }
     }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @endsection

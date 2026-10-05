@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Models\Notification;
 use App\Models\Review;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PartnerApplicationSubmittedMail;
 use Illuminate\Support\Facades\Notification as NotificationFacade; // Just in case, but Notification is a model here
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -133,13 +135,17 @@ class DashboardController extends Controller
                 ->count();
 
             $totalCards = $cardQuery->count();
-            $userCards = $cardQuery->orderBy('created_at', 'desc')->get();
+            $userCards = $cardQuery->withCount('reviews')
+                ->withAvg('reviews', 'rating')
+                ->orderBy('created_at', 'desc')
+                ->get();
             $reviews = $query->whereIn('card_id', $cardIds)->latest()->take(10)->get();
 
             $reviewsGroupedByCard = Review::whereIn('card_id', $cardIds)
                 ->select('card_id', \DB::raw('COUNT(*) as review_count'), \DB::raw('AVG(rating) as avg_rating'))
                 ->groupBy('card_id')
                 ->orderByDesc('review_count')
+                ->orderByDesc('avg_rating')
                 ->take(5)
                 ->get()
                 ->map(function ($reviewGroup) {
@@ -311,9 +317,31 @@ class DashboardController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function dismissWarning()
+    public function applyPartner(Request $request)
     {
-        session(['subscription_notification_dismissed' => true]);
-        return response()->json(['success' => true]);
+        $request->validate([
+            'partner_type' => 'required|in:wholesaler,retailer,corporate',
+            'vat_number' => 'nullable|string|max:100',
+        ]);
+
+        $user = auth()->user();
+        $user->partner_type = $request->partner_type;
+        $user->partner_status = 'pending';
+        if ($request->filled('vat_number')) {
+            $user->vat_number = $request->vat_number;
+        }
+        $user->save();
+
+        // Send email alert to admins
+        try {
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)->send(new PartnerApplicationSubmittedMail($user));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Partner application email to admin error: ' . $e->getMessage());
+        }
+
+        return back()->with('success', "Your application for " . $user->partner_type_label . " status has been submitted successfully! Admin will review and approve it shortly.");
     }
 }

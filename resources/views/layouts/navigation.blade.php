@@ -68,9 +68,21 @@
                                             <p class="text-xs text-gray-500">Portable review tags</p>
                                         </div>
                                     </a>
+                                    <a href="{{ route('orders.track') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-[#1800ad] rounded-xl transition-colors border-t border-gray-100">
+                                        <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-[#1800ad]">
+                                            <i class="fa-solid fa-truck-fast"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold">Track Order</p>
+                                            <p class="text-xs text-gray-500">Royal Mail parcel tracking</p>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
+                        <x-nav-link :href="route('blog.index')" :active="request()->routeIs('blog.*')" class="text-gray-600 hover:text-gray-900 py-2 text-md font-medium">
+                            {{ __('Blog') }}
+                        </x-nav-link>
                         <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')" class="text-gray-600 hover:text-gray-900 py-2 text-md font-medium">
                             {{ __('Contact') }}
                         </x-nav-link>
@@ -85,13 +97,23 @@
                             </svg>
                             <span class="cart-count-badge absolute top-1 right-1 bg-[#007cb5] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm" style="display: none;">0</span>
                         </button>
-                       @auth
+                        @auth
                         <div @mouseenter="userMenuOpen = true" @mouseleave="userMenuOpen = false" class="relative">
-                            <!-- User Icon -->
-                            <button class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 focus:outline-none">
-                                <svg class="w-10 h-10 rounded-full border border-gray-300 p-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                        d="M5.121 17.804A8.966 8.966 0 0112 15c2.21 0 4.21.802 5.879 2.121M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <!-- User Pill Button -->
+                            <button class="flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white hover:border-[#00A0FF] hover:shadow-md transition-all duration-200 focus:outline-none">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#142D63] to-[#00A0FF] text-white flex items-center justify-center font-bold text-xs shadow-inner">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                                </div>
+                                <div class="text-left hidden md:block">
+                                    <div class="text-xs font-bold text-[#142D63] leading-none">{{ auth()->user()->name }}</div>
+                                    @if(auth()->user()->isApprovedPartner())
+                                        <div class="text-[10px] font-extrabold text-purple-700 leading-none mt-0.5">👑 {{ auth()->user()->partner_type_label }}</div>
+                                    @else
+                                        <div class="text-[10px] text-gray-500 leading-none mt-0.5">{{ auth()->user()->role === 'admin' ? 'Administrator' : 'My Account' }}</div>
+                                    @endif
+                                </div>
+                                <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': userMenuOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
 
@@ -103,20 +125,48 @@
                                 x-transition:leave="transition ease-in duration-150"
                                 x-transition:leave-start="opacity-100 translate-y-0"
                                 x-transition:leave-end="opacity-0 translate-y-1"
-                                class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md z-50"
+                                class="absolute right-0 mt-2 w-60 bg-white border border-gray-200 shadow-xl rounded-2xl z-50 overflow-hidden"
                                 style="display: none;">
-                                <a href="{{ route('dashboard') }}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
-                                    Dashboard
-                                </a>
-                                <a href="{{ route('profile.edit') }}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
-                                    Profile
-                                </a>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-gray-100">
-                                        Log Out
-                                    </button>
-                                </form>
+                                
+                                <!-- User Header -->
+                                <div class="p-4 bg-gray-50 border-b border-gray-100">
+                                    <p class="text-xs font-bold text-gray-900 leading-tight truncate">{{ auth()->user()->name }}</p>
+                                    <p class="text-[11px] text-gray-500 truncate mt-0.5">{{ auth()->user()->email }}</p>
+                                    @if(auth()->user()->isApprovedPartner())
+                                        <span class="inline-block mt-2 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-200">
+                                            👑 {{ auth()->user()->partner_type_label }}
+                                        </span>
+                                    @elseif(auth()->user()->isPendingPartner())
+                                        <span class="inline-block mt-2 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-200">
+                                            ⏳ {{ auth()->user()->partner_type_label }} (Pending Approval)
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="p-1">
+                                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-gray-700 hover:bg-blue-50 hover:text-[#00A0FF] rounded-xl transition-colors">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                        Dashboard
+                                    </a>
+                                    <a href="{{ route('user.orders.index') }}" class="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-gray-700 hover:bg-blue-50 hover:text-[#00A0FF] rounded-xl transition-colors">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                                        My Orders
+                                    </a>
+                                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-gray-700 hover:bg-blue-50 hover:text-[#00A0FF] rounded-xl transition-colors">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        Profile Settings
+                                    </a>
+                                </div>
+
+                                <div class="p-1 border-t border-gray-100">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors">
+                                            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                            Log Out
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                         @else
@@ -140,38 +190,10 @@
                         </button>
 
                         @auth
-                            <div @mouseenter="userMenuOpen = true" @mouseleave="userMenuOpen = false" class="relative">
-                                <!-- User Icon -->
-                                <button class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 focus:outline-none">
-                                    <svg class="w-8 h-8 rounded-full border border-gray-300 p-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                              d="M5.121 17.804A8.966 8.966 0 0112 15c2.21 0 4.21.802 5.879 2.121M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                </button>
-                        
-                                <!-- Dropdown -->
-                                <div x-show="userMenuOpen" 
-                                     x-transition:enter="transition ease-out duration-200"
-                                     x-transition:enter-start="opacity-0 translate-y-1"
-                                     x-transition:enter-end="opacity-100 translate-y-0"
-                                     x-transition:leave="transition ease-in duration-150"
-                                     x-transition:leave-start="opacity-100 translate-y-0"
-                                     x-transition:leave-end="opacity-0 translate-y-1"
-                                     class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md z-50"
-                                     style="display: none;">
-                                    <a href="{{ route('dashboard') }}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
-                                        Dashboard
-                                    </a>
-                                    <a href="{{ route('profile.edit') }}" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
-                                        Profile
-                                    </a>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-gray-100">
-                                            Log Out
-                                        </button>
-                                    </form>
-                                </div>
+                            <div class="flex items-center">
+                                <a href="{{ route('dashboard') }}" class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#142D63] to-[#00A0FF] text-white flex items-center justify-center font-bold text-xs shadow-inner">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                                </a>
                             </div>
                         @endauth
 
@@ -254,6 +276,11 @@
                                 <a href="{{ route('landing.keychain') }}" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#1800ad]">Review Keychains</a>
                             </div>
                         </div>
+                        <a href="{{ route('blog.index') }}" 
+                           class="block px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+                           @click="open = false">
+                            Blog
+                        </a>
                         <a href="{{ route('contact') }}" 
                            class="block px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
                            @click="open = false">
@@ -265,10 +292,37 @@
                     <div class="border-t border-gray-200 pt-4 space-y-3">
                         @auth
                             <!-- For Authenticated Users -->
+                            <div class="bg-gray-50 rounded-xl p-3 border border-gray-100 mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#142D63] to-[#00A0FF] text-white flex items-center justify-center font-bold text-xs shadow-inner">
+                                        {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-bold text-gray-900 truncate">{{ auth()->user()->name }}</p>
+                                        <p class="text-[11px] text-gray-500 truncate">{{ auth()->user()->email }}</p>
+                                    </div>
+                                </div>
+                                @if(auth()->user()->isApprovedPartner())
+                                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-200">
+                                        👑 {{ auth()->user()->partner_type_label }} ({{ auth()->user()->getPartnerDiscountPercent() }}% OFF)
+                                    </span>
+                                @elseif(auth()->user()->isPendingPartner())
+                                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-200">
+                                        ⏳ {{ auth()->user()->partner_type_label }} (Pending Approval)
+                                    </span>
+                                @endif
+                            </div>
+
+                            <a href="{{ route('dashboard') }}" 
+                               class="block w-full text-center bg-[#00A0FF] hover:bg-blue-600 text-white px-4 py-2.5 font-bold font-mulish rounded-xl transition-colors duration-200 text-sm mb-2"
+                               @click="open = false">
+                                Go to Dashboard
+                            </a>
+
                             <form method="POST" action="{{ route('logout') }}" class="block">
                                 @csrf
                                 <button type="submit"
-                                    class="block w-full text-center bg-[#142d63] hover:bg-blue-900 text-white px-4 py-3 font-medium font-mulish rounded-md transition-colors duration-200"
+                                    class="block w-full text-center bg-gray-100 hover:bg-gray-200 text-red-600 px-4 py-2.5 font-medium font-mulish rounded-xl transition-colors duration-200 text-sm"
                                     @click="open = false">
                                     {{ __('Log Out') }}
                                 </button>

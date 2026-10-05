@@ -35,8 +35,10 @@ class SubscriptionPlanController extends Controller
             'duration_days' => 'required|integer|min:1',
             'card_limit' => 'required|integer|min:1',
             'review_limit' => 'required|integer|min:-1',
+            'has_ai_replies' => 'nullable|boolean',
         ]);
 
+        $request->merge(['has_ai_replies' => $request->boolean('has_ai_replies')]);
 
         SubscriptionPlan::create($request->all());
 
@@ -62,8 +64,10 @@ class SubscriptionPlanController extends Controller
             'duration_days' => 'required|integer|min:1',
             'card_limit' => 'required|integer|min:1',
             'review_limit' => 'required|integer|min:-1',
+            'has_ai_replies' => 'nullable|boolean',
         ]);
 
+        $request->merge(['has_ai_replies' => $request->boolean('has_ai_replies')]);
 
         $subscriptionPlan->update($request->all());
 

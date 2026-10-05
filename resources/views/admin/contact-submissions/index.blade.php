@@ -17,17 +17,6 @@
                     <p class="text-sm font-medium text-gray-400 mt-1">Manage and respond to user messages and inquiries</p>
                 </div>
             </div>
-
-            <!-- Export Button (Top Right on MD+) -->
-            <div class="hidden md:block">
-                <a href="{{ route('admin.contact-submissions.index', array_merge(request()->only('search'), ['export' => 'csv'])) }}"
-                    class="inline-flex items-center px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-100 transition-all transform hover:-translate-y-1 active:scale-95">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M12 8v8m0 0l-3-3m3 3l3-3M6 20h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    Export CSV
-                </a>
-            </div>
         </div>
 
         <!-- Search Bar & Mobile Export -->
@@ -86,22 +75,28 @@
                 </button>
             </form>
 
-            <!-- Mobile Export Button -->
-            <a href="{{ route('admin.contact-submissions.index', array_merge(request()->only('search'), ['export' => 'csv'])) }}"
-                class="md:hidden w-full flex items-center justify-center px-6 py-3.5 bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-100 transition-all active:scale-95">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M12 8v8m0 0l-3-3m3 3l3-3M6 20h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                Export CSV
-            </a>
+            <!-- Export Button -->
+            <div class="w-full sm:w-auto">
+                <a href="{{ route('admin.contact-submissions.index', array_merge(request()->only('search'), ['export' => 'csv'])) }}"
+                    class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-100 transition-all transform hover:-translate-y-1 active:scale-95">
+
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M12 8v8m0 0l-3-3m3 3l3-3M6 20h12a2 2 0 002-2v-2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+
+                    Export CSV
+                </a>
+            </div>
         </div>
     </div>
 
     <script>
         function autocomplete() {
             return {
-                search: '{{ request('search') }}',
-                actualValue: '{{ request('search') }}',
+                search: @js(request('search', '')),
+                actualValue: @js(request('search', '')),
                 suggestions: [],
                 init() {
                     if (this.search && this.search.length > 1) {
@@ -129,9 +124,17 @@
                     this.suggestions = [];
                 },
                 clearAll() {
+                    const hadFilter = !!this.actualValue;
                     this.search = '';
                     this.actualValue = '';
                     this.suggestions = [];
+
+                    if (hadFilter) {
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete('search');
+                        url.searchParams.delete('page');
+                        window.location.href = url.toString();
+                    }
                 }
             };
         }

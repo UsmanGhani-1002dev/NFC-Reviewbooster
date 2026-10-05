@@ -312,7 +312,7 @@
             </div>
 
             {{-- AI RESPONDER SECTION (PREMIUM ONLY) --}}
-            @if(auth()->user()->subscription && auth()->user()->subscription->plan && stripos(auth()->user()->subscription->plan->name, 'premium') !== false)
+            @if(auth()->user()->subscription && auth()->user()->subscription->plan && auth()->user()->subscription->plan->has_ai_replies)
             <div id="ai-responder-section" class="mt-4 border-t border-gray-100 pt-4">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2">

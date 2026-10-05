@@ -27,11 +27,16 @@ class User extends Authenticatable
         'email',
         'password',
         'is_active',
-        'role'
+        'role',
+        'partner_type',
+        'partner_status',
+        'vat_number',
+        'partner_discount_override',
     ];
-    
+
     protected $casts = [
         'ends_at' => 'datetime',
+        'partner_discount_override' => 'decimal:2',
     ];
 
     /**
@@ -215,6 +220,72 @@ class User extends Authenticatable
 
         return now();
     }
-    
-    
+
+    public function isApprovedPartner(): bool
+    {
+        return $this->partner_status === 'approved' && in_array($this->partner_type, ['wholesaler', 'retailer', 'corporate']);
+    }
+
+    public function isPendingPartner(): bool
+    {
+        return $this->partner_status === 'pending' && in_array($this->partner_type, ['wholesaler', 'retailer', 'corporate']);
+    }
+
+    public function getPartnerDiscountPercent(): float
+    {
+        if (!$this->isApprovedPartner()) {
+            return 0.0;
+        }
+
+        // A per-customer override (set by admin) always wins over the tier default.
+        if ($this->partner_discount_override !== null && $this->partner_discount_override !== '') {
+            return max(0.0, min(100.0, (float) $this->partner_discount_override));
+        }
+
+        $key = match ($this->partner_type) {
+            'wholesaler' => 'wholesaler_discount_percent',
+            'retailer' => 'retailer_discount_percent',
+            'corporate' => 'corporate_discount_percent',
+            default => null,
+        };
+
+        if (!$key) return 0.0;
+
+        return (float) \App\Models\Setting::get($key, 0);
+    }
+
+    /**
+     * True when this partner's discount comes from a per-customer override
+     * rather than the global tier default. Used for admin display.
+     */
+    public function hasCustomDiscount(): bool
+    {
+        return $this->isApprovedPartner()
+            && $this->partner_discount_override !== null
+            && $this->partner_discount_override !== '';
+    }
+
+    public function getPartnerTypeLabelAttribute(): string
+    {
+        return match ($this->partner_type) {
+            'wholesaler' => 'Wholesaler',
+            'retailer' => 'Retailer',
+            'corporate' => 'Corporate Account',
+            default => 'Standard Customer',
+        };
+    }
+
+    public function getPartnerStatusBadgeAttribute(): string
+    {
+        if (!$this->partner_type || $this->partner_type === 'standard') {
+            return 'bg-gray-100 text-gray-700';
+        }
+
+        return match ($this->partner_status) {
+            'approved' => 'bg-green-100 text-green-800',
+            'pending' => 'bg-amber-100 text-amber-800',
+            'rejected' => 'bg-red-100 text-red-800',
+            default => 'bg-gray-100 text-gray-700',
+        };
+    }
 }

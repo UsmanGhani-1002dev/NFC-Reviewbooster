@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('subscription_plans', function (Blueprint $table) {
-            $table->integer('card_limit')->default(1)->after('duration_days');
-            $table->integer('review_limit')->default(50)->after('card_limit'); // -1 for unlimited
+            if (!Schema::hasColumn('subscription_plans', 'card_limit')) {
+                $table->integer('card_limit')->default(1)->after('duration_days');
+            }
+            if (!Schema::hasColumn('subscription_plans', 'review_limit')) {
+                $table->integer('review_limit')->default(50)->after('card_limit'); // -1 for unlimited
+            }
         });
     }
 

@@ -43,15 +43,15 @@
             </button>
         </div>
 
-        <!-- Free Shipping Bar -->
-        <template x-if="items.length > 0">
-            <div class="px-6 py-3 border-b border-gray-50">
-                <p class="text-sm text-green-600 font-medium font-mulish">
-                    <svg class="w-4 h-4 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/><path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1v-1h3.05a2.5 2.5 0 014.9 0H19a1 1 0 001-1v-4a1 1 0 00-.293-.707l-3-3A1 1 0 0016 5h-3V4H3z"/></svg>
-                    You are eligible for free shipping.
+        <!-- Free Delivery Progress -->
+        <template x-if="items.length > 0 && freeThreshold > 0">
+            <div class="px-6 py-3 border-b border-gray-100 bg-gray-50/60">
+                <p class="text-xs font-mulish mb-2 flex items-center gap-1.5" :class="qualifiesFree ? 'text-green-600 font-bold' : 'text-gray-600'">
+                    <span x-show="qualifiesFree">🎉 You’ve unlocked <strong>FREE standard delivery!</strong></span>
+                    <span x-show="!qualifiesFree">Add <strong x-text="'£' + remainingForFree.toFixed(2)"></strong>&nbsp;more for <strong>FREE standard delivery</strong></span>
                 </p>
-                <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
-                    <div class="bg-[#00A0FF] h-1 rounded-full w-full"></div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                    <div class="h-1.5 rounded-full transition-all duration-500" :class="qualifiesFree ? 'bg-green-500' : 'bg-[#00A0FF]'" :style="'width: ' + freeProgress + '%'"></div>
                 </div>
             </div>
         </template>
@@ -67,9 +67,9 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold text-[#142D63] mb-4 font-ubuntu">Your cart is currently empty</h3>
-                    <button @click="cartOpen = false" class="bg-[#00A0FF] hover:bg-[#1800ad] text-white px-10 py-4 rounded-full font-bold uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    <a href="{{ route('shop.index') }}" @click="cartOpen = false" class="inline-block bg-[#00A0FF] hover:bg-[#1800ad] text-white px-10 py-4 rounded-full font-bold uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-lg">
                         Return to Shop
-                    </button>
+                    </a>
                 </div>
             </template>
 
@@ -99,7 +99,7 @@
                                             <template x-for="(loc, lIdx) in item.locationList" :key="lIdx">
                                                 <p class="text-[10px] text-gray-500 font-mulish flex items-start gap-1 leading-tight">
                                                     <span class="text-green-500 mt-0.5">•</span>
-                                                    <span x-text="loc.name"></span>
+                                                    <span class="break-anywhere" x-text="loc.name"></span>
                                                 </p>
                                             </template>
                                         </div>
@@ -146,6 +146,18 @@ function cartDrawer() {
     return {
         cartOpen: false,
         items: [],
+        freeThreshold: {{ (float) \App\Models\Setting::get('free_delivery_threshold', 25) }},
+
+        get qualifiesFree() {
+            return this.freeThreshold > 0 && this.cartTotal() >= this.freeThreshold;
+        },
+        get remainingForFree() {
+            return Math.max(0, this.freeThreshold - this.cartTotal());
+        },
+        get freeProgress() {
+            if (this.freeThreshold <= 0) return 0;
+            return Math.min(100, (this.cartTotal() / this.freeThreshold) * 100);
+        },
 
         loadCart() {
             try {

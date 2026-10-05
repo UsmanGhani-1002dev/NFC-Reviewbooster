@@ -80,6 +80,78 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="font-sans antialiased bg-gray-50 flex flex-col min-h-screen">
+    <!-- Global Toast Notification Banner -->
+    <div x-data="{ 
+            show: {{ session()->has('success') || session()->has('status') || session()->has('error') || session()->has('warning') ? 'true' : 'false' }},
+            message: {{ json_encode(session('success') ?? session('status') ?? session('error') ?? session('warning') ?? '') }},
+            type: '{{ session()->has('error') ? 'error' : (session()->has('warning') ? 'warning' : 'success') }}',
+            init() {
+                if (this.show) {
+                    setTimeout(() => { this.show = false }, 8000);
+                }
+                window.addEventListener('toast', (e) => {
+                    this.message = e.detail.message || e.detail;
+                    this.type = e.detail.type || 'success';
+                    this.show = true;
+                    setTimeout(() => { this.show = false }, 8000);
+                });
+            }
+         }"
+         x-show="show"
+         x-transition:enter="transition ease-out duration-300 transform"
+         x-transition:enter-start="opacity-0 -translate-y-4 sm:translate-y-0 sm:translate-x-4 scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 sm:translate-x-0 scale-100"
+         x-transition:leave="transition ease-in duration-200 transform"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95"
+         class="fixed top-24 right-4 sm:right-6 z-[9999] max-w-md w-full"
+         style="display: none;">
+        <div class="rounded-2xl p-4 shadow-2xl border backdrop-blur-md flex items-start gap-3.5 transition-all duration-300"
+             :class="{
+                'bg-[#0f2942]/95 text-white border-[#00A0FF]/40 shadow-blue-900/30': type === 'success',
+                'bg-rose-900/95 text-white border-rose-700/60 shadow-rose-900/30': type === 'error',
+                'bg-amber-900/95 text-white border-amber-700/60 shadow-amber-900/30': type === 'warning'
+             }">
+            <!-- Icon -->
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                 :class="{
+                    'bg-[#00A0FF]/20 text-[#00A0FF] border border-[#00A0FF]/30': type === 'success',
+                    'bg-rose-500/20 text-rose-300 border border-rose-400/30': type === 'error',
+                    'bg-amber-500/20 text-amber-300 border border-amber-400/30': type === 'warning'
+                 }">
+                <template x-if="type === 'success'">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                </template>
+                <template x-if="type === 'error'">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                </template>
+                <template x-if="type === 'warning'">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </template>
+            </div>
+
+            <!-- Text Content -->
+            <div class="flex-1 pt-0.5">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-bold text-sm font-ubuntu tracking-tight" x-text="type === 'success' ? 'Welcome to Tap Review Cards!' : (type === 'error' ? 'Notice' : 'Attention')"></h4>
+                    @auth
+                        @if(auth()->user()->isApprovedPartner())
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-500/30 text-purple-200 border border-purple-400/30">👑 {{ auth()->user()->partner_type_label }}</span>
+                        @elseif(auth()->user()->isPendingPartner())
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/30 text-amber-200 border border-amber-400/30">⏳ {{ auth()->user()->partner_type_label }} (Under Review)</span>
+                        @endif
+                    @endauth
+                </div>
+                <p class="text-xs font-mulish leading-relaxed text-gray-200" x-text="message"></p>
+            </div>
+
+            <!-- Close button -->
+            <button @click="show = false" class="text-white/60 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10 shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <div class="flex-1 flex flex-col">
         @include('layouts.navigation')
@@ -92,9 +164,14 @@
         </div>
     </div>
 
+    <!-- AI Support Chatbot -->
+    @if(\App\Models\Setting::get('chatbot_enabled'))
+        <x-chat-widget />
+    @endif
+
      <!-- Scroll to Top Button -->
-    <button id="scrollToTop" 
-        class="fixed bottom-6 right-6 bg-[#00A0FF] text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-110 opacity-0 invisible z-50"
+    <button id="scrollToTop"
+        class="fixed {{ \App\Models\Setting::get('chatbot_enabled') ? 'bottom-24' : 'bottom-6' }} right-6 bg-[#00A0FF] text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-110 opacity-0 invisible z-50"
         onclick="scrollToTop()">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
@@ -140,8 +217,8 @@
                     <div class="grid grid-cols-2 gap-8 mb-8">
                         <!-- Quick Links -->
                         <div>
-                            <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad]">Quick Links</h4>
-                            <ul class="space-y-3">
+                            <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad] text-center">Quick Links</h4>
+                            <ul class="space-y-3 text-center">
                                 <li class="text-center"><a href="{{ route('home') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">Home</a></li>
                                 <li class="text-center"><a href="{{ route('about') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">About</a></li>
                                 <li class="text-center"><a href="{{ route('howitswork') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">How It Works</a></li>
@@ -151,51 +228,25 @@
 
                         <!-- Support -->
                         <div>
-                            <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad]">Support</h4>
-                            <ul class="space-y-3">
+                            <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad] text-center">Support</h4>
+                            <ul class="space-y-3 text-center">
                                 <li class="text-center"><a href="{{ route('shipping-returns') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">Shipping & Returns</a></li>
                                 <li class="text-center"><a href="{{ route('terms-of-service') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">Terms of Service</a></li>
                                 <li class="text-center"><a href="{{ route('privacypolicy') }}" class="text-[#142D63] hover:text-[#244a9d] text-sm">Privacy Policy</a></li>
-                                <li class="text-center text-[#142D63] text-sm font-semibold mt-4">
-                                    info@tapreviewcards.co.uk
-                                </li>
-                                <li class="text-center text-[#142D63] text-sm font-semibold">
-                                    +44 1283 515606
-                                </li>
                             </ul>
                         </div>
                     </div>
 
                     <!-- Follow Us on second row -->
                     <div class="text-center">
-                        <h4 class="text-lg font-semibold mb-4 font-mulish text-[#1800ad]">Follow Us</h4>
-                        <div class="flex justify-center space-x-6">
-                            <!-- Twitter -->
-                            <a href="https://twitter.com/yourhandle" class="text-[#142D63] hover:text-[#244a9d]" aria-label="Twitter">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M23.5 4.8a9.6 9.6 0 01-2.8.8A4.9 4.9 0 0023 3a9.7 9.7 0 01-3.1 1.2 4.8 4.8 0 00-8.1 4.4A13.6 13.6 0 013 3.8a4.8 4.8 0 001.5 6.5 4.9 4.9 0 01-2.2-.6v.1a4.8 4.8 0 003.9 4.7 4.9 4.9 0 01-2.2.1 4.8 4.8 0 004.5 3.3 9.7 9.7 0 01-6 2.1c-.4 0-.8 0-1.2-.1a13.7 13.7 0 007.4 2.2c8.8 0 13.6-7.3 13.6-13.6v-.6a9.7 9.7 0 002.4-2.5z"/>
-                                </svg>
+                        <h4 class="text-lg font-semibold mb-4 font-mulish text-[#1800ad]">Contact Us</h4>
+                        <div class="flex flex-col items-center">
+                            <a href="mailto:info@tapreviewcards.co.uk" class="text-left text-[#142D63]">
+                                info@tapreviewcards.co.uk
                             </a>
-
-                            <!-- Facebook -->
-                            <a href="https://facebook.com/yourpage" class="text-[#142D63] hover:text-[#244a9d]" aria-label="Facebook">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M22.675 0H1.325C.593 0 0 .593 0 1.326v21.348C0 23.406.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.464.099 2.795.143v3.24l-1.918.001c-1.504 0-1.796.715-1.796 1.763v2.31h3.59l-.467 3.622h-3.123V24h6.116C23.407 24 24 23.407 24 22.674V1.326C24 .593 23.407 0 22.675 0z"/>
-                                </svg>
-                            </a>
-
-                            <!-- Instagram -->
-                            <a href="https://instagram.com/yourhandle" class="text-[#142D63] hover:text-[#244a9d]" aria-label="Instagram">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2.2c3.2 0 3.584.012 4.85.07 1.17.055 1.96.24 2.41.4.51.18.88.39 1.26.77.38.38.59.75.77 1.26.16.45.34 1.24.39 2.41.06 1.27.07 1.65.07 4.85s-.01 3.584-.07 4.85c-.055 1.17-.23 1.96-.39 2.41-.18.51-.39.88-.77 1.26-.38.38-.75.59-1.26.77-.45.16-1.24.34-2.41.39-1.27.06-1.65.07-4.85.07s-3.584-.01-4.85-.07c-1.17-.055-1.96-.23-2.41-.39-.51-.18-.88-.39-1.26-.77-.38-.38-.59-.75-.77-1.26-.16-.45-.34-1.24-.39-2.41C2.21 15.584 2.2 15.2 2.2 12s.01-3.584.07-4.85c.055-1.17.23-1.96.39-2.41.18-.51.39-.88.77-1.26.38-.38.75-.59 1.26-.77.45-.16 1.24-.34 2.41-.39C8.416 2.21 8.8 2.2 12 2.2zm0-2.2C8.735 0 8.332.01 7.052.07 5.772.128 4.77.33 3.96.66a6.4 6.4 0 00-2.36 1.55A6.4 6.4 0 00.66 4.57C.33 5.38.13 6.38.07 7.66.01 8.94 0 9.343 0 12s.01 3.06.07 4.34c.058 1.28.26 2.28.59 3.09a6.4 6.4 0 001.55 2.36 6.4 6.4 0 002.36 1.55c.81.33 1.81.53 3.09.59C8.94 23.99 9.343 24 12 24s3.06-.01 4.34-.07c1.28-.058 2.28-.26 3.09-.59a6.4 6.4 0 002.36-1.55 6.4 6.4 0 001.55-2.36c.33-.81.53-1.81.59-3.09.06-1.28.07-1.683.07-4.34s-.01-3.06-.07-4.34c-.058-1.28-.26-2.28-.59-3.09a6.4 6.4 0 00-1.55-2.36 6.4 6.4 0 00-2.36-1.55C18.28.33 17.28.13 16 .07 14.72.01 14.317 0 12 0zm0 5.8a6.2 6.2 0 110 12.4 6.2 6.2 0 010-12.4zm0 10.2a4 4 0 100-8 4 4 0 000 8zm6.4-11.6a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/>
-                                </svg>
-                            </a>
-
-                            <!-- LinkedIn -->
-                            <a href="https://linkedin.com/in/yourprofile" class="text-[#142D63] hover:text-[#244a9d]" aria-label="LinkedIn">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M19 0H5C2.24 0 0 2.24 0 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5V5c0-2.76-2.24-5-5-5zm-8 19H8v-8h3v8zm-1.5-9.3c-.97 0-1.5-.65-1.5-1.45s.53-1.45 1.5-1.45 1.5.65 1.5 1.45-.53 1.45-1.5 1.45zM19 19h-3v-4.4c0-1.04-.7-1.6-1.63-1.6-.95 0-1.37.65-1.37 1.6V19h-3v-8h3v1.1c.44-.7 1.23-1.1 2.2-1.1 1.67 0 2.8 1.1 2.8 3.4V19z"/>
-                                </svg>
+                            <br>
+                            <a href="tel:+447300401004" class="text-left text-[#142D63]">
+                                +44 7300 401004
                             </a>
                         </div>
                     </div>
@@ -206,7 +257,8 @@
                     <!-- Brand -->
                     <div class="space-y-4">
                         <img src="images/logo.png" alt="Tap Review Cards" class="w-48 h-auto">
-                        <p class="text-[#142D63] font-mulish leading-[25px]">
+                        
+                        <p class="text-[#142D63] font-mulish leading-[25px] text-sm">
                             <span class="font-bold">Disclaimer:</span> Tap Review Cards is not affiliated with Google or Google Inc. This website is not endorsed by Google in any way.
                         </p>
                     </div>
@@ -226,48 +278,22 @@
                     <div class="pl-8">
                         <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad]">Support</h4>
                         <ul class="space-y-4">
+                            <li><a href="{{ route('orders.track') }}" class="text-[#142D63] hover:text-[#244a9d]">Track Order</a></li>
                             <li><a href="{{ route('shipping-returns') }}" class="text-[#142D63] hover:text-[#244a9d]">Shipping & Returns</a></li>
                             <li><a href="{{ route('terms-of-service') }}" class="text-[#142D63] hover:text-[#244a9d]">Terms of Service</a></li>
                             <li><a href="{{ route('privacypolicy') }}" class="text-[#142D63] hover:text-[#244a9d]">Privacy Policy</a></li>
-                            <li>
-                                <a href="mailto:info@tapreviewcards.co.uk" class="text-[#142D63] hover:text-[#244a9d] text-sm font-semibold">info@tapreviewcards.co.uk</a>
-                            </li>
-                            <li>
-                                <a href="tel:+441283515606" class="text-[#142D63] hover:text-[#244a9d] text-sm font-semibold">+44 1283 515606</a>
-                            </li>
                         </ul>
                     </div>
 
                     <!-- Social -->
                     <div>
-                        <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad]">Follow Us</h4>
-                        <div class="flex space-x-4">
-                            <!-- Twitter -->
-                            <a href="https://twitter.com/yourhandle" class="text-gray-300 hover:text-[#244a9d]" aria-label="Twitter">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M23.5 4.8a9.6 9.6 0 01-2.8.8A4.9 4.9 0 0023 3a9.7 9.7 0 01-3.1 1.2 4.8 4.8 0 00-8.1 4.4A13.6 13.6 0 013 3.8a4.8 4.8 0 001.5 6.5 4.9 4.9 0 01-2.2-.6v.1a4.8 4.8 0 003.9 4.7 4.9 4.9 0 01-2.2.1 4.8 4.8 0 004.5 3.3 9.7 9.7 0 01-6 2.1c-.4 0-.8 0-1.2-.1a13.7 13.7 0 007.4 2.2c8.8 0 13.6-7.3 13.6-13.6v-.6a9.7 9.7 0 002.4-2.5z"/>
-                                </svg>
+                        <h4 class="text-lg font-semibold mb-3 font-mulish text-[#1800ad]">Contact us</h4>
+                        <div class="space-y-4 grid">
+                            <a href="mailto:info@tapreviewcards.co.uk" class="text-left text-[#142D63]">
+                                info@tapreviewcards.co.uk
                             </a>
-
-                            <!-- Facebook -->
-                            <a href="https://facebook.com/yourpage" class="text-gray-300 hover:text-[#244a9d]" aria-label="Facebook">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M22.675 0H1.325C.593 0 0 .593 0 1.326v21.348C0 23.406.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.464.099 2.795.143v3.24l-1.918.001c-1.504 0-1.796.715-1.796 1.763v2.31h3.59l-.467 3.622h-3.123V24h6.116C23.407 24 24 23.407 24 22.674V1.326C24 .593 23.407 0 22.675 0z"/>
-                                </svg>
-                            </a>
-
-                            <!-- Instagram -->
-                            <a href="https://instagram.com/yourpage" class="text-gray-300 hover:text-[#244a9d]" aria-label="Instagram">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2.2c3.2 0 3.584.012 4.85.07 1.17.055 1.96.24 2.41.4.51.18.88.39 1.26.77.38.38.59.75.77 1.26.16.45.34 1.24.39 2.41.06 1.27.07 1.65.07 4.85s-.01 3.584-.07 4.85c-.055 1.17-.23 1.96-.39 2.41-.18.51-.39.88-.77 1.26-.38.38-.75.59-1.26.77-.45.16-1.24.34-2.41.39-1.27.06-1.65.07-4.85.07s-3.584-.01-4.85-.07c-1.17-.055-1.96-.23-2.41-.39-.51-.18-.88-.39-1.26-.77-.38-.38-.59-.75-.77-1.26-.16-.45-.34-1.24-.39-2.41C2.21 15.584 2.2 15.2 2.2 12s.01-3.584.07-4.85c.055-1.17.23-1.96.39-2.41.18-.51.39-.88.77-1.26.38-.38.75-.59 1.26-.77.45-.16 1.24-.34 2.41-.39C8.416 2.21 8.8 2.2 12 2.2zm0-2.2C8.735 0 8.332.01 7.052.07 5.772.128 4.77.33 3.96.66a6.4 6.4 0 00-2.36 1.55A6.4 6.4 0 00.66 4.57C.33 5.38.13 6.38.07 7.66.01 8.94 0 9.343 0 12s.01 3.06.07 4.34c.058 1.28.26 2.28.59 3.09a6.4 6.4 0 001.55 2.36 6.4 6.4 0 002.36 1.55c.81.33 1.81.53 3.09.59C8.94 23.99 9.343 24 12 24s3.06-.01 4.34-.07c1.28-.058 2.28-.26 3.09-.59a6.4 6.4 0 002.36-1.55 6.4 6.4 0 001.55-2.36c.33-.81.53-1.81.59-3.09.06-1.28.07-1.683.07-4.34s-.01-3.06-.07-4.34c-.058-1.28-.26-2.28-.59-3.09a6.4 6.4 0 00-1.55-2.36 6.4 6.4 0 00-2.36-1.55C18.28.33 17.28.13 16 .07 14.72.01 14.317 0 12 0zm0 5.8a6.2 6.2 0 110 12.4 6.2 6.2 0 010-12.4zm0 10.2a4 4 0 100-8 4 4 0 000 8zm6.4-11.6a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/>
-                                </svg>
-                            </a>
-
-                            <!-- LinkedIn -->
-                            <a href="https://linkedin.com/in/yourprofile" class="text-gray-300 hover:text-[#244a9d]" aria-label="LinkedIn">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M19 0H5C2.24 0 0 2.24 0 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5V5c0-2.76-2.24-5-5-5zm-8 19H8v-8h3v8zm-1.5-9.3c-.97 0-1.5-.65-1.5-1.45s.53-1.45 1.5-1.45 1.5.65 1.5 1.45-.53 1.45-1.5 1.45zM19 19h-3v-4.4c0-1.04-.7-1.6-1.63-1.6-.95 0-1.37.65-1.37 1.6V19h-3v-8h3v1.1c.44-.7 1.23-1.1 2.2-1.1 1.67 0 2.8 1.1 2.8 3.4V19z"/>
-                                </svg>
+                            <a href="tel:+447300401004" class="text-left text-[#142D63]">
+                                +44 7300 401004
                             </a>
                         </div>
                     </div>
@@ -275,19 +301,31 @@
             </div>
             
             <!-- Copyright -->
-            <div class="bg-[#0cc0df] text-center text-white py-4 text-sm">
-                <p>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
-            </div>
+            <div class="bg-[#0cc0df] text-white py-4 text-base font-mulish">
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-1 text-center sm:text-left">
+                    <p>&copy; {{ date('Y') }} {{ config('app.name', 'Tap Review Cards') }}. All rights reserved.</p>
+                    <p>Managed & operated under <a href="https://enovtec.com" target="_blank" class="text-[#142D63] font-bold">Enovtec Ltd.</a></p>
+                </div>
+            </div>  
         </footer>
 
     <script>
+        // Standalone PWA App check: Only show Dashboard in App, not public frontpages
+        (function() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            if (isStandalone) {
+                const currentPath = window.location.pathname;
+                // Exclude review flow or auth callback routes if needed
+                if (!currentPath.startsWith('/dashboard') && !currentPath.startsWith('/login') && !currentPath.startsWith('/register') && !currentPath.startsWith('/admin') && !currentPath.startsWith('/r/')) {
+                    window.location.href = '/dashboard';
+                }
+            }
+        })();
+
         window.deferredPrompt = null;
     
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Uncomment the next line if you want to prevent the automatic browser popup and show your own button instead
-            // e.preventDefault(); 
             window.deferredPrompt = e;
-    
             window.dispatchEvent(new CustomEvent('pwa-installable'));
         });
     
@@ -297,13 +335,24 @@
         });
     
         window.installPWA = function() {
-            if (!window.deferredPrompt) return;
-            window.deferredPrompt.prompt();
-            window.deferredPrompt.userChoice.then(() => {
-                window.deferredPrompt = null;
-                window.dispatchEvent(new CustomEvent('pwa-installed'));
-            });
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                window.deferredPrompt.userChoice.then(() => {
+                    window.deferredPrompt = null;
+                    window.dispatchEvent(new CustomEvent('pwa-installed'));
+                });
+            } else {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (isIOS) {
+                    window.dispatchEvent(new CustomEvent('open-ios-install-modal'));
+                } else {
+                    alert('To install this app, tap your browser menu and select "Install App" or "Add to Home screen".');
+                }
+            }
         };
     </script>
+
+    <!-- iOS PWA Install Modal -->
+    <x-ios-pwa-modal />
 </body>
 </html>
