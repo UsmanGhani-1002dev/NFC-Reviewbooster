@@ -1,1 +1,0 @@
-I need to tell the user that yes, both phones need NFC for the test to work.

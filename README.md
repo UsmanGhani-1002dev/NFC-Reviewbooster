@@ -1,5 +1,9 @@
 # ReviewBooster 🚀
 ### Premium NFC Reputation Management & Review Gating Solution
+![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![PHP](https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white)
 
 ReviewBooster is a sophisticated platform designed to help businesses skyrocket their online reputation. By leveraging NFC technology and smart "review gating," businesses can capture positive feedback on Google while handling negative experiences privately.
 
@@ -47,6 +51,7 @@ Seamlessly manage different physical NFC hardware:
 - Composer
 - Node.js & NPM
 - Google Maps API Key
+- Strip Keys
 
 ### Installation
 
